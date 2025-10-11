@@ -9,4 +9,4 @@ class ApiConstants {
     'https://api.allorigins.win/raw?url=',
     'https://corsproxy.io/?',
   ];
-}
+} 
