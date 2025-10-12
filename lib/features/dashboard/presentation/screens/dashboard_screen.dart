@@ -1,6 +1,11 @@
+// lib/features/dashboard/presentation/screens/dashboard_screen.dart
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import '../../../journal/presentation/screens/journal_screen.dart';
+import '../../../routine/presentation/screens/routine_screen.dart';
+
 
 class MoodEntry {
   final String detectedMood;
@@ -32,91 +37,48 @@ class DashboardScreen extends ConsumerStatefulWidget {
 }
 
 class _DashboardScreenState extends ConsumerState<DashboardScreen> {
-  int _selectedIndex = 0;
-
-  static const List<String> _tabTitles = [
-    'Dashboard',
-    'Mood',
-    'Journal',
-    'Habits',
-    'More'
-  ];
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: _buildTabContent(_selectedIndex),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.purple,
-        unselectedItemColor: Colors.grey,
-        type: BottomNavigationBarType.fixed,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.dashboard), label: 'Dashboard'),
-          BottomNavigationBarItem(icon: Icon(Icons.mood), label: 'Mood'),
-          BottomNavigationBarItem(icon: Icon(Icons.book), label: 'Journal'),
-          BottomNavigationBarItem(icon: Icon(Icons.check_box), label: 'Habits'),
-          BottomNavigationBarItem(icon: Icon(Icons.more_horiz), label: 'More'),
-        ],
-        onTap: (index) => setState(() => _selectedIndex = index),
-      ),
-    );
-  }
-
-  Widget _buildTabContent(int index) {
-    switch (index) {
-      case 0:
-        return _buildDashboard();
-      case 1:
-        return Center(child: Text('Mood Screen', style: TextStyle(fontSize: 24)));
-      case 2:
-        return Center(child: Text('Journal Screen', style: TextStyle(fontSize: 24)));
-      case 3:
-        return Center(child: Text('Habits Screen', style: TextStyle(fontSize: 24)));
-      case 4:
-        return Center(child: Text('More Options', style: TextStyle(fontSize: 24)));
-      default:
-        return Center(child: Text('Unknown Tab'));
-    }
-  }
-
-  Widget _buildDashboard() {
     final todaysMood = null;
     final recentMoods = <MoodEntry>[];
 
-    return CustomScrollView(
-      slivers: [
-        SliverAppBar(
-          expandedHeight: 120,
-          floating: false,
-          pinned: true,
-          backgroundColor: Colors.transparent,
-          flexibleSpace: FlexibleSpaceBar(
-            title: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(_getGreeting(), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400)),
-                Text(DateFormat('EEEE, MMM dd').format(DateTime.now()),
-                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w300)),
-              ],
+    return Scaffold(
+      body: SafeArea(
+        child: CustomScrollView(
+          slivers: [
+            SliverAppBar(
+              expandedHeight: 120,
+              floating: false,
+              pinned: true,
+              backgroundColor: Colors.transparent,
+              flexibleSpace: FlexibleSpaceBar(
+                title: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(_getGreeting(), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400)),
+                    Text(DateFormat('EEEE, MMM dd').format(DateTime.now()),
+                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w300)),
+                  ],
+                ),
+                titlePadding: const EdgeInsets.only(left: 20, bottom: 16),
+              ),
             ),
-            titlePadding: const EdgeInsets.only(left: 20, bottom: 16),
-          ),
+            SliverPadding(
+              padding: const EdgeInsets.all(20),
+              sliver: SliverList(
+                delegate: SliverChildListDelegate([
+                  _buildTodaysMoodCard(todaysMood),
+                  const SizedBox(height: 20),
+                  _buildRecentActivity(recentMoods),
+                  const SizedBox(height: 100), // Space for bottom navbar
+                ]),
+              ),
+            ),
+          ],
         ),
-        SliverPadding(
-          padding: const EdgeInsets.all(20),
-          sliver: SliverList(
-            delegate: SliverChildListDelegate([
-              _buildTodaysMoodCard(todaysMood),
-              const SizedBox(height: 20),
-              _buildRecentActivity(recentMoods),
-            ]),
-          ),
-        ),
-      ],
+      ),
+      bottomNavigationBar: _buildBottomNavBar(),
     );
   }
 
@@ -160,6 +122,121 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: recentMoods.map((m) => Text('${m.detectedMood}')).toList(),
+    );
+  }
+
+  Widget _buildBottomNavBar() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, -2),
+          ),
+        ],
+      ),
+      child: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _buildNavItem(
+  icon: Icons.access_time,
+  label: 'Routine',
+  onTap: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const RoutineScreen()),
+    );
+  },
+),
+
+              _buildNavItem(
+                icon: Icons.mood,
+                label: 'Mood',
+                onTap: () {
+                  // Navigate to Mood Tracker
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Mood Tracker - Coming Soon')),
+                  );
+                },
+              ),
+              _buildNavItem(
+                icon: Icons.check_circle_outline,
+                label: 'Habits',
+                onTap: () {
+                  // Navigate to Habit Tracker
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Habit Tracker - Coming Soon')),
+                  );
+                },
+              ),
+              _buildNavItem(
+                icon: Icons.book,
+                label: 'Journal',
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const JournalScreen()),
+                  );
+                },
+              ),
+              _buildNavItem(
+                icon: Icons.games_outlined,
+                label: 'Games',
+                onTap: () {
+                  // Navigate to Games
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Mindful Games - Coming Soon')),
+                  );
+                },
+              ),
+              _buildNavItem(
+                icon: Icons.lightbulb_outline,
+                label: 'Inspire',
+                onTap: () {
+                  // Navigate to Inspiration
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Inspiration - Coming Soon')),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNavItem({
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 28, color: Colors.purple),
+            const SizedBox(height: 4),
+            Text(
+              label,
+              style: const TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w500,
+                color: Colors.purple,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
