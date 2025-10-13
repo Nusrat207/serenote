@@ -7,7 +7,6 @@ import 'package:serenote/features/mood/presentation/providers/inspiration_provid
 import 'package:serenote/core/theme/mood_colors.dart';
 import 'package:serenote/features/mood/data/models/mood_entry.dart';
 
-
 final todaysMoodProvider = FutureProvider<MoodEntry?>(
   (ref) => ref.read(moodEntriesProvider.notifier).getTodaysMood(),
 );
@@ -86,19 +85,25 @@ class _MoodScreenState extends ConsumerState<MoodScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-              'Mood detected: ${result['entry'].detectedMood.toUpperCase()}'),
-          backgroundColor:
-              MoodColors.getColorForMood(result['entry'].detectedMood),
+            'Mood detected: ${result['entry'].detectedMood.toUpperCase()}',
+          ),
+          backgroundColor: MoodColors.getColorForMood(
+            result['entry'].detectedMood,
+          ),
         ),
       );
     } else {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Error: ${result['error']}')));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error: ${result['error']}')));
     }
+    ref.refresh(todaysMoodProvider);
+    await ref.read(moodEntriesProvider.notifier).refreshEntries();
   }
 
   Future<void> _playPreview(String url) async {
-    if (_audioPlayer.state == PlayerState.playing && _currentPlayingUrl == url) {
+    if (_audioPlayer.state == PlayerState.playing &&
+        _currentPlayingUrl == url) {
       await _audioPlayer.pause();
     } else {
       await _audioPlayer.play(UrlSource(url));
@@ -170,18 +175,17 @@ class _MoodScreenState extends ConsumerState<MoodScreen> {
           children: [
             Text(
               'Today\'s Mood',
-              style: Theme.of(context)
-                  .textTheme
-                  .titleMedium
-                  ?.copyWith(color: Colors.grey.shade600),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(color: Colors.grey.shade600),
             ),
             const SizedBox(height: 8),
             Text(
               mood.detectedMood.toUpperCase(),
               style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: MoodColors.getColorForMood(mood.detectedMood),
-                  ),
+                fontWeight: FontWeight.bold,
+                color: MoodColors.getColorForMood(mood.detectedMood),
+              ),
             ),
             const SizedBox(height: 4),
             Text('${(mood.confidence * 100).toStringAsFixed(0)}% confidence'),
@@ -189,10 +193,9 @@ class _MoodScreenState extends ConsumerState<MoodScreen> {
             if (mood.text.isNotEmpty)
               Text(
                 '"${mood.text}"',
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyMedium
-                    ?.copyWith(fontStyle: FontStyle.italic),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyMedium?.copyWith(fontStyle: FontStyle.italic),
                 textAlign: TextAlign.center,
               ),
           ],
@@ -208,8 +211,10 @@ class _MoodScreenState extends ConsumerState<MoodScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text('How are you feeling?',
-                style: Theme.of(context).textTheme.titleLarge),
+            Text(
+              'How are you feeling?',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
             const SizedBox(height: 16),
             TextField(
               controller: _textController,
@@ -217,7 +222,8 @@ class _MoodScreenState extends ConsumerState<MoodScreen> {
               decoration: InputDecoration(
                 hintText: 'Type or speak how you feel...',
                 border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12)),
+                  borderRadius: BorderRadius.circular(12),
+                ),
                 filled: true,
               ),
             ),
@@ -226,12 +232,16 @@ class _MoodScreenState extends ConsumerState<MoodScreen> {
               children: [
                 Expanded(
                   child: ElevatedButton.icon(
-                    onPressed:
-                        _isAnalyzing ? null : (_isListening ? _stopListening : _startListening),
+                    onPressed: _isAnalyzing
+                        ? null
+                        : (_isListening ? _stopListening : _startListening),
                     icon: Icon(_isListening ? Icons.stop : Icons.mic),
                     label: Text(_isListening ? 'Stop' : 'Voice Input'),
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: _isListening ? Colors.red.shade300 : null),
+                      backgroundColor: _isListening
+                          ? Colors.red.shade300
+                          : null,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -260,11 +270,13 @@ class _MoodScreenState extends ConsumerState<MoodScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text('For You',
-            style: Theme.of(context)
-                .textTheme
-                .titleLarge
-                ?.copyWith(fontWeight: FontWeight.bold, color: Colors.white)),
+        Text(
+          'For You',
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
         const SizedBox(height: 12),
         _buildQuoteSection(mood),
         const SizedBox(height: 12),
@@ -292,16 +304,26 @@ class _MoodScreenState extends ConsumerState<MoodScreen> {
           backgroundColor: MoodColors.getColorForMood(entry.detectedMood),
           child: Text(
             entry.detectedMood[0].toUpperCase(),
-            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
         title: Text(entry.detectedMood),
-        subtitle: Text(entry.text, maxLines: 2, overflow: TextOverflow.ellipsis),
+        subtitle: Text(
+          entry.text,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+        ),
         trailing: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('${entry.timestamp.hour}:${entry.timestamp.minute.toString().padLeft(2, '0')}'),
-            if (entry.isVoiceInput) const Icon(Icons.mic, size: 16, color: Colors.grey),
+            Text(
+              '${entry.timestamp.hour}:${entry.timestamp.minute.toString().padLeft(2, '0')}',
+            ),
+            if (entry.isVoiceInput)
+              const Icon(Icons.mic, size: 16, color: Colors.grey),
           ],
         ),
       ),
@@ -484,5 +506,4 @@ class _MoodScreenState extends ConsumerState<MoodScreen> {
       error: (_, __) => const SizedBox(),
     );
   }
-
 }
