@@ -1,11 +1,9 @@
-// lib/features/dashboard/presentation/screens/dashboard_screen.dart
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../../../journal/presentation/screens/journal_screen.dart';
-import '../../../routine/presentation/screens/routine_screen.dart';
-
+import '../../../todo/presentation/screens/todo_screen.dart';
+import '../widgets/sidebar.dart'; // Add this import
 
 class MoodEntry {
   final String detectedMood;
@@ -43,6 +41,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     final recentMoods = <MoodEntry>[];
 
     return Scaffold(
+      drawer: const Sidebar(), // Add sidebar as drawer
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
@@ -62,6 +61,14 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   ],
                 ),
                 titlePadding: const EdgeInsets.only(left: 20, bottom: 16),
+              ),
+              leading: Builder(
+                builder: (context) => IconButton(
+                  icon: const Icon(Icons.menu, color: Colors.black87),
+                  onPressed: () {
+                    Scaffold.of(context).openDrawer();
+                  },
+                ),
               ),
             ),
             SliverPadding(
@@ -144,21 +151,19 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               _buildNavItem(
-  icon: Icons.access_time,
-  label: 'Routine',
-  onTap: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const RoutineScreen()),
-    );
-  },
-),
-
+                icon: Icons.access_time,
+                label: 'Tasks',
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const RoutineScreen()),
+                  );
+                },
+              ),
               _buildNavItem(
                 icon: Icons.mood,
                 label: 'Mood',
                 onTap: () {
-                  // Navigate to Mood Tracker
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Mood Tracker - Coming Soon')),
                   );
@@ -168,7 +173,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 icon: Icons.check_circle_outline,
                 label: 'Habits',
                 onTap: () {
-                  // Navigate to Habit Tracker
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Habit Tracker - Coming Soon')),
                   );
@@ -188,7 +192,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 icon: Icons.games_outlined,
                 label: 'Games',
                 onTap: () {
-                  // Navigate to Games
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Mindful Games - Coming Soon')),
                   );
@@ -198,7 +201,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 icon: Icons.lightbulb_outline,
                 label: 'Inspire',
                 onTap: () {
-                  // Navigate to Inspiration
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Inspiration - Coming Soon')),
                   );
