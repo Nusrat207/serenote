@@ -20,8 +20,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     final allMoods = ref.watch(moodEntriesProvider);
-    final recentMoods =
-        ref.read(moodEntriesProvider.notifier).getRecentEntries(days: 7);
+    final recentMoods = ref.watch(moodEntriesProvider.notifier).getRecentEntries(days: 7);
+
 
     return FutureBuilder<MoodEntry?>(
       future: ref.read(moodEntriesProvider.notifier).getTodaysMood(),
@@ -390,7 +390,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             children: [
               _buildNavItem(
                 icon: Icons.access_time,
-                label: 'Routine',
+                label: 'ToDo',
                 onTap: () {
                   Navigator.push(
                     context,
@@ -421,16 +421,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   );
                 },
               ),
-              _buildNavItem(
-                icon: Icons.lightbulb_outline,
-                label: 'Inspire',
-                onTap: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                        content: Text('Inspiration - Coming Soon')),
-                  );
-                },
-              ),
+
+            
             ],
           ),
         ),

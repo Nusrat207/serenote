@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serenote/core/services/auth_service.dart';
 import 'package:serenote/features/dashboard/presentation/screens/dashboard_screen.dart';
+import 'package:serenote/features/mood/presentation/providers/mood_provider.dart';
 import 'register_screen.dart';
 import 'forgot_password_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isLoading = false;
@@ -24,19 +26,22 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
+      // Sign in with Supabase
       await AuthService().signIn(
         _emailController.text.trim(),
         _passwordController.text.trim(),
       );
-      
-      // Add user ID verification print here
+
       final String userId = Supabase.instance.client.auth.currentUser!.id;
       print('✅ LOGIN SUCCESS - User ID: $userId');
-      
-      // Navigate to dashboard after successful login
+
+      // Refresh MoodEntriesNotifier so dashboard loads real data
+      await ref.read(moodEntriesProvider.notifier).refreshEntries();
+
+      // Navigate to Dashboard
       if (mounted) {
         Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => DashboardScreen()),
+          MaterialPageRoute(builder: (context) => const DashboardScreen()),
           (route) => false,
         );
       }
@@ -100,7 +105,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   prefixIcon: const Icon(Icons.lock),
                   suffixIcon: IconButton(
                     icon: Icon(
-                      _obscurePassword ? Icons.visibility : Icons.visibility_off,
+                      _obscurePassword
+                          ? Icons.visibility
+                          : Icons.visibility_off,
                     ),
                     onPressed: () {
                       setState(() {
@@ -116,7 +123,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: TextButton(
                   onPressed: () {
                     Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => ForgotPasswordScreen()),
+                      MaterialPageRoute(
+                          builder: (context) => const ForgotPasswordScreen()),
                     );
                   },
                   child: const Text(
@@ -154,7 +162,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: TextButton(
                   onPressed: () {
                     Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (context) => RegisterScreen()),
+                      MaterialPageRoute(
+                          builder: (context) => const RegisterScreen()),
                     );
                   },
                   child: const Text(
