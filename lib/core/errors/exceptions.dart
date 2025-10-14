@@ -1,15 +1,16 @@
-class ServerException implements Exception {
-  final String message;
-  const ServerException(this.message);
-}
+// lib/core/errors/exceptions.dart
 
 class CacheException implements Exception {
   final String message;
-  const CacheException(this.message);
+  CacheException(this.message);
 }
 
+class ServerException implements Exception {
+  final String message;
+  ServerException(this.message);
+}
 
 class NetworkException implements Exception {
   final String message;
-  const NetworkException(this.message);
+  NetworkException(this.message);
 }
