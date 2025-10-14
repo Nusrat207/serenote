@@ -1,21 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-
-// Screens
 import '../../../journal/presentation/screens/journal_screen.dart';
 import '../../../todo/presentation/screens/todo_screen.dart';
 import '../../../mood/presentation/screens/mood_screen.dart';
-import '../../../todo/presentation/screens/todo_screen.dart';
-import '../../../habits/presentation/screens/habits_screen.dart';
-
-// Providers & Models
 import '../../../mood/presentation/providers/mood_provider.dart';
 import 'package:serenote/core/theme/mood_colors.dart';
 import '../../../mood/data/models/mood_entry.dart';
-
-// Widgets
 import '../widgets/sidebar.dart';
+import '../../../habits/presentation/screens/habits_screen.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({super.key});
@@ -28,9 +21,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     final allMoods = ref.watch(moodEntriesProvider);
-    final recentMoods = ref
-        .watch(moodEntriesProvider.notifier)
-        .getRecentEntries(days: 7);
+    final recentMoods = ref.watch(moodEntriesProvider.notifier).getRecentEntries(days: 7);
+
 
     return FutureBuilder<MoodEntry?>(
       future: ref.read(moodEntriesProvider.notifier).getTodaysMood(),
@@ -79,7 +71,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                     backgroundColor: Colors.transparent,
                     leading: Builder(
                       builder: (context) => IconButton(
-                        icon: const Icon(Icons.menu, color: Colors.black87),
+                        icon:
+                            const Icon(Icons.menu, color: Colors.black87),
                         onPressed: () {
                           Scaffold.of(context).openDrawer();
                         },
@@ -98,7 +91,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                             ),
                           ),
                           Text(
-                            DateFormat('EEEE, MMM dd').format(DateTime.now()),
+                            DateFormat('EEEE, MMM dd')
+                                .format(DateTime.now()),
                             style: const TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w300,
@@ -106,7 +100,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                           ),
                         ],
                       ),
-                      titlePadding: const EdgeInsets.only(left: 20, bottom: 16),
+                      titlePadding:
+                          const EdgeInsets.only(left: 20, bottom: 16),
                     ),
                   ),
                   SliverPadding(
@@ -147,7 +142,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           padding: const EdgeInsets.all(20),
           child: Column(
             children: [
-              Icon(Icons.mood_outlined, size: 48, color: Colors.grey.shade400),
+              Icon(Icons.mood_outlined,
+                  size: 48, color: Colors.grey.shade400),
               const SizedBox(height: 12),
               Text(
                 'How are you feeling today?',
@@ -178,7 +174,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                     color: Colors.white.withOpacity(0.3),
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(Icons.mood, color: Colors.white, size: 32),
+                  child: const Icon(Icons.mood,
+                      color: Colors.white, size: 32),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
@@ -187,7 +184,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                     children: [
                       const Text(
                         'Today\'s Mood',
-                        style: TextStyle(color: Colors.white70, fontSize: 14),
+                        style: TextStyle(
+                            color: Colors.white70, fontSize: 14),
                       ),
                       Text(
                         mood.detectedMood.toUpperCase(),
@@ -202,9 +200,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 ),
                 Container(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 6,
-                  ),
+                      horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.3),
                     borderRadius: BorderRadius.circular(20),
@@ -212,9 +208,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   child: Text(
                     '${(mood.confidence * 100).toStringAsFixed(0)}%',
                     style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
+                        color: Colors.white, fontWeight: FontWeight.bold),
                   ),
                 ),
               ],
@@ -229,11 +223,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 ),
                 child: Row(
                   children: [
-                    const Icon(
-                      Icons.format_quote,
-                      color: Colors.white70,
-                      size: 16,
-                    ),
+                    const Icon(Icons.format_quote,
+                        color: Colors.white70, size: 16),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
@@ -261,12 +252,10 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     List<MoodEntry> recentMoods,
   ) {
     final moodTodayCount = allMoods
-        .where(
-          (m) =>
-              m.timestamp.year == DateTime.now().year &&
-              m.timestamp.month == DateTime.now().month &&
-              m.timestamp.day == DateTime.now().day,
-        )
+        .where((m) =>
+            m.timestamp.year == DateTime.now().year &&
+            m.timestamp.month == DateTime.now().month &&
+            m.timestamp.day == DateTime.now().day)
         .length;
 
     final streak = _calculateStreak(allMoods);
@@ -318,10 +307,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   // ---------------- RECENT MOODS ----------------
   Widget _buildRecentMoods(List<MoodEntry> recentMoods) {
     if (recentMoods.isEmpty) {
-      return const Text(
-        'No recent moods',
-        style: TextStyle(color: Colors.grey),
-      );
+      return const Text('No recent moods',
+          style: TextStyle(color: Colors.grey));
     }
 
     return Column(
@@ -390,7 +377,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
+            color: Colors.black.withOpacity(0.1),
             blurRadius: 10,
             offset: const Offset(0, -2),
           ),
@@ -402,62 +389,42 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _buildNavItem(
-                icon: Icons.access_time,
-                label: 'Routine',
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const RoutineScreen(),
-                    ),
-                  );
-                },
-              ),
-              _buildNavItem(
-                icon: Icons.check_circle_outline,
-                label: 'Habits',
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const HabitsScreen(),
-                    ),
-                  );
-                },
-              ),
+              
               _buildNavItem(
                 icon: Icons.mood,
                 label: 'Mood',
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => const MoodScreen()),
+                    MaterialPageRoute(
+                        builder: (_) => const MoodScreen()),
                   );
                 },
               ),
               _buildNavItem(
-                icon: Icons.book,
-                label: 'Journal',
+                icon: Icons.home,
+                label: 'Home',
                 onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const JournalScreen(),
-                    ),
+                        builder: (_) => const DashboardScreen()),
                   );
                 },
               ),
               _buildNavItem(
                 icon: Icons.check_box,
-                label: 'To-Do',
+                label: 'Habit',
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => const RoutineScreen()),
+                    MaterialPageRoute(
+                        builder: (_) => const HabitsScreen()),
                   );
                 },
               ),
+
+            
             ],
           ),
         ),
@@ -474,7 +441,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+        padding:
+            const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -519,21 +487,25 @@ class _StatCard extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               value,
-              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: color,
-              ),
+              style: Theme.of(context)
+                  .textTheme
+                  .headlineMedium
+                  ?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: color,
+                  ),
             ),
             Text(
               label,
-              style: Theme.of(
-                context,
-              ).textTheme.bodySmall?.copyWith(color: Colors.grey.shade600),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodySmall
+                  ?.copyWith(color: Colors.grey.shade600),
               textAlign: TextAlign.center,
             ),
           ],
         ),
       ),
     );
-  }
+  } 
 }
