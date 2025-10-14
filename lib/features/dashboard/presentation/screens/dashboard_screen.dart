@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:collection/collection.dart';
 import '../../../journal/presentation/screens/journal_screen.dart';
 import '../../../todo/presentation/screens/todo_screen.dart';
 import '../../../mood/presentation/screens/mood_screen.dart';
@@ -9,7 +11,8 @@ import 'package:serenote/core/theme/mood_colors.dart';
 import '../../../mood/data/models/mood_entry.dart';
 import '../widgets/sidebar.dart';
 import '../../../habits/presentation/screens/habits_screen.dart';
-
+import '../widgets/quick_mood_entry_card.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({super.key});
 
@@ -18,26 +21,163 @@ class DashboardScreen extends ConsumerStatefulWidget {
 }
 
 class _DashboardScreenState extends ConsumerState<DashboardScreen> {
+  // Method to get the weekly moods data
+  Map<DateTime, String> _getWeeklyMoods(List<MoodEntry> allMoods) {
+    final now = DateTime.now();
+    final weekMoods = <DateTime, String>{};
+
+    // Get last 7 days including today
+    for (int i = 6; i >= 0; i--) {
+      final date = DateTime(
+        now.year,
+        now.month,
+        now.day,
+      ).subtract(Duration(days: i));
+
+      // Get all moods for this specific day
+      final dayMoods = allMoods.where((mood) {
+        final moodDate = DateTime(
+          mood.timestamp.year,
+          mood.timestamp.month,
+          mood.timestamp.day,
+        );
+        return moodDate == date;
+      }).toList();
+
+      if (dayMoods.isNotEmpty) {
+        // Count frequency of each mood
+        final moodCounts = <String, int>{};
+        for (final mood in dayMoods) {
+          moodCounts[mood.detectedMood] =
+              (moodCounts[mood.detectedMood] ?? 0) + 1;
+        }
+
+        // Find max count
+        final maxCount = moodCounts.values.max;
+
+        // Get moods with max count
+        final mostFrequentMoods = moodCounts.entries
+            .where((entry) => entry.value == maxCount)
+            .map((entry) => entry.key)
+            .toList();
+
+        String selectedMood;
+        if (mostFrequentMoods.length == 1) {
+          // Only one most frequent mood
+          selectedMood = mostFrequentMoods.first;
+        } else {
+          // Multiple moods with same count, take the last one
+          final lastMood = dayMoods.last.detectedMood;
+          selectedMood = lastMood;
+        }
+
+        weekMoods[date] = selectedMood;
+      } else {
+        // No moods for this day
+        weekMoods[date] = 'none';
+      }
+    }
+
+    return weekMoods;
+  }
+
+  // Helper method to get icon for mood
+  IconData _getMoodIcon(String mood) {
+    switch (mood.toLowerCase()) {
+      case 'anxious':
+        return Icons.sentiment_very_dissatisfied;
+      case 'sad':
+        return Icons.sentiment_dissatisfied;
+      case 'neutral':
+        return Icons.sentiment_neutral;
+      case 'joy':
+        return Icons.sentiment_very_satisfied;
+      case 'angry':
+        return FontAwesomeIcons.faceAngry;
+      default:
+        return Icons.circle_outlined;
+    }
+  }
+
+  Widget _getMoodImageIcon(String mood) {
+    switch (mood.toLowerCase()) {
+      case 'anxious':
+        return Image.asset('assets/images/anxious.png', width: 25, height: 25);
+      case 'angry':
+        return Image.asset('assets/images/angry.png', width: 25, height: 25);
+      case 'sad':
+        return Image.asset('assets/images/sadd.png', width: 25, height: 25);
+      case 'neutral':
+        return Image.asset('assets/images/neutral.png', width: 25, height: 25);
+      case 'joy':
+        return Image.asset('assets/images/happy.png', width: 25, height: 25);
+      default:
+        return const Icon(Icons.circle_outlined, size: 20, color: Colors.grey);
+    }
+  }
+
+  // Helper method to get color for mood
+  Color _getMoodColor(String mood) {
+    switch (mood.toLowerCase()) {
+      case 'anxious':
+        return const Color.fromARGB(255, 116, 27, 179);
+      case 'sad':
+        return const Color.fromARGB(255, 6, 115, 204);
+      case 'neutral':
+        return const Color.fromARGB(255, 36, 169, 101);
+      case 'joy':
+        return const Color.fromARGB(255, 178, 140, 3);
+      case 'angry':
+        return const Color.fromARGB(255, 204, 6, 6);
+      default:
+        return Colors.grey.shade300;
+    }
+  }
+
+  // Helper to get Y position for mood (0 = bottom, 3 = top)
+  int _getMoodLevel(String mood) {
+    switch (mood.toLowerCase()) {
+      case 'anxious':
+        return 0;
+      case 'angry':
+        return 1;
+      case 'sad':
+        return 2;
+      case 'neutral':
+        return 3;
+      case 'joy':
+        return 4;
+      default:
+        return -1; // no mood
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final allMoods = ref.watch(moodEntriesProvider);
-    final recentMoods = ref.watch(moodEntriesProvider.notifier).getRecentEntries(days: 7);
+    final user = Supabase.instance.client.auth.currentUser;
+    final userId = user?.id;
 
+    // if user not logged in — fallback to empty lists
+    final allMoods = userId != null
+        ? ref.watch(moodEntriesProvider)
+        : <MoodEntry>[];
+    final recentMoods = userId != null
+        ? ref.watch(moodEntriesProvider.notifier).getRecentEntries(days: 7)
+        : <MoodEntry>[];
+
+    // Get weekly moods data
+    final weeklyMoods = _getWeeklyMoods(allMoods);
 
     return FutureBuilder<MoodEntry?>(
-      future: ref.read(moodEntriesProvider.notifier).getTodaysMood(),
+      future: userId != null
+          ? ref.read(moodEntriesProvider.notifier).getTodaysMood()
+          : Future.value(null),
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
+        if (snapshot.connectionState == ConnectionState.waiting &&
+            userId != null) {
           return const Scaffold(
             body: Center(child: CircularProgressIndicator()),
             bottomNavigationBar: SizedBox(height: 60),
-          );
-        }
-
-        if (snapshot.hasError) {
-          return Scaffold(
-            body: Center(child: Text('Error: ${snapshot.error}')),
-            bottomNavigationBar: _buildBottomNavBar(),
           );
         }
 
@@ -71,11 +211,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                     backgroundColor: Colors.transparent,
                     leading: Builder(
                       builder: (context) => IconButton(
-                        icon:
-                            const Icon(Icons.menu, color: Colors.black87),
-                        onPressed: () {
-                          Scaffold.of(context).openDrawer();
-                        },
+                        icon: const Icon(Icons.menu, color: Colors.black87),
+                        onPressed: () => Scaffold.of(context).openDrawer(),
                       ),
                     ),
                     flexibleSpace: FlexibleSpaceBar(
@@ -91,8 +228,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                             ),
                           ),
                           Text(
-                            DateFormat('EEEE, MMM dd')
-                                .format(DateTime.now()),
+                            DateFormat('EEEE, MMM dd').format(DateTime.now()),
                             style: const TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w300,
@@ -100,19 +236,25 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                           ),
                         ],
                       ),
-                      titlePadding:
-                          const EdgeInsets.only(left: 20, bottom: 16),
+                      titlePadding: const EdgeInsets.only(left: 30, bottom: 16),
                     ),
                   ),
                   SliverPadding(
                     padding: const EdgeInsets.all(20),
                     sliver: SliverList(
                       delegate: SliverChildListDelegate([
-                        _buildTodaysMoodCard(todaysMood),
+                        if (userId == null)
+                          _buildLoginMessage()
+                        else
+                          _buildTodaysMoodCard(todaysMood),
+                        if (userId != null) const QuickMoodEntryCard(),
                         const SizedBox(height: 20),
+                      
                         _buildStatsOverview(allMoods, recentMoods),
                         const SizedBox(height: 20),
-                        _buildRecentMoods(recentMoods),
+                        if (userId != null) _buildWeeklyMoodGraph(weeklyMoods),
+                        const SizedBox(height: 20),
+                        if (userId != null) _buildRecentMoods(recentMoods),
                         const SizedBox(height: 100),
                       ]),
                     ),
@@ -134,6 +276,38 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     return 'Good Evening';
   }
 
+  // ---------------- LOGIN MESSAGE ----------------
+  Widget _buildLoginMessage() {
+    return Card(
+      color: Colors.purple.shade50,
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            Icon(
+              Icons.sentiment_dissatisfied,
+              size: 40,
+              color: Colors.purple.shade300,
+            ),
+            const SizedBox(height: 12),
+            const Text(
+              "You're not logged in",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 6),
+            const Text(
+              "Sign in to start tracking your moods and progress.",
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.black54),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   // ---------------- TODAY'S MOOD ----------------
   Widget _buildTodaysMoodCard(MoodEntry? mood) {
     if (mood == null) {
@@ -142,8 +316,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           padding: const EdgeInsets.all(20),
           child: Column(
             children: [
-              Icon(Icons.mood_outlined,
-                  size: 48, color: Colors.grey.shade400),
+              Icon(Icons.mood_outlined, size: 48, color: Colors.grey.shade400),
               const SizedBox(height: 12),
               Text(
                 'How are you feeling today?',
@@ -174,8 +347,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                     color: Colors.white.withOpacity(0.3),
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(Icons.mood,
-                      color: Colors.white, size: 32),
+                  child: const Icon(Icons.mood, color: Colors.white, size: 32),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
@@ -183,9 +355,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
-                        'Today\'s Mood',
-                        style: TextStyle(
-                            color: Colors.white70, fontSize: 14),
+                        'Current Mood',
+                        style: TextStyle(color: Colors.white70, fontSize: 14),
                       ),
                       Text(
                         mood.detectedMood.toUpperCase(),
@@ -198,19 +369,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                     ],
                   ),
                 ),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.3),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    '${(mood.confidence * 100).toStringAsFixed(0)}%',
-                    style: const TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.bold),
-                  ),
-                ),
+           
               ],
             ),
             const SizedBox(height: 16),
@@ -223,8 +382,11 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.format_quote,
-                        color: Colors.white70, size: 16),
+                    const Icon(
+                      Icons.format_quote,
+                      color: Colors.white70,
+                      size: 16,
+                    ),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
@@ -252,10 +414,12 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     List<MoodEntry> recentMoods,
   ) {
     final moodTodayCount = allMoods
-        .where((m) =>
-            m.timestamp.year == DateTime.now().year &&
-            m.timestamp.month == DateTime.now().month &&
-            m.timestamp.day == DateTime.now().day)
+        .where(
+          (m) =>
+              m.timestamp.year == DateTime.now().year &&
+              m.timestamp.month == DateTime.now().month &&
+              m.timestamp.day == DateTime.now().day,
+        )
         .length;
 
     final streak = _calculateStreak(allMoods);
@@ -304,59 +468,249 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     return streak;
   }
 
+  // ---------------- WEEKLY MOOD GRAPH ----------------
+  Widget _buildWeeklyMoodGraph(Map<DateTime, String> weeklyMoods) {
+    final days = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+    final moodOrder = ['anxious', 'angry', 'sad', 'neutral', 'joy'];
+    final now = DateTime.now();
+    const labelStyle = TextStyle(fontSize: 10, fontWeight: FontWeight.w500);
+
+    final dates = List.generate(
+      7,
+      (index) => DateTime(
+        now.year,
+        now.month,
+        now.day,
+      ).subtract(Duration(days: 6 - index)),
+    );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Weekly Moods',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+        ),
+        const SizedBox(height: 16),
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 4,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Column(
+            children: [
+              // Fixed height container for the graph - increased height
+              SizedBox(
+                height: 240, // Increased from 180 to create more gaps
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // Y-axis labels
+                    SizedBox(
+                      width: 70,
+                      height: 300,
+                      child: Column(
+                        children: [
+                          Text('JOY', style: labelStyle),
+                          Spacer(flex: 2),
+                          Text('NEUTRAL', style: labelStyle),
+                          Spacer(flex: 2),
+                          Text('SAD', style: labelStyle),
+                          Spacer(flex: 2),
+                          Text('ANGRY', style: labelStyle),
+                          Spacer(flex: 2),
+                          Text('ANXIOUS', style: labelStyle),
+                        ],
+                      ),
+                    ),
+
+                    // Graph area
+                    Expanded(
+                      child: CustomPaint(
+                        painter: _MoodLinePainter(
+                          dates: dates,
+                          weeklyMoods: weeklyMoods,
+                          getMoodLevel: _getMoodLevel,
+                          getMoodColor: _getMoodColor,
+                        ),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: dates.map((date) {
+                            final mood = weeklyMoods[date] ?? 'none';
+                            final level = _getMoodLevel(mood);
+
+                            if (level < 0)
+                              return const Expanded(child: SizedBox());
+
+                            return Expanded(
+                              child: LayoutBuilder(
+                                builder: (context, constraints) {
+                                  // Match the padding used in CustomPainter
+                                  final verticalPadding = 12.0;
+                                  final availableHeight =
+                                      constraints.maxHeight -
+                                      2 * verticalPadding;
+
+                                  // Calculate Y position to match the line
+                                  // level 4 (joy) should be at top, level 0 (anxious) at bottom
+                                  final y =
+                                      verticalPadding +
+                                      availableHeight * (4 - level) / 4;
+
+                                  return Stack(
+                                    children: [
+                                      Positioned(
+                                        top: y - 12, // Center the 24px icon
+                                        left: 0,
+                                        right: 0,
+                                        child: Center(
+                                          child: Container(
+                                            width: 24,
+                                            height: 24,
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              shape: BoxShape.circle,
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.black
+                                                      .withOpacity(0.1),
+                                                  blurRadius: 2,
+                                                  offset: const Offset(0, 2),
+                                                ),
+                                              ],
+                                            ),
+                                            child: Center(
+                                              child: _getMoodImageIcon(mood),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 8),
+              // X-axis
+              Row(
+                children: [
+                  const SizedBox(width: 70),
+                  Expanded(
+                    child: Row(
+                      children: dates.map((date) {
+                        return Expanded(
+                          child: Column(
+                            children: [
+                              Text(
+                                days[date.weekday - 1],
+                                style: TextStyle(
+                                  fontSize: 9,
+                                  fontWeight: date.day == now.day
+                                      ? FontWeight.bold
+                                      : FontWeight.normal,
+                                  color: date.day == now.day
+                                      ? Colors.purple
+                                      : Colors.grey.shade600,
+                                ),
+                              ),
+                              const SizedBox(height: 1),
+                              Text(
+                                date.day.toString(),
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.bold,
+                                  color: date.day == now.day
+                                      ? Colors.purple
+                                      : Colors.black87,
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
   // ---------------- RECENT MOODS ----------------
   Widget _buildRecentMoods(List<MoodEntry> recentMoods) {
     if (recentMoods.isEmpty) {
-      return const Text('No recent moods',
-          style: TextStyle(color: Colors.grey));
+      return const SizedBox(); // Return empty since using the graph instead
     }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          'Recent Moods',
+          'Recent Mood Entries',
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
         ),
         const SizedBox(height: 12),
         SizedBox(
           height: 100,
-          child: ListView.builder(
+          child: ListView.separated(
             scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 4),
             itemCount: recentMoods.take(7).length,
+            separatorBuilder: (_, __) => const SizedBox(width: 8),
             itemBuilder: (context, index) {
               final mood = recentMoods[index];
               final date = DateFormat('EEE').format(mood.timestamp);
               return Container(
-                width: 80,
-                margin: const EdgeInsets.only(right: 12),
+                width: 74, // slightly reduced from 80
                 child: Card(
                   child: Padding(
-                    padding: const EdgeInsets.all(8),
+                    padding: const EdgeInsets.all(6), // slightly reduced
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Container(
-                          padding: const EdgeInsets.all(8),
+                          padding: const EdgeInsets.all(6),
                           decoration: BoxDecoration(
                             color: MoodColors.getColorForMood(
                               mood.detectedMood,
                             ),
                             shape: BoxShape.circle,
                           ),
-                          child: Text(
-                            mood.detectedMood[0].toUpperCase(),
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                            ),
+                          child: Icon(
+                            _getMoodIcon(mood.detectedMood),
+                            size: 28,
                           ),
                         ),
-                        const SizedBox(height: 8),
+                        const SizedBox(height: 6),
                         Text(
                           date,
                           style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                        Text(
+                          DateFormat('HH:mm').format(mood.timestamp),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
+                                color: Colors.grey.shade600,
+                                fontSize: 10,
+                              ),
                         ),
                       ],
                     ),
@@ -389,42 +743,30 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              
               _buildNavItem(
                 icon: Icons.mood,
                 label: 'Mood',
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (_) => const MoodScreen()),
-                  );
-                },
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const MoodScreen()),
+                ),
               ),
               _buildNavItem(
                 icon: Icons.home,
                 label: 'Home',
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (_) => const DashboardScreen()),
-                  );
-                },
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const DashboardScreen()),
+                ),
               ),
               _buildNavItem(
                 icon: Icons.check_box,
                 label: 'Habit',
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (_) => const HabitsScreen()),
-                  );
-                },
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const HabitsScreen()),
+                ),
               ),
-
-            
             ],
           ),
         ),
@@ -441,8 +783,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
       child: Padding(
-        padding:
-            const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -487,25 +828,78 @@ class _StatCard extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               value,
-              style: Theme.of(context)
-                  .textTheme
-                  .headlineMedium
-                  ?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: color,
-                  ),
+              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: color,
+              ),
             ),
             Text(
               label,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodySmall
-                  ?.copyWith(color: Colors.grey.shade600),
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall?.copyWith(color: Colors.grey.shade600),
               textAlign: TextAlign.center,
             ),
           ],
         ),
       ),
     );
-  } 
+  }
+}
+
+// ----------------- CUSTOM PAINTER -----------------
+class _MoodLinePainter extends CustomPainter {
+  final List<DateTime> dates;
+  final Map<DateTime, String> weeklyMoods;
+  final int Function(String) getMoodLevel;
+  final Color Function(String) getMoodColor;
+
+  _MoodLinePainter({
+    required this.dates,
+    required this.weeklyMoods,
+    required this.getMoodLevel,
+    required this.getMoodColor,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2
+      ..color = const Color.fromARGB(255, 226, 121, 245).withOpacity(0.6)
+      ..strokeCap = StrokeCap.round;
+
+    final points = <Offset>[];
+    final verticalPadding = 12.0;
+    final availableHeight = size.height - 2 * verticalPadding;
+
+    for (int i = 0; i < dates.length; i++) {
+      final date = dates[i];
+      final mood = weeklyMoods[date] ?? 'none';
+      final level = getMoodLevel(mood);
+      if (level >= 0) {
+        final x = (i + 0.5) * (size.width / dates.length);
+        // Match the icon positioning: level 4 at top, level 0 at bottom
+        final y = verticalPadding + availableHeight * (4 - level) / 4;
+        points.add(Offset(x, y));
+      }
+    }
+
+    if (points.length < 2) return;
+
+    final path = Path()..moveTo(points[0].dx, points[0].dy);
+    for (int i = 0; i < points.length - 1; i++) {
+      final midX = (points[i].dx + points[i + 1].dx) / 2;
+      path.quadraticBezierTo(
+        midX,
+        points[i].dy,
+        points[i + 1].dx,
+        points[i + 1].dy,
+      );
+    }
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }
