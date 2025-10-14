@@ -9,7 +9,7 @@ import app_links
 import audioplayers_darwin
 import mobile_scanner
 import path_provider_foundation
-import record_darwin
+import record_macos
 import share_plus
 import shared_preferences_foundation
 import speech_to_text
@@ -20,7 +20,7 @@ func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   AudioplayersDarwinPlugin.register(with: registry.registrar(forPlugin: "AudioplayersDarwinPlugin"))
   MobileScannerPlugin.register(with: registry.registrar(forPlugin: "MobileScannerPlugin"))
   PathProviderPlugin.register(with: registry.registrar(forPlugin: "PathProviderPlugin"))
-  RecordPlugin.register(with: registry.registrar(forPlugin: "RecordPlugin"))
+  RecordMacosPlugin.register(with: registry.registrar(forPlugin: "RecordMacosPlugin"))
   SharePlusMacosPlugin.register(with: registry.registrar(forPlugin: "SharePlusMacosPlugin"))
   SharedPreferencesPlugin.register(with: registry.registrar(forPlugin: "SharedPreferencesPlugin"))
   SpeechToTextPlugin.register(with: registry.registrar(forPlugin: "SpeechToTextPlugin"))
