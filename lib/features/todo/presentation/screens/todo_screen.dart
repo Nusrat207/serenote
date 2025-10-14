@@ -14,14 +14,30 @@ class _RoutineScreenState extends State<RoutineScreen> {
   final List<ToDoItem> _todos = [];
   DateTime _selectedDate = DateTime.now();
   bool _isLoading = false;
+  final SupabaseClient _supabase = SupabaseService().client;
+  User? _currentUser;
 
   @override
   void initState() {
     super.initState();
+    _getCurrentUser();
     _loadTodosForDate(_selectedDate);
   }
 
+  void _getCurrentUser() {
+    _currentUser = _supabase.auth.currentUser;
+    if (_currentUser == null) {
+      print('No user logged in');
+      // You might want to redirect to login screen here
+    }
+  }
+
   Future<void> _loadTodosForDate(DateTime date) async {
+    if (_currentUser == null) {
+      print('Cannot load todos: No user logged in');
+      return;
+    }
+
     setState(() {
       _isLoading = true;
     });
@@ -29,9 +45,10 @@ class _RoutineScreenState extends State<RoutineScreen> {
     try {
       final formattedDate = _formatDate(date);
       
-      final response = await SupabaseService().client
+      final response = await _supabase
           .from('todos')
           .select()
+          .eq('user_id', _currentUser!.id) // Filter by user
           .eq('task_date', formattedDate)
           .order('created_at');
 
@@ -53,6 +70,12 @@ class _RoutineScreenState extends State<RoutineScreen> {
   }
 
   Future<void> _addNewTodo() async {
+    if (_currentUser == null) {
+      print('Cannot add todo: No user logged in');
+      // Show error message or redirect to login
+      return;
+    }
+
     final result = await showDialog<String>(
       context: context,
       builder: (BuildContext context) {
@@ -93,14 +116,20 @@ class _RoutineScreenState extends State<RoutineScreen> {
   }
 
   Future<void> _saveTodoToSupabase(String title) async {
+    if (_currentUser == null) {
+      print('Cannot save todo: No user logged in');
+      return;
+    }
+
     try {
       final newTodo = ToDoItem(
         title: title,
         isCompleted: false,
         taskDate: _selectedDate,
+        userId: _currentUser!.id, // Include user ID
       );
 
-      final response = await SupabaseService().client
+      final response = await _supabase
           .from('todos')
           .insert(newTodo.toMap())
           .select()
@@ -117,14 +146,17 @@ class _RoutineScreenState extends State<RoutineScreen> {
   }
 
   Future<void> _toggleTodo(int index) async {
+    if (_currentUser == null) return;
+
     final todo = _todos[index];
     final updatedTodo = todo.copyWith(isCompleted: !todo.isCompleted);
 
     try {
-      final response = await SupabaseService().client
+      final response = await _supabase
           .from('todos')
           .update({'is_completed': updatedTodo.isCompleted})
           .eq('id', todo.id!)
+          .eq('user_id', _currentUser!.id) // Ensure user owns this todo
           .select()
           .single();
 
@@ -135,7 +167,6 @@ class _RoutineScreenState extends State<RoutineScreen> {
       }
     } catch (e) {
       print('Error updating todo: $e');
-      // Revert on error
       setState(() {
         _todos[index] = todo;
       });
@@ -143,13 +174,16 @@ class _RoutineScreenState extends State<RoutineScreen> {
   }
 
   Future<void> _deleteTodo(int index) async {
+    if (_currentUser == null) return;
+
     final todo = _todos[index];
     
     try {
-      await SupabaseService().client
+      await _supabase
           .from('todos')
           .delete()
-          .eq('id', todo.id!);
+          .eq('id', todo.id!)
+          .eq('user_id', _currentUser!.id); // Ensure user owns this todo
 
       setState(() {
         _todos.removeAt(index);
@@ -159,6 +193,7 @@ class _RoutineScreenState extends State<RoutineScreen> {
     }
   }
 
+  // ... rest of your existing methods remain the same
   String _formatDate(DateTime date) {
     return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
   }
@@ -336,14 +371,30 @@ class _RoutineScreenState extends State<RoutineScreen> {
           Expanded(
             child: _isLoading
                 ? const Center(child: CircularProgressIndicator())
-                : ListView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    itemCount: _todos.length,
-                    itemBuilder: (context, index) {
-                      final todo = _todos[index];
-                      return _buildTodoItem(todo, index);
-                    },
-                  ),
+                : _currentUser == null
+                    ? Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text('Please log in to view your todos'),
+                            SizedBox(height: 16),
+                            ElevatedButton(
+                              onPressed: () {
+                                // Navigate to login screen
+                              },
+                              child: Text('Login'),
+                            ),
+                          ],
+                        ),
+                      )
+                    : ListView.builder(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        itemCount: _todos.length,
+                        itemBuilder: (context, index) {
+                          final todo = _todos[index];
+                          return _buildTodoItem(todo, index);
+                        },
+                      ),
           ),
         ],
       ),

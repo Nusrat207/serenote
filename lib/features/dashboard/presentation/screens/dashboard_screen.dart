@@ -388,17 +388,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _buildNavItem(
-                icon: Icons.access_time,
-                label: 'ToDo',
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (_) => const RoutineScreen()),
-                  );
-                },
-              ),
+              
               _buildNavItem(
                 icon: Icons.mood,
                 label: 'Mood',
@@ -411,13 +401,24 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 },
               ),
               _buildNavItem(
-                icon: Icons.book,
-                label: 'Journal',
+                icon: Icons.home,
+                label: 'Home',
                 onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (_) => const JournalScreen()),
+                        builder: (_) => const DashboardScreen()),
+                  );
+                },
+              ),
+              _buildNavItem(
+                icon: Icons.check_box,
+                label: 'Habit',
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const DashboardScreen()),
                   );
                 },
               ),
