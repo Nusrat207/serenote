@@ -5,6 +5,11 @@ import 'package:serenote/core/services/auth_service.dart';
 import 'package:serenote/features/auth/presentation/screens/login_screen.dart';
 import 'package:serenote/features/auth/presentation/screens/register_screen.dart';
 import 'package:serenote/features/dashboard/presentation/screens/dashboard_screen.dart';
+import 'package:serenote/features/todo/presentation/screens/todo_screen.dart';
+import 'package:serenote/features/journal/presentation/screens/journal_screen.dart';
+import 'package:serenote/features/games/presentation/screens/game_screen.dart';
+
+
 
 class Sidebar extends StatelessWidget {
   const Sidebar({super.key});
@@ -21,55 +26,19 @@ class Sidebar extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header with close button
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
-                children: [
-                  const Text(
-                    'Menu',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
-                    ),
-                  ),
-                  const Spacer(),
-                  IconButton(
-                    icon: const Icon(Icons.close, size: 24),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              ),
-            ),
-            
-            const Divider(height: 1),
+            // Login Card Section (Shows when not logged in) - At the top
+            if (!isLoggedIn) _buildLoginCard(context),
             
             // User Info Section (Shows when logged in)
             if (isLoggedIn) _buildUserInfoSection(currentUser!),
             
-            // Login Card Section (Shows when not logged in)
-            if (!isLoggedIn) _buildLoginCard(context),
+            // Features Section with Image Bars (no divider)
+            _buildFeaturesSectionWithImages(context),
             
-            const Divider(height: 1),
-            
-            // Features Section
-            _buildFeaturesSection(),
-            
-            const Divider(height: 1),
-            
-            // Common Tools Section
+            // Common Tools Section with circle buttons
             _buildCommonToolsSection(context),
             
             const Spacer(),
-            
-            // Logout Button (when logged in)
-            if (isLoggedIn) _buildLogoutSection(context),
-            
-            // Bottom Section
-            _buildBottomSection(context),
           ],
         ),
       ),
@@ -106,7 +75,7 @@ class Sidebar extends StatelessWidget {
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
-                        color: Colors.black87,
+                        color: Color.fromARGB(221, 8, 6, 6),
                       ),
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -123,45 +92,86 @@ class Sidebar extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 16),
-          
-          // Quick stats or user actions
-          Row(
-            children: [
-              _buildUserStat('Tasks', '12'),
-              const SizedBox(width: 16),
-              _buildUserStat('Streak', '7d'),
-              const SizedBox(width: 16),
-              _buildUserStat('Level', '2'),
-            ],
-          ),
         ],
       ),
     );
   }
 
-  Widget _buildUserStat(String label, String value) {
+  Widget _buildFeaturesSectionWithImages(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          value,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: Colors.purpleAccent,
-          ),
+        // Image Bar for Task Management
+        _buildImageBarItem(
+          context,
+          'assets/images/todo.png',
+          () {
+            Navigator.of(context).pop();
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => RoutineScreen()),
+            );
+          },
         ),
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 12,
-            color: Colors.grey,
-          ),
+        // Image Bar for Habit Stats
+        _buildImageBarItem(
+          context,
+          'assets/images/journal.png',
+          () {
+            Navigator.of(context).pop();
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => JournalScreen()),
+            );
+          },
+        ),
+        // Image Bar for Daily Journal
+        _buildImageBarItem(
+          context,
+          'assets/images/games.png',
+          () {
+            Navigator.of(context).pop();
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => GamesScreen()),
+            );
+          },
         ),
       ],
     );
   }
 
+  Widget _buildImageBarItem(BuildContext context, String imagePath, VoidCallback onTap) {
+  return GestureDetector(
+    onTap: onTap,
+    child: Container(
+      width: 320, // Custom width (less than sidebar width)
+      height: 105,
+      margin: const EdgeInsets.symmetric(horizontal: 10), // Center it with margin
+      padding: const EdgeInsets.all(8), // Padding on all sides
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(7), // More rounded corners
+        child: Image.asset(
+          imagePath,
+          fit: BoxFit.cover,
+          width: double.infinity,
+          errorBuilder: (context, error, stackTrace) {
+            return Container(
+              width: double.infinity,
+              height: double.infinity,
+              color: Colors.grey.shade200,
+              child: const Icon(
+                Icons.error_outline,
+                color: Color.fromARGB(255, 255, 255, 255),
+                size: 32,
+              ),
+            );
+          },
+        ),
+      ),
+    ),
+  );
+}
   Widget _buildLoginCard(BuildContext context) {
     return Container(
       width: double.infinity,
@@ -248,65 +258,6 @@ class Sidebar extends StatelessWidget {
     );
   }
 
-  Widget _buildLogoutSection(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      child: SizedBox(
-        width: double.infinity,
-        child: OutlinedButton.icon(
-          onPressed: () async {
-            await AuthService().signOut();
-            if (context.mounted) {
-              Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (context) => DashboardScreen()),
-                (route) => false,
-              );
-            }
-          },
-          style: OutlinedButton.styleFrom(
-            foregroundColor: Colors.red,
-            side: const BorderSide(color: Colors.red),
-            padding: const EdgeInsets.symmetric(vertical: 12),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-          ),
-          icon: const Icon(Icons.logout, size: 18),
-          label: const Text(
-            'Logout',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildFeaturesSection() {
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Features',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: Colors.black87,
-            ),
-          ),
-          const SizedBox(height: 16),
-          _buildFeatureItem('Task Management', Icons.task_alt),
-          _buildFeatureItem('Habit Stats', Icons.insights),
-          _buildFeatureItem('Daily Journal', Icons.book),
-        ],
-      ),
-    );
-  }
-
   Widget _buildCommonToolsSection(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(20),
@@ -321,47 +272,78 @@ class Sidebar extends StatelessWidget {
               color: Colors.black87,
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 10),
           _buildToolItem(context, 'Timer', Icons.timer_outlined),
-          _buildToolItem(context, 'Hydration tracker', Icons.water_drop_outlined),
-          _buildToolItem(context, 'Reflection', Icons.psychology_outlined),
-          _buildToolItem(context, 'Meditation', Icons.self_improvement_outlined),
+          
+          // Add the three circle buttons after the timer
+          const SizedBox(height: 20),
+          _buildCircleButtonsSection(context),
         ],
       ),
     );
   }
 
-  Widget _buildBottomSection(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        children: [
-          _buildBottomItem('Help center', Icons.help_outline),
-          _buildBottomItem('Feedback', Icons.feedback_outlined),
-          _buildBottomItem('Settings', Icons.settings_outlined),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFeatureItem(String title, IconData icon) {
-    return ListTile(
-      contentPadding: EdgeInsets.zero,
-      leading: Icon(
-        icon,
-        size: 20,
-        color: Colors.purpleAccent,
-      ),
-      title: Text(
-        title,
-        style: const TextStyle(
-          fontSize: 14,
-          color: Colors.black87,
+  Widget _buildCircleButtonsSection(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        // Settings Icon
+        CircleAvatar(
+          radius: 20,
+          backgroundColor: Colors.grey.shade200,
+          child: IconButton(
+            onPressed: () {
+              // Handle settings navigation
+            },
+            icon: const Icon(
+              Icons.settings_outlined,
+              size: 18,
+              color: Colors.black87,
+            ),
+            padding: EdgeInsets.zero,
+          ),
         ),
-      ),
-      onTap: () {
-        // Handle feature navigation
-      },
+
+        // Logout Icon
+        CircleAvatar(
+          radius: 20,
+          backgroundColor: Colors.grey.shade200,
+          child: IconButton(
+            onPressed: () async {
+              await AuthService().signOut();
+              if (context.mounted) {
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (context) => DashboardScreen()),
+                  (route) => false,
+                );
+              }
+            },
+            icon: const Icon(
+              Icons.logout,
+              size: 18,
+              color: Colors.red,
+            ),
+            padding: EdgeInsets.zero,
+          ),
+        ),
+        
+        // Update Profile Icon
+        CircleAvatar(
+          radius: 20,
+          backgroundColor: Colors.grey.shade200,
+          child: IconButton(
+            onPressed: () {
+              // Handle update profile navigation
+            },
+            icon: const Icon(
+              Icons.person_outline,
+              size: 18,
+              color: Colors.black87,
+            ),
+            padding: EdgeInsets.zero,
+          ),
+        ),
+      ],
     );
   }
 
@@ -371,7 +353,7 @@ class Sidebar extends StatelessWidget {
       leading: Icon(
         icon,
         size: 20,
-        color: Colors.purpleAccent,
+        color: Colors.black87,
       ),
       title: Text(
         title,
@@ -390,37 +372,7 @@ class Sidebar extends StatelessWidget {
             context,
             MaterialPageRoute(builder: (context) => const TimerScreen()),
           );
-        } else if (title == 'Hydration tracker') {
-          // Add hydration tracker navigation here
-          // Navigator.push(context, MaterialPageRoute(builder: (context) => HydrationTrackerScreen()));
-        } else if (title == 'Reflection') {
-          // Add reflection navigation here
-          // Navigator.push(context, MaterialPageRoute(builder: (context) => ReflectionScreen()));
-        } else if (title == 'Meditation') {
-          // Add meditation navigation here
-          // Navigator.push(context, MaterialPageRoute(builder: (context) => MeditationScreen()));
         }
-      },
-    );
-  }
-
-  Widget _buildBottomItem(String title, IconData icon) {
-    return ListTile(
-      contentPadding: EdgeInsets.zero,
-      leading: Icon(
-        icon,
-        size: 20,
-        color: Colors.grey,
-      ),
-      title: Text(
-        title,
-        style: const TextStyle(
-          fontSize: 14,
-          color: Colors.grey,
-        ),
-      ),
-      onTap: () {
-        // Handle bottom item navigation
       },
     );
   }
