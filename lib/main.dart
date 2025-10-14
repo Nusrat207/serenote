@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart'; // ✅ Added
 import 'core/theme/app_theme.dart';
 import 'features/dashboard/presentation/screens/dashboard_screen.dart';
 
@@ -12,10 +13,7 @@ Future<void> main() async {
   final supabaseUrl = dotenv.env['SUPABASE_URL']!;
   final supabaseKey = dotenv.env['SUPABASE_KEY']!;
 
-  await Supabase.initialize(
-    url: supabaseUrl,
-    anonKey: supabaseKey,
-  );
+  await Supabase.initialize(url: supabaseUrl, anonKey: supabaseKey);
 
   runApp(const ProviderScope(child: SerenoteApp()));
 }
@@ -25,13 +23,21 @@ class SerenoteApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'SereNote',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.system,
-      home: const DashboardScreen(),
+    return ScreenUtilInit(
+      designSize: const Size(390, 844), // iPhone 12 base design
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (context, child) {
+        return MaterialApp(
+          title: 'SereNote',
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
+          themeMode: ThemeMode.system,
+          home: child,
+        );
+      },
+      child: const DashboardScreen(), // ✅ Your main screen
     );
   }
 }
