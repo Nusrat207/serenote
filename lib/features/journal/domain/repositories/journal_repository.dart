@@ -4,10 +4,10 @@ import '../entities/journal_entity.dart';
 
 abstract class JournalRepository {
   Future<List<JournalEntity>> getJournals();
-  Future<JournalEntity?> getJournalById(int id);
+  Future<JournalEntity?> getJournalById(String id); // Changed to String
   Future<List<JournalEntity>> getJournalsByDateRange(DateTime start, DateTime end);
-  Future<int> createJournal(JournalEntity journal);
+  Future<String> createJournal(JournalEntity journal); // Changed to String
   Future<void> updateJournal(JournalEntity journal);
-  Future<void> deleteJournal(int id);
+  Future<void> deleteJournal(String id); // Changed to String
   Future<List<JournalEntity>> searchJournals(String query);
 }
