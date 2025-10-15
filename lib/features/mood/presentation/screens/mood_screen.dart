@@ -6,6 +6,9 @@ import 'package:serenote/features/mood/presentation/providers/mood_provider.dart
 import 'package:serenote/features/mood/presentation/providers/inspiration_provider.dart';
 import 'package:serenote/core/theme/mood_colors.dart';
 import 'package:serenote/features/mood/data/models/mood_entry.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+import '../../../auth/presentation/screens/login_screen.dart';
 
 final todaysMoodProvider = FutureProvider<MoodEntry?>(
   (ref) => ref.read(moodEntriesProvider.notifier).getTodaysMood(),
@@ -122,6 +125,88 @@ class _MoodScreenState extends ConsumerState<MoodScreen> {
   @override
   Widget build(BuildContext context) {
     final recentMoods = ref.watch(moodEntriesProvider);
+
+    final userId = Supabase.instance.client.auth.currentUser; 
+
+    // 🔹 If not logged in → show friendly login prompt
+    if (userId == null) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('MoodMirror')),
+        body: Container(
+          width: double.infinity,
+          height: double.infinity,
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.white70, Colors.white70],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(32),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.self_improvement,
+                    size: 100,
+                    color: const Color.fromARGB(255, 228, 179, 240),
+                  ),
+                  const SizedBox(height: 30),
+                  Text(
+                    'Welcome to MoodMirror',
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                      color: const Color.fromARGB(255, 0, 0, 0),
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Login to track your mood, receive uplifting quotes, and enjoy music that matches how you feel.',
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      color: const Color.fromARGB(179, 0, 0, 0),
+                      height: 1.4,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 40),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => LoginScreen(),
+                          ),
+                        ); 
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: const Color.fromARGB(255, 65, 0, 121),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: const Text(
+                        'Login to Continue',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    }
 
     return Scaffold(
       appBar: AppBar(title: const Text('MoodMirror')),

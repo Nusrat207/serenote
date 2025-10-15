@@ -289,7 +289,7 @@ class Sidebar extends StatelessWidget {
       children: [
         // Settings Icon
         CircleAvatar(
-          radius: 20,
+          radius: 25,
           backgroundColor: Colors.grey.shade200,
           child: IconButton(
             onPressed: () {
@@ -297,7 +297,7 @@ class Sidebar extends StatelessWidget {
             },
             icon: const Icon(
               Icons.settings_outlined,
-              size: 18,
+              size: 22,
               color: Colors.black87,
             ),
             padding: EdgeInsets.zero,
@@ -306,7 +306,7 @@ class Sidebar extends StatelessWidget {
 
         // Logout Icon
         CircleAvatar(
-          radius: 20,
+          radius: 25,
           backgroundColor: Colors.grey.shade200,
           child: IconButton(
             onPressed: () async {
@@ -320,7 +320,7 @@ class Sidebar extends StatelessWidget {
             },
             icon: const Icon(
               Icons.logout,
-              size: 18,
+              size: 22,
               color: Colors.red,
             ),
             padding: EdgeInsets.zero,
@@ -329,7 +329,7 @@ class Sidebar extends StatelessWidget {
         
         // Update Profile Icon
         CircleAvatar(
-          radius: 20,
+          radius: 25,
           backgroundColor: Colors.grey.shade200,
           child: IconButton(
             onPressed: () {
@@ -337,7 +337,7 @@ class Sidebar extends StatelessWidget {
             },
             icon: const Icon(
               Icons.person_outline,
-              size: 18,
+              size: 22,
               color: Colors.black87,
             ),
             padding: EdgeInsets.zero,

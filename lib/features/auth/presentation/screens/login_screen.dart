@@ -74,7 +74,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 style: TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
-                  color: Colors.purpleAccent,
+                  color: Color.fromARGB(255, 184, 68, 246),
                 ),
               ),
               const SizedBox(height: 8),
@@ -129,7 +129,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   },
                   child: const Text(
                     'Forgot Password?',
-                    style: TextStyle(color: Colors.purpleAccent),
+                    style: TextStyle(color: Color.fromARGB(255, 184, 68, 246)),
                   ),
                 ),
               ),
@@ -141,7 +141,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       child: ElevatedButton(
                         onPressed: _login,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.purpleAccent,
+                          backgroundColor: Color.fromARGB(255, 184, 68, 246),
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -168,7 +168,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   },
                   child: const Text(
                     "Don't have an account? Sign up",
-                    style: TextStyle(color: Colors.purpleAccent),
+                    style: TextStyle(color: Color.fromARGB(255, 184, 68, 246)),
                   ),
                 ),
               ),
