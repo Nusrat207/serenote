@@ -9,8 +9,6 @@ import 'package:serenote/features/todo/presentation/screens/todo_screen.dart';
 import 'package:serenote/features/journal/presentation/screens/journal_screen.dart';
 import 'package:serenote/features/games/presentation/screens/game_screen.dart';
 
-
-
 class Sidebar extends StatelessWidget {
   const Sidebar({super.key});
 
@@ -21,25 +19,32 @@ class Sidebar extends StatelessWidget {
 
     return Drawer(
       width: 300,
-      backgroundColor: Colors.white,
-      child: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Login Card Section (Shows when not logged in) - At the top
-            if (!isLoggedIn) _buildLoginCard(context),
-            
-            // User Info Section (Shows when logged in)
-            if (isLoggedIn) _buildUserInfoSection(currentUser!),
-            
-            // Features Section with Image Bars (no divider)
-            _buildFeaturesSectionWithImages(context),
-            
-            // Common Tools Section with circle buttons
-            _buildCommonToolsSection(context),
-            
-            const Spacer(),
-          ],
+      child: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/sidebar_bg.png'), // Add your background image
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Login Card Section (Shows when not logged in) - At the top
+              if (!isLoggedIn) _buildLoginCard(context),
+              
+              // User Info Section (Shows when logged in)
+              if (isLoggedIn) _buildUserInfoSection(currentUser!),
+              
+              // Features Section with Image Bars (no divider)
+              _buildFeaturesSectionWithImages(context),
+              
+              // Common Tools Section with circle buttons
+              _buildCommonToolsSection(context),
+              
+              const Spacer(),
+            ],
+          ),
         ),
       ),
     );
@@ -79,14 +84,7 @@ class Sidebar extends StatelessWidget {
                       ),
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 4),
-                    const Text(
-                      'Premium User',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.green,
-                      ),
-                    ),
+                    // Removed "Premium User" text
                   ],
                 ),
               ),
@@ -113,7 +111,7 @@ class Sidebar extends StatelessWidget {
             );
           },
         ),
-        // Image Bar for Habit Stats
+        // Image Bar for Journal
         _buildImageBarItem(
           context,
           'assets/images/journal.png',
@@ -125,7 +123,19 @@ class Sidebar extends StatelessWidget {
             );
           },
         ),
-        // Image Bar for Daily Journal
+        // Image Bar for Timer (added as image bar like journal)
+        _buildImageBarItem(
+          context,
+          'assets/images/timer.png', // Make sure you have timer.png in assets
+          () {
+            Navigator.of(context).pop();
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const TimerScreen()),
+            );
+          },
+        ),
+        // Image Bar for Games
         _buildImageBarItem(
           context,
           'assets/images/games.png',
@@ -142,36 +152,37 @@ class Sidebar extends StatelessWidget {
   }
 
   Widget _buildImageBarItem(BuildContext context, String imagePath, VoidCallback onTap) {
-  return GestureDetector(
-    onTap: onTap,
-    child: Container(
-      width: 320, // Custom width (less than sidebar width)
-      height: 105,
-      margin: const EdgeInsets.symmetric(horizontal: 10), // Center it with margin
-      padding: const EdgeInsets.all(8), // Padding on all sides
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(7), // More rounded corners
-        child: Image.asset(
-          imagePath,
-          fit: BoxFit.cover,
-          width: double.infinity,
-          errorBuilder: (context, error, stackTrace) {
-            return Container(
-              width: double.infinity,
-              height: double.infinity,
-              color: Colors.grey.shade200,
-              child: const Icon(
-                Icons.error_outline,
-                color: Color.fromARGB(255, 255, 255, 255),
-                size: 32,
-              ),
-            );
-          },
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 320, // Custom width (less than sidebar width)
+        height: 105,
+        margin: const EdgeInsets.symmetric(horizontal: 10), // Center it with margin
+        padding: const EdgeInsets.all(8), // Padding on all sides
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(7), // More rounded corners
+          child: Image.asset(
+            imagePath,
+            fit: BoxFit.cover,
+            width: double.infinity,
+            errorBuilder: (context, error, stackTrace) {
+              return Container(
+                width: double.infinity,
+                height: double.infinity,
+                color: Colors.grey.shade200,
+                child: const Icon(
+                  Icons.error_outline,
+                  color: Color.fromARGB(255, 255, 255, 255),
+                  size: 32,
+                ),
+              );
+            },
+          ),
         ),
       ),
-    ),
-  );
-}
+    );
+  }
+
   Widget _buildLoginCard(BuildContext context) {
     return Container(
       width: double.infinity,
@@ -264,19 +275,11 @@ class Sidebar extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Common Tools',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: Colors.black87,
-            ),
-          ),
-          const SizedBox(height: 10),
-          _buildToolItem(context, 'Timer', Icons.timer_outlined),
+          const SizedBox(height: 1),
+          // Removed the old timer list item since it's now an image bar
           
-          // Add the three circle buttons after the timer
-          const SizedBox(height: 20),
+          // Add the three circle buttons
+          const SizedBox(height: 1),
           _buildCircleButtonsSection(context),
         ],
       ),
@@ -289,16 +292,16 @@ class Sidebar extends StatelessWidget {
       children: [
         // Settings Icon
         CircleAvatar(
-          radius: 20,
-          backgroundColor: Colors.grey.shade200,
+          radius: 25,
+          backgroundColor: const Color.fromARGB(255, 38, 27, 70),
           child: IconButton(
             onPressed: () {
               // Handle settings navigation
             },
             icon: const Icon(
               Icons.settings_outlined,
-              size: 18,
-              color: Colors.black87,
+              size: 22,
+              color: Color.fromARGB(221, 255, 255, 255),
             ),
             padding: EdgeInsets.zero,
           ),
@@ -306,8 +309,8 @@ class Sidebar extends StatelessWidget {
 
         // Logout Icon
         CircleAvatar(
-          radius: 20,
-          backgroundColor: Colors.grey.shade200,
+          radius: 25,
+          backgroundColor: const Color.fromARGB(255, 39, 46, 77),
           child: IconButton(
             onPressed: () async {
               await AuthService().signOut();
@@ -320,7 +323,7 @@ class Sidebar extends StatelessWidget {
             },
             icon: const Icon(
               Icons.logout,
-              size: 18,
+              size: 22,
               color: Colors.red,
             ),
             padding: EdgeInsets.zero,
@@ -329,16 +332,16 @@ class Sidebar extends StatelessWidget {
         
         // Update Profile Icon
         CircleAvatar(
-          radius: 20,
-          backgroundColor: Colors.grey.shade200,
+          radius: 25,
+          backgroundColor: const Color.fromARGB(255, 37, 41, 82),
           child: IconButton(
             onPressed: () {
               // Handle update profile navigation
             },
             icon: const Icon(
               Icons.person_outline,
-              size: 18,
-              color: Colors.black87,
+              size: 22,
+              color: Color.fromARGB(221, 255, 255, 255),
             ),
             padding: EdgeInsets.zero,
           ),
@@ -347,33 +350,5 @@ class Sidebar extends StatelessWidget {
     );
   }
 
-  Widget _buildToolItem(BuildContext context, String title, IconData icon) {
-    return ListTile(
-      contentPadding: EdgeInsets.zero,
-      leading: Icon(
-        icon,
-        size: 20,
-        color: Colors.black87,
-      ),
-      title: Text(
-        title,
-        style: const TextStyle(
-          fontSize: 14,
-          color: Colors.black87,
-        ),
-      ),
-      onTap: () {
-        // Close the drawer first
-        Navigator.of(context).pop();
-        
-        // Handle tool navigation
-        if (title == 'Timer') {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const TimerScreen()),
-          );
-        }
-      },
-    );
-  }
+  // Removed _buildToolItem method since timer is now an image bar
 }

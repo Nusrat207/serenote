@@ -1,0 +1,121 @@
+// lib/features/journal/data/datasources/journal_remote_datasource.dart
+
+import 'package:supabase_flutter/supabase_flutter.dart';
+import '../models/journal_model.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+abstract class JournalRemoteDataSource {
+  Future<List<JournalModel>> getJournals();
+  Future<JournalModel?> getJournalById(String id);
+  Future<List<JournalModel>> getJournalsByDateRange(DateTime start, DateTime end);
+  Future<String> createJournal(JournalModel journal);
+  Future<void> updateJournal(JournalModel journal);
+  Future<void> deleteJournal(String id);
+  Future<List<JournalModel>> searchJournals(String query);
+  Future<List<JournalModel>> getJournalsByDate(DateTime date);
+}
+
+class JournalRemoteDataSourceImpl implements JournalRemoteDataSource {
+  final SupabaseClient supabaseClient;
+
+  JournalRemoteDataSourceImpl({required this.supabaseClient});
+
+  @override
+  Future<List<JournalModel>> getJournals() async {
+    final response = await supabaseClient
+        .from('journals')
+        .select()
+        .order('created_at', ascending: false);
+
+    return (response as List).map((json) => JournalModel.fromJson(json)).toList();
+  }
+
+  @override
+  Future<JournalModel?> getJournalById(String id) async {
+    final response = await supabaseClient
+        .from('journals')
+        .select()
+        .eq('id', id)
+        .single();
+
+    return response != null ? JournalModel.fromJson(response) : null;
+  }
+
+  @override
+  Future<List<JournalModel>> getJournalsByDateRange(DateTime start, DateTime end) async {
+    final startDate = _formatDate(start);
+    final endDate = _formatDate(end);
+
+    final response = await supabaseClient
+        .from('journals')
+        .select()
+        .gte('entry_date', startDate)
+        .lte('entry_date', endDate)
+        .order('entry_date', ascending: false);
+
+    return (response as List).map((json) => JournalModel.fromJson(json)).toList();
+  }
+
+  @override
+  Future<List<JournalModel>> getJournalsByDate(DateTime date) async {
+    final formattedDate = _formatDate(date);
+
+    final response = await supabaseClient
+        .from('journals')
+        .select()
+        .eq('entry_date', formattedDate)
+        .order('created_at', ascending: false);
+
+    return (response as List).map((json) => JournalModel.fromJson(json)).toList();
+  }
+
+  @override
+  Future<String> createJournal(JournalModel journal) async {
+    final journalData = journal.toJson();
+    // Remove id to let Supabase generate it
+    journalData.remove('id');
+
+    final response = await supabaseClient
+        .from('journals')
+        .insert(journalData)
+        .select()
+        .single();
+
+    return response['id'] as String;
+  }
+
+  @override
+  Future<void> updateJournal(JournalModel journal) async {
+    await supabaseClient
+        .from('journals')
+        .update(journal.toJson())
+        .eq('id', journal.id!);
+  }
+
+  @override
+Future<void> deleteJournal(String id) async {
+  print('🗑️ Supabase delete query for ID: $id');
+  
+  final response = await supabaseClient
+      .from('journals')
+      .delete()
+      .eq('id', id);
+  
+  print('🗑️ Delete response: $response');
+}
+
+  @override
+  Future<List<JournalModel>> searchJournals(String query) async {
+    final response = await supabaseClient
+        .from('journals')
+        .select()
+        .textSearch('title', query)
+        .order('created_at', ascending: false);
+
+    return (response as List).map((json) => JournalModel.fromJson(json)).toList();
+  }
+
+  String _formatDate(DateTime date) {
+    return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+  }
+}

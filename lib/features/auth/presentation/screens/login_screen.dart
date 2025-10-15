@@ -6,6 +6,7 @@ import 'package:serenote/features/mood/presentation/providers/mood_provider.dart
 import 'register_screen.dart';
 import 'forgot_password_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:serenote/features/auth/presentation/widgets/animated_welcome_back.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -20,13 +21,21 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   bool _isLoading = false;
   bool _obscurePassword = true;
 
+  static const Color _lavenderColor = Color.fromARGB(255, 184, 68, 246);
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
   Future<void> _login() async {
     setState(() {
       _isLoading = true;
     });
 
     try {
-      // Sign in with Supabase
       await AuthService().signIn(
         _emailController.text.trim(),
         _passwordController.text.trim(),
@@ -35,10 +44,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       final String userId = Supabase.instance.client.auth.currentUser!.id;
       print('✅ LOGIN SUCCESS - User ID: $userId');
 
-      // Refresh MoodEntriesNotifier so dashboard loads real data
       await ref.read(moodEntriesProvider.notifier).refreshEntries();
 
-      // Navigate to Dashboard
       if (mounted) {
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => const DashboardScreen()),
@@ -58,6 +65,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     }
   }
 
+  void _goBack() {
+    // Navigate to Dashboard instead of popping
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (context) => const DashboardScreen()),
+      (route) => false,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -68,14 +83,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 40),
-              const Text(
-                'Welcome Back',
-                style: TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.purpleAccent,
+              IconButton(
+                onPressed: _goBack,
+                icon: const Icon(
+                  Icons.arrow_back,
+                  color: _lavenderColor,
+                  size: 24,
                 ),
+                padding: EdgeInsets.zero,
+                alignment: Alignment.centerLeft,
+              ),
+              const SizedBox(height: 20),
+              AnimatedWelcomeBack(
+                text: 'Welcome Back',
+                baseColor: _lavenderColor,
               ),
               const SizedBox(height: 8),
               const Text(
@@ -129,7 +150,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   },
                   child: const Text(
                     'Forgot Password?',
-                    style: TextStyle(color: Colors.purpleAccent),
+                    style: TextStyle(color: _lavenderColor),
                   ),
                 ),
               ),
@@ -141,7 +162,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       child: ElevatedButton(
                         onPressed: _login,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.purpleAccent,
+                          backgroundColor: _lavenderColor,
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -168,7 +189,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   },
                   child: const Text(
                     "Don't have an account? Sign up",
-                    style: TextStyle(color: Colors.purpleAccent),
+                    style: TextStyle(color: _lavenderColor),
                   ),
                 ),
               ),
