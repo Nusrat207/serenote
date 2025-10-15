@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
-
+import 'package:serenote/features/games/wordle/wordle_screen.dart';
+import '../../bubble_breather/bubble_breather_screen.dart';
+import '../../concentration/screens/home_screen.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '../../../dashboard/presentation/screens/dashboard_screen.dart';
 class GamesScreen extends StatelessWidget {
   const GamesScreen({super.key});
 
@@ -13,7 +17,8 @@ class GamesScreen extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black87),
           onPressed: () {
-            Navigator.of(context).pop();
+            Navigator.push(context, 
+                MaterialPageRoute(builder: (context) => const DashboardScreen()));
           },
         ),
         title: const Text(
@@ -79,6 +84,39 @@ class GamesScreen extends StatelessWidget {
             Expanded(
               child: ListView(
                 children: [
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const BubbleBreatherScreen(),
+                        ),
+                      );
+                    },
+                    child: _buildGameItem('Bubble Breather', Icons.bubble_chart, Colors.blue),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const WordleScreen(),
+                        ),
+                      );
+                    },
+                    child: _buildGameItem('Wordle', Icons.abc, const Color.fromARGB(255, 13, 109, 38)),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const HomeScreen(),
+                        ),
+                      );
+                    },
+                    child: _buildGameItem('Concentration', FontAwesomeIcons.brain, Colors.blue),
+                  ),
                   _buildGameItem('Cali of Duty', Icons.sports_esports, Colors.blue),
                   _buildGameItem('Public Mobile', Icons.phone_android, Colors.green),
                   _buildGameItem('Magic Awakened', Icons.auto_awesome, Colors.purple),
@@ -167,5 +205,4 @@ class GamesScreen extends StatelessWidget {
         ],
       ),
     );
-  }
-}
+  }}
