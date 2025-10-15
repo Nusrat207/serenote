@@ -1,0 +1,1 @@
+enum GameTheme { concentration, retro }

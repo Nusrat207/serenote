@@ -2,25 +2,40 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-// import 'package:flutter_screenutil/flutter_screenutil.dart'; // unused here
+
 import 'core/theme/app_theme.dart';
+import 'package:provider/provider.dart' as provider;
 import 'features/dashboard/presentation/screens/dashboard_screen.dart';
 import 'splash_screen/screens/splash_screen.dart';
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized(); // Ensure Flutter bindings
 
-  // Try to load packaged .env from assets first. This prevents a FileNotFound
-  // exception on devices when a developer doesn't have a local .env file.
+// Concentration game imports
+import 'features/games/concentration/screens/new_game_screen.dart';
+import 'features/games/concentration/screens/stats_screen.dart';
+import 'features/games/concentration/screens/game_screen.dart';
+import 'features/games/presentation/screens/game_screen.dart';
+
+// Import the original game providers
+import 'features/games/concentration/providers/settings_provider.dart';
+import 'features/games/concentration/providers/game_stats_provider.dart';
+
+/// Convert the existing ChangeNotifier providers into Riverpod providers
+final settingsProvider = ChangeNotifierProvider<SettingsProvider>((ref) {
+  return SettingsProvider();
+});
+
+final gameStatsProvider = ChangeNotifierProvider<GameStatsProvider>((ref) {
+  return GameStatsProvider();
+});
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   try {
-    // Load .env from assets packaged with the app
     await dotenv.load(fileName: 'assets/.env');
   } catch (_) {
-    // Fallback to normal behavior which will try to load a top-level .env if
-    // present in the project. We catch errors to avoid crashing on devices.
     try {
       await dotenv.load();
     } catch (e) {
-      // ignore: avoid_print
       print('dotenv not found in assets or project root: $e');
     }
   }
@@ -31,31 +46,40 @@ Future<void> main() async {
   if ((supabaseUrl ?? '').isNotEmpty && (supabaseKey ?? '').isNotEmpty) {
     await Supabase.initialize(url: supabaseUrl!, anonKey: supabaseKey!);
   } else {
-    // If keys are missing, continue without initializing Supabase. The app
-    // will still run (use mocks or local DB), but features that rely on
-    // Supabase will be disabled until valid keys are provided.
-    // ignore: avoid_print
     print('Supabase keys missing; skipping Supabase.initialize');
   }
 
   runApp(const ProviderScope(child: SerenoteApp()));
 }
 
-class SerenoteApp extends StatelessWidget {
+class SerenoteApp extends ConsumerWidget {
   const SerenoteApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'SereNote',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.system,
-      home: const SplashScreen(),
-      routes: {
-        '/home': (context) => const DashboardScreen(),
-      },
+  Widget build(BuildContext context, WidgetRef ref) {
+    // If you ever need to access game providers globally, do it via:
+    // final settings = ref.watch(settingsProvider);
+    // final stats = ref.watch(gameStatsProvider);
+    return provider.MultiProvider(
+      providers: [
+        provider.ChangeNotifierProvider<SettingsProvider>(create: (_) => SettingsProvider()),
+        provider.ChangeNotifierProvider<GameStatsProvider>(create: (_) => GameStatsProvider()),
+      ],
+      child: MaterialApp(
+        title: 'SereNote',
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.lightTheme,
+        darkTheme: AppTheme.darkTheme,
+        themeMode: ThemeMode.system,
+        home: const SplashScreen(),
+        routes: {
+          '/home': (context) => const DashboardScreen(),
+          '/newGame': (context) => const NewGameScreen(),
+          '/stats': (context) => const StatsScreen(),
+          '/game': (context) => const GameScreen(),
+          '/games_list': (context) => const GamesScreen(),
+        },
+      ),
     );
   }
 }
