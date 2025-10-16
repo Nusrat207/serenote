@@ -77,6 +77,7 @@ class _QuickMoodEntryScreenState extends ConsumerState<QuickMoodEntryScreen> {
       
 
       await ref.read(moodEntriesProvider.notifier).refreshEntries();
+      ref.refresh(todaysMoodProvider);
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -99,6 +100,10 @@ class _QuickMoodEntryScreenState extends ConsumerState<QuickMoodEntryScreen> {
 
   @override
   Widget build(BuildContext context) {
+     final moodColor = ref.watch(moodColorProvider).maybeWhen(
+  data: (c) => c,
+  orElse: () => const Color(0xFF477D9E), // fallback
+);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -203,7 +208,7 @@ class _QuickMoodEntryScreenState extends ConsumerState<QuickMoodEntryScreen> {
               ElevatedButton(
                 onPressed: _isSaving ? null : _saveMood,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.purple,
+                  backgroundColor: moodColor,
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
@@ -263,8 +268,8 @@ class _QuickMoodEntryScreenState extends ConsumerState<QuickMoodEntryScreen> {
                 icon: const Icon(Icons.edit_outlined),
                 label: const Text('Say or type how you\'re feeling'),
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: Colors.purple,
-                  side: const BorderSide(color: Colors.purple, width: 2),
+                  foregroundColor: moodColor,
+                  side: BorderSide(color: moodColor, width: 2),
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),

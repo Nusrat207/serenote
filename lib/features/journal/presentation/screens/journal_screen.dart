@@ -109,7 +109,7 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
           icon: Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: const Color(0xFFE8D4F7), // Replace with your preferred color
+              color: Color.fromARGB(255, 216, 240, 245), // Replace with your preferred color
               shape: BoxShape.circle,
             ),
             child: const Icon(
@@ -125,7 +125,7 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
             icon: Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: const Color(0xFFE8D4F7), // Replace with your preferred color
+                color: Color.fromARGB(255, 216, 240, 245), // Replace with your preferred color
                 shape: BoxShape.circle,
               ),
               child: const Icon(
@@ -146,7 +146,7 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
             decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage('assets/images/journalbg.png'),
-                fit: BoxFit.contain,
+                fit: BoxFit.cover,
               ),
             ),
           ),
@@ -166,7 +166,7 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
                 slivers: [
                   // Add some top padding to account for app bar
                   const SliverToBoxAdapter(
-                    child: SizedBox(height: 80),
+                    child: SizedBox(height: 90),
                   ),
                   
                   // Journal content - simple list without day grouping
@@ -227,7 +227,7 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
         onPressed: () => _navigateToEditor(),
         icon: const Icon(Icons.add),
         label: const Text('New Entry'),
-        backgroundColor: const Color.fromARGB(255, 207, 163, 214),
+        backgroundColor: Color.fromARGB(255, 216, 240, 245),
       ),
     );
   }
@@ -297,7 +297,7 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
                         icon: const Icon(Icons.edit),
                         label: const Text('Create First Entry'),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.purple,
+                          backgroundColor: Color.fromARGB(255, 216, 240, 245),
                           padding: const EdgeInsets.symmetric(
                             horizontal: 24,
                             vertical: 12,
