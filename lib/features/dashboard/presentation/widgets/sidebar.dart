@@ -112,17 +112,17 @@ class Sidebar extends StatelessWidget {
           },
         ),
         // Image Bar for Journal
-        _buildImageBarItem(
-          context,
-          'assets/images/journal.png',
-          () {
-            Navigator.of(context).pop();
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => JournalScreen()),
-            );
-          },
-        ),
+      //  _buildImageBarItem(
+      //    context,
+      //    'assets/images/journal.png',
+      //    () {
+      //      Navigator.of(context).pop();
+      //      Navigator.push(
+      //        context,
+      //        MaterialPageRoute(builder: (context) => JournalScreen()),
+      //      );
+      //    },
+     //   ),
         // Image Bar for Timer (added as image bar like journal)
         _buildImageBarItem(
           context,
@@ -219,7 +219,7 @@ class Sidebar extends StatelessWidget {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.purpleAccent,
+                    backgroundColor: const Color.fromARGB(255, 71, 134, 145),
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     shape: RoundedRectangleBorder(
@@ -246,8 +246,8 @@ class Sidebar extends StatelessWidget {
                     );
                   },
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: Colors.purpleAccent,
-                    side: const BorderSide(color: Colors.purpleAccent),
+                    foregroundColor: const Color.fromARGB(255, 71, 134, 145),
+                    side: const BorderSide(color: const Color.fromARGB(255, 71, 134, 145)),
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),

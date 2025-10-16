@@ -273,7 +273,10 @@ class _MoodScreenState extends ConsumerState<MoodScreen> {
               ),
             ),
             const SizedBox(height: 4),
-            Text('${(mood.confidence * 100).toStringAsFixed(0)}% confidence'),
+            if (mood.confidence != null && mood.confidence! > 0)
+  Text('${(mood.confidence! * 100).toStringAsFixed(0)}% confidence'),
+
+            //Text('${(mood.confidence * 100).toStringAsFixed(0)}% confidence'),
             const SizedBox(height: 12),
             if (mood.text.isNotEmpty)
               Text(

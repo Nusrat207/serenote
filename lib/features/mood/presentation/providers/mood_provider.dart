@@ -4,6 +4,10 @@ import 'package:serenote/features/mood/data/services/sentiment_service.dart';
 import 'package:serenote/features/mood/data/services/mood_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+
+import 'package:flutter/material.dart';
+import 'package:serenote/core/theme/mood_colors.dart';
+
 final sentimentServiceProvider = Provider((ref) => SentimentService());
 final moodServiceProvider = Provider((ref) => MoodService());
 
@@ -111,4 +115,38 @@ class MoodEntriesNotifier extends StateNotifier<List<MoodEntry>> {
     final cutoff = DateTime.now().subtract(Duration(days: days));
     return state.where((entry) => entry.timestamp.isAfter(cutoff)).toList();
   }
+
+ 
 }
+final moodColorProvider = FutureProvider<Color>((ref) async {
+  final moods = ref.watch(moodEntriesProvider);
+  //final todaysMood = await ref.read(moodEntriesProvider.notifier).getTodaysMood();
+
+  // Default fallback
+ MoodEntry? todaysMood;
+
+  if (moods.isNotEmpty) {
+    // Find today's mood entry
+    todaysMood = moods.firstWhere(
+      (entry) =>
+          entry.timestamp.year == DateTime.now().year &&
+          entry.timestamp.month == DateTime.now().month &&
+          entry.timestamp.day == DateTime.now().day,
+      orElse: () => moods.first,
+    );
+  }
+
+  if (todaysMood == null) {
+    return const Color(0xFF477D9E); // fallback
+  }
+final baseColor = MoodColors.getColorForMood(todaysMood.detectedMood);
+
+final darkerColor = Color.fromARGB(
+    baseColor.alpha,
+    (baseColor.red * 0.6).round(),
+    (baseColor.green * 0.6).round(),
+    (baseColor.blue * 0.6).round(),
+  );
+
+  return darkerColor;
+});
