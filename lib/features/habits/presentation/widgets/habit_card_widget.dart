@@ -8,242 +8,100 @@ class HabitCardWidget extends StatefulWidget {
   final List<int>? assignedDays;
 
   const HabitCardWidget({
-    Key? key,
+    super.key,
     required this.habit,
     required this.onToggle,
     required this.onDelete,
     this.assignedDays,
-  }) : super(key: key);
+  });
 
   @override
   State<HabitCardWidget> createState() => _HabitCardWidgetState();
 }
 
 class _HabitCardWidgetState extends State<HabitCardWidget> {
-  int streak = 0;
-  final Set<int> selectedDays = {};
+  late Color _habitColor;
 
   @override
-  Widget build(BuildContext context) {
-    final today = DateTime.now();
-    final startOfWeek = today.subtract(Duration(days: today.weekday % 7));
+  void initState() {
+    super.initState();
+    _habitColor = _parseColor(widget.habit.color);
+  }
 
-    return Card(
-      margin: const EdgeInsets.only(bottom: 16),
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // ---------------- TOP ROW ----------------
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(widget.habit.icon, style: const TextStyle(fontSize: 24)),
-                const SizedBox(width: 12),
+  // Get the week dates starting from Monday
+  List<DateTime> _getWeekDates() {
+    final now = DateTime.now();
+    final monday = now.subtract(Duration(days: now.weekday - 1));
+    return List.generate(7, (index) {
+      return DateTime(monday.year, monday.month, monday.day + index);
+    });
+  }
 
-                // Habit details and day selector
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Habit name
-                      Text(
-                        widget.habit.name,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
+  String _getDayLabel(int index) {
+    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    return days[index];
+  }
 
-                      if (widget.habit.description != null &&
-                          widget.habit.description!.isNotEmpty) ...[
-                        const SizedBox(height: 4),
-                        Text(
-                          widget.habit.description!,
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: Colors.grey.shade600,
-                          ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
+  String _getMonthName(int month) {
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+    return months[month - 1];
+  }
 
-                      const SizedBox(height: 12),
+  // Normalize date to remove time component
+  DateTime _normalizeDate(DateTime date) {
+    return DateTime(date.year, date.month, date.day);
+  }
 
-                      // Weekday selector evenly spaced
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: List.generate(7, (index) {
-                          final dayDate = startOfWeek.add(
-                            Duration(days: index),
-                          );
-                          final dayName = _getDayAbbreviation(index);
-                          final isAssigned = _isDayAssigned(index);
-                          final isSelected = selectedDays.contains(index);
-
-                          return GestureDetector(
-                            onTap: isAssigned
-                                ? () {
-                                    setState(() {
-                                      if (isSelected) {
-                                        selectedDays.remove(index);
-                                        streak--;
-                                      } else {
-                                        selectedDays.add(index);
-                                        streak++;
-                                      }
-                                    });
-                                    widget.onToggle(dayDate);
-                                  }
-                                : null,
-                            child: Opacity(
-                              opacity: isAssigned ? 1.0 : 0.35,
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    dayName,
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                      color: isAssigned
-                                          ? Colors.grey.shade600
-                                          : Colors.grey.shade400,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 3),
-                                  Container(
-                                    width: 30,
-                                    height: 30,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: isSelected
-                                          ? _parseColor(widget.habit.color)
-                                          : Colors.grey.shade200,
-                                      border: Border.all(
-                                        color: isSelected
-                                            ? _parseColor(widget.habit.color)
-                                            : Colors.grey.shade400,
-                                        width: 1.5,
-                                      ),
-                                    ),
-                                    child: isSelected
-                                        ? const Center(
-                                            child: Icon(
-                                              Icons.check,
-                                              color: Colors.white,
-                                              size: 15,
-                                            ),
-                                          )
-                                        : null,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        }),
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(width: 12),
-
-                // ---------------- STREAK + MENU ----------------
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.orange.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(
-                            Icons.local_fire_department,
-                            size: 14,
-                            color: Colors.orange,
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            '$streak',
-                            style: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.orange,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'days',
-                      style: TextStyle(
-                        fontSize: 10,
-                        color: Colors.grey.shade600,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    PopupMenuButton(
-                      icon: const Icon(Icons.more_vert, size: 18),
-                      itemBuilder: (context) => [
-                        PopupMenuItem(
-                          child: const Text('Delete'),
-                          onTap: widget.onDelete,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
+  // Check if a date is completed
+  bool _isDateCompleted(DateTime date) {
+    final normalizedDate = _normalizeDate(date);
+    return widget.habit.completedDates.any(
+      (d) => _normalizeDate(d).isAtSameMomentAs(normalizedDate),
     );
   }
 
-  // ---------------- Helper Methods ----------------
-  bool _isDayAssigned(int weekdayIndex) {
-    if (widget.assignedDays == null || widget.assignedDays!.isEmpty)
-      return true;
-    final weekday = weekdayIndex == 6 ? 7 : weekdayIndex + 1;
+  // Check if a date can be toggled (completed)
+  bool _canToggleDate(DateTime date) {
+    final today = _normalizeDate(DateTime.now());
+    final normalizedDate = _normalizeDate(date);
+    final normalizedCreatedAt = _normalizeDate(widget.habit.createdAt);
+
+    // Can't complete dates before habit was created
+    if (normalizedDate.isBefore(normalizedCreatedAt)) {
+      return false;
+    }
+
+    // Can complete today and past dates, but NOT future dates
+    if (normalizedDate.isAfter(today)) {
+      return false;
+    }
+
+    return true;
+  }
+
+  // Check if date is assigned for this habit
+  bool _isAssignedDay(DateTime date) {
+    final weekday = date.weekday; // 1=Monday, 7=Sunday
+    if (widget.assignedDays == null || widget.assignedDays!.isEmpty) {
+      return true; // If no assigned days, all days are available
+    }
     return widget.assignedDays!.contains(weekday);
   }
 
-  String _getDayAbbreviation(int index) {
-    switch (index) {
-      case 0:
-        return 'Mo';
-      case 1:
-        return 'Tu';
-      case 2:
-        return 'We';
-      case 3:
-        return 'Th';
-      case 4:
-        return 'Fr';
-      case 5:
-        return 'Sa';
-      case 6:
-        return 'Su';
-      default:
-        return '';
-    }
-  }
-
+  // Parse color from hex string
   Color _parseColor(String colorString) {
     try {
       if (colorString.startsWith('#')) {
@@ -254,5 +112,239 @@ class _HabitCardWidgetState extends State<HabitCardWidget> {
     } catch (e) {
       return Colors.purple;
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final weekDates = _getWeekDates();
+
+    return Card(
+      margin: const EdgeInsets.only(bottom: 16),
+      elevation: 0,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.grey.shade200),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header with icon, name, and delete button
+              Row(
+                children: [
+                  Text(widget.habit.icon, style: const TextStyle(fontSize: 32)),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.habit.name,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        if (widget.habit.description != null &&
+                            widget.habit.description!.isNotEmpty)
+                          Text(
+                            widget.habit.description!,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey.shade600,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                      ],
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.delete_outline),
+                    color: Colors.red.shade300,
+                    onPressed: widget.onDelete,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+
+              // Week header with month display
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'This Week',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.grey.shade700,
+                    ),
+                  ),
+                  Text(
+                    '${_getMonthName(weekDates.first.month)} ${weekDates.first.year}',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.grey.shade600,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+
+              // Week days tracker
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: List.generate(7, (index) {
+                  final date = weekDates[index];
+                  final dayLabel = _getDayLabel(index);
+                  final isCompleted = _isDateCompleted(date);
+                  final canToggle = _canToggleDate(date);
+                  final isAssigned = _isAssignedDay(date);
+                  final isToday =
+                      DateTime.now().day == date.day &&
+                      DateTime.now().month == date.month &&
+                      DateTime.now().year == date.year;
+
+                  return GestureDetector(
+                    onTap: canToggle && isAssigned
+                        ? () => widget.onToggle(date)
+                        : null,
+                    child: Column(
+                      children: [
+                        Text(
+                          dayLabel,
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: isToday
+                                ? _habitColor
+                                : isAssigned
+                                ? Colors.grey.shade600
+                                : Colors.grey.shade400,
+                            fontWeight: isToday
+                                ? FontWeight.bold
+                                : FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 4,
+                            vertical: 1,
+                          ),
+                          decoration: BoxDecoration(
+                            color: isToday
+                                ? _habitColor.withValues(alpha: 0.15)
+                                : Colors.transparent,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Text(
+                            '${date.day}',
+                            style: TextStyle(
+                              fontSize: 10,
+                              color: isToday
+                                  ? _habitColor
+                                  : Colors.grey.shade500,
+                              fontWeight: isToday
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Container(
+                          width: 38,
+                          height: 38,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: isCompleted
+                                ? _habitColor.withValues(alpha: 0.2)
+                                : Colors.grey.shade100,
+                            border: Border.all(
+                              color: isCompleted
+                                  ? _habitColor
+                                  : isToday
+                                  ? _habitColor.withValues(alpha: 0.5)
+                                  : Colors.transparent,
+                              width: 2,
+                            ),
+                          ),
+                          child: Center(
+                            child: isCompleted
+                                ? Icon(
+                                    Icons.check,
+                                    color: _habitColor,
+                                    size: 18,
+                                  )
+                                : !isAssigned
+                                ? Icon(
+                                    Icons.lock_outline,
+                                    color: Colors.grey.shade400,
+                                    size: 14,
+                                  )
+                                : isToday
+                                ? Container(
+                                    width: 6,
+                                    height: 6,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: _habitColor,
+                                    ),
+                                  )
+                                : null,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }),
+              ),
+              const SizedBox(height: 12),
+
+              // Stats row
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  _buildStatItem(
+                    label: 'Current',
+                    value: '${widget.habit.currentStreak}',
+                  ),
+                  _buildStatItem(
+                    label: 'Longest',
+                    value: '${widget.habit.longestStreak}',
+                  ),
+                  _buildStatItem(
+                    label: 'Total',
+                    value: '${widget.habit.totalCompletions}',
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStatItem({required String label, required String value}) {
+    return Column(
+      children: [
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: _habitColor,
+          ),
+        ),
+        Text(
+          label,
+          style: TextStyle(fontSize: 11, color: Colors.grey.shade600),
+        ),
+      ],
+    );
   }
 }

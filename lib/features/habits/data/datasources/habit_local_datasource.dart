@@ -1,5 +1,3 @@
-// lib/features/habits/data/datasources/habit_local_datasource.dart
-
 import 'package:uuid/uuid.dart';
 import '../models/habit_model.dart';
 
@@ -7,11 +5,11 @@ abstract class HabitLocalDataSource {
   Future<List<HabitModel>> getHabits({bool activeOnly = true, String? forMood});
 
   Future<HabitModel> createHabit({
-    required String userId, // ← ADD THIS
+    required String userId,
     required String name,
     String? description,
-    required String icon,
-    required String color,
+    String? icon,
+    String? color,
     required int targetDaysPerWeek,
     String? linkedMood,
     List<int>? assignedDays,
@@ -52,11 +50,11 @@ class HabitLocalDataSourceImpl implements HabitLocalDataSource {
 
   @override
   Future<HabitModel> createHabit({
-    required String userId, // ← ADD THIS
+    required String userId,
     required String name,
     String? description,
-    required String icon,
-    required String color,
+    String? icon,
+    String? color,
     required int targetDaysPerWeek,
     String? linkedMood,
     List<int>? assignedDays,
@@ -66,17 +64,17 @@ class HabitLocalDataSourceImpl implements HabitLocalDataSource {
 
     final habit = HabitModel(
       id: id,
-      userId: userId, // ← ADD THIS
+      userId: userId,
       name: name,
       description: description,
-      icon: icon,
-      color: color,
+      icon: icon ?? '💧',
+      color: color ?? 'ff00bfff',
       targetDaysPerWeek: targetDaysPerWeek,
-      completedDates: [],
+      completedDates: const [],
       createdAt: DateTime.now(),
       isActive: true,
       linkedMood: linkedMood,
-      assignedDays: assignedDays,
+      assignedDays: assignedDays ?? const [],
     );
 
     _habits[id] = habit;
@@ -114,10 +112,14 @@ class HabitLocalDataSourceImpl implements HabitLocalDataSource {
 
   @override
   Future<HabitModel> updateHabit(HabitModel habit) async {
-    if (!_habits.containsKey(habit.id)) {
+    final habitId = habit.id;
+    if (habitId == null) {
+      throw Exception('Habit ID cannot be null');
+    }
+    if (!_habits.containsKey(habitId)) {
       throw Exception('Habit not found');
     }
-    _habits[habit.id] = habit;
+    _habits[habitId] = habit;
     return habit;
   }
 
