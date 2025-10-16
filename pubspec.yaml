@@ -87,6 +87,7 @@ flutter:
     - assets/images/retro/
     - assets/images/concentration/
     - assets/icon/
+    - assets/avatars/
 flutter_icons:
   android: true
   ios: true
