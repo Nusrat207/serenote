@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../habits/presentation/widgets/habit_card_widget.dart';
 import '../providers/habit_provider.dart';
+import 'package:serenote/features/mood/presentation/providers/mood_provider.dart'; // ADD THIS IMPORT
 
 class HabitsScreen extends ConsumerStatefulWidget {
   const HabitsScreen({super.key});
@@ -74,18 +75,34 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen>
         error.toLowerCase().contains('user not found');
   }
 
+  Color lighten(Color color, [double amount = 0.5]) {
+    final hsl = HSLColor.fromColor(color);
+    return hsl.withLightness((hsl.lightness + amount).clamp(0, 1)).toColor();
+  }
+
   @override
   Widget build(BuildContext context) {
     final habitState = ref.watch(habitNotifierProvider);
     final user = Supabase.instance.client.auth.currentUser;
     final isAuthenticated = user != null;
 
+    // WATCH THE MOOD COLOR PROVIDER
+    final moodColor = ref
+        .watch(moodColorProvider)
+        .maybeWhen(
+          data: (c) => c,
+          orElse: () => const Color(0xFF477D9E), // fallback
+        );
+
+    final lightMood = lighten(moodColor, 0.01);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Habits'),
-        backgroundColor: Colors.white.withValues(alpha: 0.95),
+        backgroundColor: moodColor, // CHANGED: Use mood color instead of white
         elevation: 0,
-        foregroundColor: Colors.black,
+        foregroundColor:
+            Colors.white, // CHANGED: Text/icons in white for contrast
       ),
       body: Stack(
         children: [
@@ -245,8 +262,9 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen>
               !_isAuthError(habitState.error)
           ? FloatingActionButton(
               onPressed: () => _showAddHabitDialog(context),
-              backgroundColor: Colors.purple,
-              child: const Icon(Icons.add),
+              backgroundColor:
+                  moodColor, // CHANGED: Use mood color instead of purple
+              child: const Icon(Icons.add, color: Colors.white),
             )
           : null,
     );
