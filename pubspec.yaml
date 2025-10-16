@@ -51,6 +51,7 @@ dependencies:
   equatable: ^2.0.5
   fpdart: ^1.1.0
   flutter_screenutil: ^5.9.3
+  flame: ^1.14.0
 
   collection: ^1.18.0
   font_awesome_flutter: ^10.10.0
@@ -87,6 +88,7 @@ flutter:
     - assets/images/retro/
     - assets/images/concentration/
     - assets/icon/
+    - assets/avatars/
 flutter_icons:
   android: true
   ios: true
