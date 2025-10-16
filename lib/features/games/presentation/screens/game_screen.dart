@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:serenote/features/games/sudoku/sudoku_game_screen.dart';
 import '../../snake/snake_game_screen.dart';
 import '../../word_search/word_search_screen.dart';
 import '../../puzzle_2048/puzzle_2048_screen.dart';
@@ -130,6 +131,13 @@ class GamesMenuScreen extends StatelessWidget {
           FontAwesomeIcons.brain,
           Colors.blue,
           const HomeScreen(),
+        ),
+        _buildGameItem(
+          context,
+          'Sudoku',
+          FontAwesomeIcons.one,
+          Colors.blue,
+          const SudokuGameScreen(),
         ),
         _buildStaticGameItem('Cali of Duty', Icons.sports_esports, Colors.blue),
         _buildStaticGameItem(

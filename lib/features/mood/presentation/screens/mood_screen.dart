@@ -151,7 +151,7 @@ class _MoodScreenState extends ConsumerState<MoodScreen> {
                   Icon(
                     Icons.self_improvement,
                     size: 100,
-                    color: const Color.fromARGB(255, 228, 179, 240),
+                    color: const Color.fromARGB(255, 210, 224, 217),
                   ),
                   const SizedBox(height: 30),
                   Text(
@@ -185,7 +185,7 @@ class _MoodScreenState extends ConsumerState<MoodScreen> {
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
-                        foregroundColor: const Color.fromARGB(255, 65, 0, 121),
+                        foregroundColor: const Color.fromARGB(255, 1, 97, 55),
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),

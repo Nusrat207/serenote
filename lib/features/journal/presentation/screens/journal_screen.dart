@@ -7,7 +7,8 @@ import '../providers/journal_provider.dart';
 import '../widgets/journal_card_widget.dart';
 import '../widgets/qr_code_dialog.dart';
 import 'journal_editor_screen.dart';
-
+import 'package:serenote/features/mood/presentation/providers/mood_provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 class JournalScreen extends ConsumerStatefulWidget {
   const JournalScreen({super.key});
 
@@ -65,8 +66,10 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
               }
 
               try {
-                await ref.read(journalListProvider.notifier).deleteJournal(journal.id!);
-                
+                await ref
+                    .read(journalListProvider.notifier)
+                    .deleteJournal(journal.id!);
+
                 Navigator.pop(context);
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Journal entry deleted')),
@@ -87,173 +90,192 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
 
   List<JournalEntity> _filterJournals(List<JournalEntity> journals) {
     if (_searchQuery.isEmpty) return journals;
-    
+
     final query = _searchQuery.toLowerCase();
     return journals.where((journal) {
       return journal.title.toLowerCase().contains(query) ||
-             journal.content.toLowerCase().contains(query) ||
-             journal.tags.any((tag) => tag.toLowerCase().contains(query));
+          journal.content.toLowerCase().contains(query) ||
+          journal.tags.any((tag) => tag.toLowerCase().contains(query));
     }).toList();
   }
 
   @override
   Widget build(BuildContext context) {
     final journalsAsync = ref.watch(journalListProvider);
+    final moodColor = ref
+        .watch(moodColorProvider)
+        .maybeWhen(
+          data: (c) => c,
+          orElse: () => const Color(0xFF477D9E),
+        );
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(''),
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        leading: IconButton(
-          icon: Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: Color.fromARGB(255, 216, 240, 245), // Replace with your preferred color
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(
-              Icons.arrow_back_ios_new_rounded,
-              size: 20,
-              color: Colors.black,
-            ),
-          ),
-          onPressed: () => Navigator.pop(context),
+    Color lighten(Color color, [double amount = 0.5]) {
+      final hsl = HSLColor.fromColor(color);
+      return hsl.withLightness((hsl.lightness + amount).clamp(0, 1)).toColor();
+    }
+
+    final lightMood = lighten(moodColor, 0.5);
+
+    // Check if user is logged in
+    final userId = Supabase.instance.client.auth.currentUser; 
+    final isLoggedIn = userId != null;
+
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [lightMood, Theme.of(context).scaffoldBackgroundColor],
+          stops: const [0.0, 0.8],
         ),
-        actions: [
-          IconButton(
+      ),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          title: const Text('Journal'),
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          leading: IconButton(
             icon: Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Color.fromARGB(255, 216, 240, 245), // Replace with your preferred color
+                color: moodColor,
                 shape: BoxShape.circle,
               ),
               child: const Icon(
-                Icons.search,
+                Icons.arrow_back_ios_new_rounded,
                 size: 20,
-                color: Colors.black,
+                color: Colors.white,
               ),
             ),
-            onPressed: () => _showSearchDialog(),
+            onPressed: () => Navigator.pop(context),
           ),
-        ],
-      ),
-      extendBodyBehindAppBar: true,
-      body: Stack(
-        children: [
-          // Fixed background image that doesn't scroll
-          Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/journalbg.png'),
-                fit: BoxFit.cover,
+          actions: [
+            IconButton(
+              icon: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: moodColor,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.search,
+                    size: 20, color: Colors.white),
               ),
+              onPressed: () => _showSearchDialog(),
             ),
-          ),
-          
-          // Scrollable content
-          journalsAsync.when(
-            data: (journals) {
-              final filteredJournals = _filterJournals(journals);
-              
-              if (filteredJournals.isEmpty) {
-                return _buildEmptyState();
-              }
+          ],
+        ),
+        extendBodyBehindAppBar: true,
+        body: Stack(
+          children: [
+            // Scrollable content
+            journalsAsync.when(
+              data: (journals) {
+                if (!isLoggedIn) {
+                  return _buildEmptyState(notLoggedIn: true);
+                }
 
-              return CustomScrollView(
-                controller: _scrollController,
-                physics: const BouncingScrollPhysics(),
-                slivers: [
-                  // Add some top padding to account for app bar
-                  const SliverToBoxAdapter(
-                    child: SizedBox(height: 90),
-                  ),
-                  
-                  // Journal content - simple list without day grouping
-                  SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        final journal = filteredJournals[index];
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 6,
-                          ),
-                          child: JournalCardWidget(
-                            journal: journal,
-                            onTap: () => _navigateToEditor(journal),
-                            onDelete: () => _deleteJournal(journal),
-                            onQRCode: () => _showQRCode(journal),
-                          ),
-                        );
-                      },
-                      childCount: filteredJournals.length,
-                    ),
-                  ),
-                  
-                  // Add bottom padding for FAB
-                  const SliverToBoxAdapter(
-                    child: SizedBox(height: 80),
-                  ),
-                ],
-              );
-            },
-            loading: () => const Center(child: CircularProgressIndicator()),
-            error: (error, stack) => Center(
-              child: Card(
-                margin: const EdgeInsets.all(20),
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(Icons.error_outline, size: 48, color: Colors.red),
-                      const SizedBox(height: 16),
-                      Text('Error loading journals: $error'),
-                      const SizedBox(height: 16),
-                      ElevatedButton(
-                        onPressed: () => ref.refresh(journalListProvider),
-                        child: const Text('Retry'),
+                final filteredJournals = _filterJournals(journals);
+
+                if (filteredJournals.isEmpty) {
+                  return _buildEmptyState();
+                }
+
+                return CustomScrollView(
+                  controller: _scrollController,
+                  physics: const BouncingScrollPhysics(),
+                  slivers: [
+                    const SliverToBoxAdapter(child: SizedBox(height: 90)),
+                    SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          final journal = filteredJournals[index];
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 6),
+                            child: JournalCardWidget(
+                              journal: journal,
+                              onTap: () => _navigateToEditor(journal),
+                              onDelete: () => _deleteJournal(journal),
+                              onQRCode: () => _showQRCode(journal),
+                            ),
+                          );
+                        },
+                        childCount: filteredJournals.length,
                       ),
-                    ],
+                    ),
+                    const SliverToBoxAdapter(child: SizedBox(height: 80)),
+                  ],
+                );
+              },
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (error, stack) => Center(
+                child: Card(
+                  margin: const EdgeInsets.all(20),
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(
+                          Icons.error_outline,
+                          size: 48,
+                          color: Colors.red,
+                        ),
+                        const SizedBox(height: 16),
+                        Text('Error loading journals: $error'),
+                        const SizedBox(height: 16),
+                        ElevatedButton(
+                          onPressed: () => ref.refresh(journalListProvider),
+                          child: const Text('Retry'),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _navigateToEditor(),
-        icon: const Icon(Icons.add),
-        label: const Text('New Entry'),
-        backgroundColor: Color.fromARGB(255, 216, 240, 245),
+          ],
+        ),
+        floatingActionButton: isLoggedIn
+            ? FloatingActionButton.extended(
+                onPressed: () => _navigateToEditor(),
+                icon: const Icon(Icons.add, color: Colors.white),
+                label: const Text(
+                  'New Entry',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16,
+                  ),
+                ),
+                backgroundColor: moodColor,
+              )
+            : null,
       ),
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState({bool notLoggedIn = false}) {
     return Stack(
       children: [
         // Fixed background
-        Container(
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('assets/images/journalbg.png'),
-              fit: BoxFit.contain,
-            ),
-          ),
-        ),
-        
-        // Centered empty state content
+        //Container(
+        //  decoration: const BoxDecoration(
+        //    image: DecorationImage(
+        //      image: AssetImage('assets/images/journalbg.png'),
+        //     fit: BoxFit.contain,
+        //    ),
+        //  ),
+       // ),
+        // Centered content
         Center(
           child: SingleChildScrollView(
             child: Card(
               margin: const EdgeInsets.all(40),
               elevation: 8,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
+                  borderRadius: BorderRadius.circular(20)),
               child: Container(
                 padding: const EdgeInsets.all(40),
                 decoration: BoxDecoration(
@@ -264,44 +286,46 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(
-                      Icons.book_outlined,
+                      notLoggedIn ? Icons.lock_outline : Icons.book_outlined,
                       size: 80,
                       color: Colors.grey.shade400,
                     ),
                     const SizedBox(height: 24),
                     Text(
-                      _searchQuery.isEmpty
-                          ? 'Start Your Journey'
-                          : 'No matching entries',
+                      notLoggedIn
+                          ? 'Please log in to access your journals'
+                          : _searchQuery.isEmpty
+                              ? 'Start Your Journey'
+                              : 'No matching entries',
                       style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.grey.shade700,
-                          ),
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey.shade700),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 12),
                     Text(
-                      _searchQuery.isEmpty
-                          ? 'Capture your thoughts, feelings, and reflections.\nStart your first journal entry today.'
-                          : 'Try a different search term',
+                      notLoggedIn
+                          ? 'You need to log in to create, view, or manage journal entries.'
+                          : _searchQuery.isEmpty
+                              ? 'Capture your thoughts, feelings, and reflections.\nStart your first journal entry today.'
+                              : 'Try a different search term',
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.grey.shade600,
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    if (_searchQuery.isEmpty) ...[
+                    if (!notLoggedIn && _searchQuery.isEmpty) ...[
                       const SizedBox(height: 32),
                       ElevatedButton.icon(
                         onPressed: () => _navigateToEditor(),
                         icon: const Icon(Icons.edit),
                         label: const Text('Create First Entry'),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Color.fromARGB(255, 216, 240, 245),
+                          backgroundColor:
+                              const Color.fromARGB(255, 216, 240, 245),
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 24,
-                            vertical: 12,
-                          ),
+                              horizontal: 24, vertical: 12),
                         ),
                       ),
                     ],
