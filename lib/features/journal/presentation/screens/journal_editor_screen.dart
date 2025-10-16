@@ -188,7 +188,7 @@ class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
       body: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/images/journal_card2.jpeg'),
+            image: AssetImage('assets/images/sidebar_bg.png'),
             fit: BoxFit.cover,
           ),
         ),

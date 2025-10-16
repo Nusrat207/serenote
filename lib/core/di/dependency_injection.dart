@@ -11,6 +11,16 @@ import '../../features/habits/domain/usecases/get_habits_usecase.dart';
 import '../../features/habits/domain/usecases/update_habit_usecase.dart';
 import '../../features/habits/domain/usecases/delete_habit_usecase.dart';
 import '../../features/habits/presentation/providers/habit_provider.dart';
+import '../../features/habits/presentation/providers/habit_provider.dart';
+import '../../features/profile/domain/entities/profile_entity.dart';
+import '../../features/profile/domain/repositories/profile_repository.dart';
+import '../../features/profile/domain/usecases/get_profile_usecase.dart';
+import '../../features/profile/domain/usecases/update_profile_usecase.dart';
+import '../../features/profile/data/datasources/profile_remote_datasource.dart';
+import '../../features/profile/data/datasources/profile_remote_datasource_impl.dart';
+import '../../features/profile/data/repositories/profile_repository_impl.dart';
+import '../../features/profile/presentation/providers/profile_provider.dart';
+
 
 // Supabase Client Provider
 final supabaseClientProvider = Provider<SupabaseClient>((ref) {
@@ -57,5 +67,34 @@ final habitProvider = StateNotifierProvider<HabitNotifier, HabitState>((ref) {
     getHabitsUseCase: ref.watch(getHabitsUseCaseProvider),
     updateHabitUseCase: ref.watch(updateHabitUseCaseProvider),
     deleteHabitUseCase: ref.watch(deleteHabitUseCaseProvider),
+  );
+});
+
+
+// Add these providers to your existing dependency_injection.dart
+
+// Profile dependencies
+final profileRemoteDataSourceProvider = Provider<ProfileRemoteDataSource>((ref) {
+  return ProfileRemoteDataSourceImpl();
+});
+
+final profileRepositoryProvider = Provider<ProfileRepository>((ref) {
+  return ProfileRepositoryImpl(
+    ref.read(profileRemoteDataSourceProvider),
+  );
+});
+
+final getProfileUseCaseProvider = Provider<GetProfileUseCase>((ref) {
+  return GetProfileUseCase(ref.read(profileRepositoryProvider));
+});
+
+final updateProfileUseCaseProvider = Provider<UpdateProfileUseCase>((ref) {
+  return UpdateProfileUseCase(ref.read(profileRepositoryProvider));
+});
+
+final profileProvider = StateNotifierProvider<ProfileNotifier, ProfileEntity?>((ref) {
+  return ProfileNotifier(
+    getProfileUseCase: ref.read(getProfileUseCaseProvider),
+    updateProfileUseCase: ref.read(updateProfileUseCaseProvider),
   );
 });
