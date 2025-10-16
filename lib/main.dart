@@ -62,8 +62,12 @@ class SerenoteApp extends ConsumerWidget {
     // final stats = ref.watch(gameStatsProvider);
     return provider.MultiProvider(
       providers: [
-        provider.ChangeNotifierProvider<SettingsProvider>(create: (_) => SettingsProvider()),
-        provider.ChangeNotifierProvider<GameStatsProvider>(create: (_) => GameStatsProvider()),
+        provider.ChangeNotifierProvider<SettingsProvider>(
+          create: (_) => SettingsProvider(),
+        ),
+        provider.ChangeNotifierProvider<GameStatsProvider>(
+          create: (_) => GameStatsProvider(),
+        ),
       ],
       child: MaterialApp(
         title: 'SereNote',
@@ -77,7 +81,7 @@ class SerenoteApp extends ConsumerWidget {
           '/newGame': (context) => const NewGameScreen(),
           '/stats': (context) => const StatsScreen(),
           '/game': (context) => const GameScreen(),
-          '/games_list': (context) => const GamesScreen(),
+          '/games_list': (context) => const GamesMenuScreen(),
         },
       ),
     );

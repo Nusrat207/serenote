@@ -1,24 +1,29 @@
 import 'package:flutter/material.dart';
+import '../../snake/snake_game_screen.dart';
+import '../../word_search/word_search_screen.dart';
+import '../../puzzle_2048/puzzle_2048_screen.dart';
 import 'package:serenote/features/games/wordle/wordle_screen.dart';
 import '../../bubble_breather/bubble_breather_screen.dart';
 import '../../concentration/screens/home_screen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../../dashboard/presentation/screens/dashboard_screen.dart';
-class GamesScreen extends StatelessWidget {
-  const GamesScreen({super.key});
+
+class GamesMenuScreen extends StatelessWidget {
+  const GamesMenuScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5EFFF),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black87),
           onPressed: () {
-            Navigator.push(context, 
-                MaterialPageRoute(builder: (context) => const DashboardScreen()));
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const DashboardScreen()),
+            );
           },
         ),
         title: const Text(
@@ -29,108 +34,50 @@ class GamesScreen extends StatelessWidget {
             color: Colors.black87,
           ),
         ),
-        centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Search Bar
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.1),
-                    blurRadius: 10,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: 'Search games...',
-                  hintStyle: const TextStyle(color: Colors.grey),
-                  border: InputBorder.none,
-                  prefixIcon: const Icon(Icons.search, color: Colors.grey),
-                  suffixIcon: IconButton(
-                    icon: const Icon(Icons.filter_list, color: Colors.grey),
-                    onPressed: () {
-                      // Filter functionality
-                    },
-                  ),
+            TextField(
+              decoration: InputDecoration(
+                hintText: 'Search games...',
+                hintStyle: const TextStyle(color: Colors.grey),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                suffixIcon: IconButton(
+                  icon: const Icon(Icons.filter_list, color: Colors.grey),
+                  onPressed: () {
+                    // Add filter functionality
+                  },
                 ),
               ),
             ),
-            
             const SizedBox(height: 20),
-            
-            // Games List Header
-            const Text(
-              'All Games',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
-              ),
-            ),
-            
-            const SizedBox(height: 16),
-            
+
             // Games List
             Expanded(
-              child: ListView(
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const BubbleBreatherScreen(),
-                        ),
-                      );
-                    },
-                    child: _buildGameItem('Bubble Breather', Icons.bubble_chart, Colors.blue),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const WordleScreen(),
-                        ),
-                      );
-                    },
-                    child: _buildGameItem('Wordle', Icons.abc, const Color.fromARGB(255, 13, 109, 38)),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const HomeScreen(),
-                        ),
-                      );
-                    },
-                    child: _buildGameItem('Concentration', FontAwesomeIcons.brain, Colors.blue),
-                  ),
-                  _buildGameItem('Cali of Duty', Icons.sports_esports, Colors.blue),
-                  _buildGameItem('Public Mobile', Icons.phone_android, Colors.green),
-                  _buildGameItem('Magic Awakened', Icons.auto_awesome, Colors.purple),
-                  _buildGameItem('Megic Awakened Stardew Valley', Icons.landscape, Colors.green),
-                  _buildGameItem('My Dear Farm', Icons.agriculture, Colors.lightGreen),
-                  _buildGameItem('Adorable Home', Icons.house, Colors.orange),
-                  _buildGameItem('Campliro Cafe', Icons.coffee, Colors.brown),
-                  _buildGameItem('Tudi Odyssey', Icons.travel_explore, Colors.teal),
-                  _buildGameItem('Cats & Soup', Icons.soup_kitchen, Colors.amber),
-                  _buildGameItem('Harvest Town Cookies Must Do', Icons.cookie, Colors.orange),
-                  _buildGameItem('Window Garden', Icons.spa, Colors.lightGreen),
-                  _buildGameItem('Oilies Dance', Icons.music_note, Colors.pink),
-                  _buildGameItem('Anemos', Icons.air, Colors.cyan),
-                ],
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'All Games',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+
+                    // Game List
+                    _buildGameList(context),
+                  ],
+                ),
               ),
             ),
           ],
@@ -139,70 +86,117 @@ class GamesScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildGameItem(String gameName, IconData icon, Color color) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          // Game Icon
-          Container(
-            width: 50,
-            height: 50,
-            decoration: BoxDecoration(
-              color: color.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Icon(
-              icon,
-              color: color,
-              size: 24,
-            ),
-          ),
-          
-          const SizedBox(width: 16),
-          
-          // Game Name
-          Expanded(
-            child: Text(
-              gameName,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: Colors.black87,
-              ),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-          
-          // Play Button
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            decoration: BoxDecoration(
-              color: Colors.purpleAccent,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: const Text(
-              'Play',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ],
+  Widget _buildGameList(BuildContext context) {
+    return Column(
+      children: [
+        _buildGameItem(
+          context,
+          'Snake Game',
+          Icons.extension,
+          Colors.green,
+          const SnakeGameScreen(),
+        ),
+        _buildGameItem(
+          context,
+          '2048 Puzzle',
+          Icons.grid_4x4,
+          Colors.deepPurple,
+          const Puzzle2048Screen(),
+        ),
+        _buildGameItem(
+          context,
+          'Word Search',
+          Icons.search,
+          Colors.orange,
+          const WordSearchScreen(),
+        ),
+        _buildGameItem(
+          context,
+          'Bubble Breather',
+          Icons.bubble_chart,
+          Colors.blue,
+          const BubbleBreatherScreen(),
+        ),
+        _buildGameItem(
+          context,
+          'Wordle',
+          Icons.abc,
+          const Color.fromARGB(255, 13, 109, 38),
+          const WordleScreen(),
+        ),
+        _buildGameItem(
+          context,
+          'Concentration',
+          FontAwesomeIcons.brain,
+          Colors.blue,
+          const HomeScreen(),
+        ),
+        _buildStaticGameItem('Cali of Duty', Icons.sports_esports, Colors.blue),
+        _buildStaticGameItem(
+          'Public Mobile',
+          Icons.phone_android,
+          Colors.green,
+        ),
+        _buildStaticGameItem(
+          'Magic Awakened',
+          Icons.auto_awesome,
+          Colors.purple,
+        ),
+        _buildStaticGameItem(
+          'Magic Awakened Stardew Valley',
+          Icons.landscape,
+          Colors.green,
+        ),
+        _buildStaticGameItem(
+          'My Dear Farm',
+          Icons.agriculture,
+          Colors.lightGreen,
+        ),
+        _buildStaticGameItem('Adorable Home', Icons.house, Colors.orange),
+        _buildStaticGameItem('Campliro Cafe', Icons.coffee, Colors.brown),
+        _buildStaticGameItem('Tudi Odyssey', Icons.travel_explore, Colors.teal),
+        _buildStaticGameItem('Cats & Soup', Icons.soup_kitchen, Colors.amber),
+        _buildStaticGameItem(
+          'Harvest Town Cookies Must Do',
+          Icons.cookie,
+          Colors.orange,
+        ),
+        _buildStaticGameItem('Window Garden', Icons.spa, Colors.lightGreen),
+        _buildStaticGameItem('Oilies Dance', Icons.music_note, Colors.pink),
+        _buildStaticGameItem('Anemos', Icons.air, Colors.cyan),
+      ],
+    );
+  }
+
+  Widget _buildGameItem(
+    BuildContext context,
+    String title,
+    IconData icon,
+    Color color,
+    Widget screen,
+  ) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => screen),
+        );
+      },
+      child: ListTile(
+        leading: Icon(icon, color: color),
+        title: Text(title),
       ),
     );
-  }}
+  }
+
+  Widget _buildStaticGameItem(String title, IconData icon, Color color) {
+    return ListTile(
+      leading: Icon(icon, color: color),
+      title: Text(title),
+      onTap: () {
+        // Handle static or unimplemented games
+        debugPrint('$title tapped');
+      },
+    );
+  }
+}

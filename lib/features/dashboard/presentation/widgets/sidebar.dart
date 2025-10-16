@@ -20,29 +20,26 @@ import 'package:serenote/features/settings/presentation/screens/help_center_scre
 class Sidebar extends ConsumerWidget {
   const Sidebar({super.key});
 
-
-
-void _showSettingsBottomSheet(BuildContext context) {
-  showModalBottomSheet(
-    context: context,
-    isScrollControlled: true,
-    backgroundColor: Colors.transparent,
-    builder: (context) {
-      return SettingsPanel(
-        onClose: () {
-          Navigator.of(context).pop();
-        },
-      );
-    },
-  );
-}
-
+  void _showSettingsBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return SettingsPanel(
+          onClose: () {
+            Navigator.of(context).pop();
+          },
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentUser = AuthService().currentUser;
     final isLoggedIn = currentUser != null;
-    
+
     // Watch the profile provider to get real-time updates
     final profile = isLoggedIn ? ref.watch(profileProvider) : null;
 
@@ -61,16 +58,17 @@ void _showSettingsBottomSheet(BuildContext context) {
             children: [
               // Login Card Section (Shows when not logged in)
               if (!isLoggedIn) _buildLoginCard(context),
-              
+
               // Enhanced User Info Section (Shows when logged in)
-              if (isLoggedIn) _buildEnhancedUserInfoSection(currentUser!, profile, context),
-              
+              if (isLoggedIn)
+                _buildEnhancedUserInfoSection(currentUser!, profile, context),
+
               // Features Section with Image Bars
               _buildFeaturesSectionWithImages(context),
-              
+
               // Common Tools Section with circle buttons
               _buildCommonToolsSection(context, isLoggedIn),
-              
+
               const Spacer(),
             ],
           ),
@@ -79,13 +77,18 @@ void _showSettingsBottomSheet(BuildContext context) {
     );
   }
 
-  Widget _buildEnhancedUserInfoSection(User user, ProfileEntity? profile, BuildContext context) {
+  Widget _buildEnhancedUserInfoSection(
+    User user,
+    ProfileEntity? profile,
+    BuildContext context,
+  ) {
     // Use profile data if available, otherwise fall back to user metadata
-    final displayName = profile?.displayName ?? 
-                       user.userMetadata?['full_name'] ?? 
-                       user.userMetadata?['name'] ?? 
-                       user.email?.split('@').first ?? 
-                       'User';
+    final displayName =
+        profile?.displayName ??
+        user.userMetadata?['full_name'] ??
+        user.userMetadata?['name'] ??
+        user.email?.split('@').first ??
+        'User';
     final avatarPath = profile?.avatarPath;
 
     return Container(
@@ -115,10 +118,7 @@ void _showSettingsBottomSheet(BuildContext context) {
                     ),
                     Text(
                       user.email ?? '',
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey,
-                      ),
+                      style: const TextStyle(fontSize: 12, color: Colors.grey),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ],
@@ -191,57 +191,49 @@ void _showSettingsBottomSheet(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildImageBarItem(
-          context,
-          'assets/images/todo.png',
-          () {
-            Navigator.of(context).pop();
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => RoutineScreen()),
-            );
-          },
-        ),
+        _buildImageBarItem(context, 'assets/images/todo.png', () {
+          Navigator.of(context).pop();
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => RoutineScreen()),
+          );
+        }),
         // Image Bar for Journal
-      //  _buildImageBarItem(
-      //    context,
-      //    'assets/images/journal.png',
-      //    () {
-      //      Navigator.of(context).pop();
-      //      Navigator.push(
-      //        context,
-      //        MaterialPageRoute(builder: (context) => JournalScreen()),
-      //      );
-      //    },
-     //   ),
+        //  _buildImageBarItem(
+        //    context,
+        //    'assets/images/journal.png',
+        //    () {
+        //      Navigator.of(context).pop();
+        //      Navigator.push(
+        //        context,
+        //        MaterialPageRoute(builder: (context) => JournalScreen()),
+        //      );
+        //    },
+        //   ),
         // Image Bar for Timer (added as image bar like journal)
-        _buildImageBarItem(
-          context,
-          'assets/images/timer.png',
-          () {
-            Navigator.of(context).pop();
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const TimerScreen()),
-            );
-          },
-        ),
-        _buildImageBarItem(
-          context,
-          'assets/images/games.png',
-          () {
-            Navigator.of(context).pop();
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => GamesScreen()),
-            );
-          },
-        ),
+        _buildImageBarItem(context, 'assets/images/timer.png', () {
+          Navigator.of(context).pop();
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const TimerScreen()),
+          );
+        }),
+        _buildImageBarItem(context, 'assets/images/games.png', () {
+          Navigator.of(context).pop();
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => GamesMenuScreen()),
+          );
+        }),
       ],
     );
   }
 
-  Widget _buildImageBarItem(BuildContext context, String imagePath, VoidCallback onTap) {
+  Widget _buildImageBarItem(
+    BuildContext context,
+    String imagePath,
+    VoidCallback onTap,
+  ) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -291,10 +283,7 @@ void _showSettingsBottomSheet(BuildContext context) {
           const SizedBox(height: 8),
           const Text(
             'You are currently on guest mode',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey,
-            ),
+            style: TextStyle(fontSize: 14, color: Colors.grey),
           ),
           const SizedBox(height: 16),
           Row(
@@ -318,10 +307,7 @@ void _showSettingsBottomSheet(BuildContext context) {
                   ),
                   child: const Text(
                     'Login',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                    ),
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                   ),
                 ),
               ),
@@ -337,7 +323,9 @@ void _showSettingsBottomSheet(BuildContext context) {
                   },
                   style: OutlinedButton.styleFrom(
                     foregroundColor: const Color.fromARGB(255, 71, 134, 145),
-                    side: const BorderSide(color: const Color.fromARGB(255, 71, 134, 145)),
+                    side: const BorderSide(
+                      color: const Color.fromARGB(255, 71, 134, 145),
+                    ),
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
@@ -345,10 +333,7 @@ void _showSettingsBottomSheet(BuildContext context) {
                   ),
                   child: const Text(
                     'Sign Up',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                    ),
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                   ),
                 ),
               ),
@@ -378,22 +363,22 @@ void _showSettingsBottomSheet(BuildContext context) {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         CircleAvatar(
-  radius: 25,
-  backgroundColor: const Color.fromARGB(255, 38, 27, 70),
-  child: IconButton(
-    onPressed: () {
-      Navigator.of(context).pop(); // Close the sidebar
-      // Show settings panel
-      _showSettingsBottomSheet(context);
-    },
-    icon: const Icon(
-      Icons.settings_outlined,
-      size: 22,
-      color: Color.fromARGB(221, 255, 255, 255),
-    ),
-    padding: EdgeInsets.zero,
-  ),
-),
+          radius: 25,
+          backgroundColor: const Color.fromARGB(255, 38, 27, 70),
+          child: IconButton(
+            onPressed: () {
+              Navigator.of(context).pop(); // Close the sidebar
+              // Show settings panel
+              _showSettingsBottomSheet(context);
+            },
+            icon: const Icon(
+              Icons.settings_outlined,
+              size: 22,
+              color: Color.fromARGB(221, 255, 255, 255),
+            ),
+            padding: EdgeInsets.zero,
+          ),
+        ),
         if (isLoggedIn) // Only show logout button when logged in
           CircleAvatar(
             radius: 25,
@@ -408,11 +393,7 @@ void _showSettingsBottomSheet(BuildContext context) {
                   );
                 }
               },
-              icon: const Icon(
-                Icons.logout,
-                size: 22,
-                color: Colors.red,
-              ),
+              icon: const Icon(Icons.logout, size: 22, color: Colors.red),
               padding: EdgeInsets.zero,
             ),
           ),

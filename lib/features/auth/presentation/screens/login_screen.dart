@@ -27,11 +27,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
   AnimationController? _fadeController;
   AnimationController? _slideController;
   AnimationController? _buttonController;
-  
+
   Animation<double>? _fadeAnimation;
   Animation<Offset>? _slideAnimation;
   Animation<double>? _buttonScaleAnimation;
-  
+
   // Individual animations for staggered effect
   Animation<double>? _emailFadeAnimation;
   Animation<double>? _passwordFadeAnimation;
@@ -53,12 +53,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
       vsync: this,
       duration: const Duration(milliseconds: 1500),
     );
-    
+
     _slideController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1200),
     );
-    
+
     _buttonController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 200),
@@ -69,63 +69,54 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
       parent: _fadeController!,
       curve: Curves.easeInOut,
     );
-    
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.3),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _slideController!,
-      curve: Curves.easeOutCubic,
-    ));
-    
-    _buttonScaleAnimation = Tween<double>(
-      begin: 1.0,
-      end: 0.95,
-    ).animate(CurvedAnimation(
-      parent: _buttonController!,
-      curve: Curves.easeInOut,
-    ));
+
+    _slideAnimation =
+        Tween<Offset>(begin: const Offset(0, 0.3), end: Offset.zero).animate(
+          CurvedAnimation(
+            parent: _slideController!,
+            curve: Curves.easeOutCubic,
+          ),
+        );
+
+    _buttonScaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
+      CurvedAnimation(parent: _buttonController!, curve: Curves.easeInOut),
+    );
 
     // Staggered fade animations with more noticeable intervals
-    _emailFadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _fadeController!,
-      curve: const Interval(0.0, 0.4, curve: Curves.easeOut),
-    ));
-    
-    _passwordFadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _fadeController!,
-      curve: const Interval(0.3, 0.7, curve: Curves.easeOut),
-    ));
-    
-    _forgotPasswordFadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _fadeController!,
-      curve: const Interval(0.5, 0.8, curve: Curves.easeOut),
-    ));
-    
-    _buttonFadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _fadeController!,
-      curve: const Interval(0.6, 0.9, curve: Curves.easeOut),
-    ));
-    
-    _signupFadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _fadeController!,
-      curve: const Interval(0.7, 1.0, curve: Curves.easeOut),
-    ));
+    _emailFadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _fadeController!,
+        curve: const Interval(0.0, 0.4, curve: Curves.easeOut),
+      ),
+    );
+
+    _passwordFadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _fadeController!,
+        curve: const Interval(0.3, 0.7, curve: Curves.easeOut),
+      ),
+    );
+
+    _forgotPasswordFadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _fadeController!,
+        curve: const Interval(0.5, 0.8, curve: Curves.easeOut),
+      ),
+    );
+
+    _buttonFadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _fadeController!,
+        curve: const Interval(0.6, 0.9, curve: Curves.easeOut),
+      ),
+    );
+
+    _signupFadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _fadeController!,
+        curve: const Interval(0.7, 1.0, curve: Curves.easeOut),
+      ),
+    );
 
     _animationsInitialized = true;
 
@@ -183,9 +174,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
         );
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: ${e.toString()}')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error: ${e.toString()}')));
     } finally {
       if (mounted) {
         setState(() {
@@ -234,31 +225,28 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                   alignment: Alignment.centerLeft,
                 ),
               ),
-              
+
               const SizedBox(height: 20),
-              
+
               // Welcome back text
               AnimatedWelcomeBack(
                 text: 'Welcome Back',
                 baseColor: const Color.fromARGB(255, 71, 134, 145),
               ),
-              
+
               const SizedBox(height: 8),
-              
+
               // Subtitle
               FadeTransition(
                 opacity: _getFadeAnimation(_fadeAnimation),
                 child: const Text(
                   'Sign in to continue your journey',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey,
-                  ),
+                  style: TextStyle(fontSize: 16, color: Colors.grey),
                 ),
               ),
-              
+
               const SizedBox(height: 40),
-              
+
               // Email field with animation
               FadeTransition(
                 opacity: _getFadeAnimation(_emailFadeAnimation),
@@ -275,9 +263,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                   ),
                 ),
               ),
-              
+
               const SizedBox(height: 16),
-              
+
               // Password field with animation
               FadeTransition(
                 opacity: _getFadeAnimation(_passwordFadeAnimation),
@@ -306,9 +294,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                   ),
                 ),
               ),
-              
+
               const SizedBox(height: 16),
-              
+
               // Forgot password with animation
               FadeTransition(
                 opacity: _getFadeAnimation(_forgotPasswordFadeAnimation),
@@ -318,19 +306,22 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                     onPressed: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                            builder: (context) => const ForgotPasswordScreen()),
+                          builder: (context) => const ForgotPasswordScreen(),
+                        ),
                       );
                     },
                     child: const Text(
                       'Forgot Password?',
-                      style: TextStyle(color: Color.fromARGB(255, 71, 134, 145)),
+                      style: TextStyle(
+                        color: Color.fromARGB(255, 71, 134, 145),
+                      ),
                     ),
                   ),
                 ),
               ),
-              
+
               const SizedBox(height: 24),
-              
+
               // Login button with animation
               FadeTransition(
                 opacity: _getFadeAnimation(_buttonFadeAnimation),
@@ -343,7 +334,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                           child: ElevatedButton(
                             onPressed: _onLoginPressed,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color.fromARGB(255, 71, 134, 145),
+                              backgroundColor: const Color.fromARGB(
+                                255,
+                                71,
+                                134,
+                                145,
+                              ),
                               padding: const EdgeInsets.symmetric(vertical: 16),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
@@ -361,9 +357,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                         ),
                       ),
               ),
-              
+
               const SizedBox(height: 20),
-              
+
               // Sign up link with animation
               FadeTransition(
                 opacity: _getFadeAnimation(_signupFadeAnimation),
@@ -372,12 +368,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                     onPressed: () {
                       Navigator.of(context).pushReplacement(
                         MaterialPageRoute(
-                            builder: (context) => const RegisterScreen()),
+                          builder: (context) => const RegisterScreen(),
+                        ),
                       );
                     },
                     child: const Text(
                       "Don't have an account? Sign up",
-                      style: TextStyle(color: Color.fromARGB(255, 71, 134, 145)),
+                      style: TextStyle(
+                        color: Color.fromARGB(255, 71, 134, 145),
+                      ),
                     ),
                   ),
                 ),
