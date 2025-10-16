@@ -6,6 +6,7 @@ import 'package:serenote/core/models/todo_item.dart';
 import 'package:serenote/features/auth/presentation/screens/login_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serenote/features/mood/presentation/providers/mood_provider.dart';
+
 class RoutineScreen extends ConsumerStatefulWidget {
   const RoutineScreen({super.key});
 
@@ -19,7 +20,7 @@ class _RoutineScreenState extends ConsumerState<RoutineScreen> {
   bool _isLoading = false;
   final SupabaseClient _supabase = SupabaseService().client;
   User? _currentUser;
-  
+
   // New variables for expandable calendar
   bool _isCalendarExpanded = false;
   bool _isDragging = false;
@@ -66,7 +67,7 @@ class _RoutineScreenState extends ConsumerState<RoutineScreen> {
 
     try {
       final formattedDate = _formatDate(date);
-      
+
       final response = await _supabase
           .from('todos')
           .select()
@@ -107,9 +108,7 @@ class _RoutineScreenState extends ConsumerState<RoutineScreen> {
             onChanged: (value) {
               newTodo = value;
             },
-            decoration: const InputDecoration(
-              hintText: 'Enter your task...',
-            ),
+            decoration: const InputDecoration(hintText: 'Enter your task...'),
           ),
           actions: [
             TextButton(
@@ -204,7 +203,7 @@ class _RoutineScreenState extends ConsumerState<RoutineScreen> {
     }
 
     final todo = _todos[index];
-    
+
     try {
       await _supabase
           .from('todos')
@@ -227,24 +226,52 @@ class _RoutineScreenState extends ConsumerState<RoutineScreen> {
   String _getDateTitle(DateTime date) {
     final today = DateTime.now();
     final tomorrow = today.add(const Duration(days: 1));
-    
+
     if (_isSameDay(date, today)) {
       return "Today";
     } else if (_isSameDay(date, tomorrow)) {
       return "Tomorrow";
     } else {
-      final months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      final months = [
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'May',
+        'Jun',
+        'Jul',
+        'Aug',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dec',
+      ];
       return '${months[date.month - 1]} ${date.day}';
     }
   }
 
   String _getMonthYear(DateTime date) {
-    final months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    final months = [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
+    ];
     return '${months[date.month - 1]} ${date.year}';
   }
 
   bool _isSameDay(DateTime date1, DateTime date2) {
-    return date1.year == date2.year && date1.month == date2.month && date1.day == date2.day;
+    return date1.year == date2.year &&
+        date1.month == date2.month &&
+        date1.day == date2.day;
   }
 
   void _goToToday() {
@@ -255,13 +282,15 @@ class _RoutineScreenState extends ConsumerState<RoutineScreen> {
   }
 
   List<DateTime> _getWeekDates(DateTime centerDate) {
-    final firstDayOfWeek = centerDate.subtract(Duration(days: centerDate.weekday % 7));
-    
+    final firstDayOfWeek = centerDate.subtract(
+      Duration(days: centerDate.weekday % 7),
+    );
+
     return List.generate(7, (index) {
       return DateTime(
         firstDayOfWeek.year,
         firstDayOfWeek.month,
-        firstDayOfWeek.day + index
+        firstDayOfWeek.day + index,
       );
     });
   }
@@ -280,13 +309,16 @@ class _RoutineScreenState extends ConsumerState<RoutineScreen> {
   // New method to generate month calendar dates
   List<DateTime> _getMonthDates(DateTime date) {
     final firstDayOfMonth = DateTime(date.year, date.month, 1);
-    final firstDayOfCalendar = firstDayOfMonth.subtract(Duration(days: firstDayOfMonth.weekday % 7));
-    
-    return List.generate(42, (index) { // 6 weeks
+    final firstDayOfCalendar = firstDayOfMonth.subtract(
+      Duration(days: firstDayOfMonth.weekday % 7),
+    );
+
+    return List.generate(42, (index) {
+      // 6 weeks
       return DateTime(
         firstDayOfCalendar.year,
         firstDayOfCalendar.month,
-        firstDayOfCalendar.day + index
+        firstDayOfCalendar.day + index,
       );
     });
   }
@@ -302,7 +334,7 @@ class _RoutineScreenState extends ConsumerState<RoutineScreen> {
   void _handleDragUpdate(DragUpdateDetails details) {
     final double currentY = details.globalPosition.dy;
     final double deltaY = currentY - _dragStartY;
-    
+
     // Expand when dragging down significantly
     if (deltaY > 50 && !_isCalendarExpanded) {
       _toggleCalendarExpansion();
@@ -323,432 +355,473 @@ class _RoutineScreenState extends ConsumerState<RoutineScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final moodColor = ref.watch(moodColorProvider).maybeWhen(
-  data: (c) => c,
-  orElse: () => const Color(0xFF477D9E), // fallback
-);
+    final moodColor = ref
+        .watch(moodColorProvider)
+        .maybeWhen(
+          data: (c) => c,
+          orElse: () => const Color(0xFF477D9E), // fallback
+        );
 
-Color lighten(Color color, [double amount = 0.5]) {
-  final hsl = HSLColor.fromColor(color);
-  return hsl.withLightness((hsl.lightness + amount).clamp(0, 1)).toColor();
-}
+    Color lighten(Color color, [double amount = 0.5]) {
+      final hsl = HSLColor.fromColor(color);
+      return hsl.withLightness((hsl.lightness + amount).clamp(0, 1)).toColor();
+    }
 
-// In your build:
-final lightMood = lighten(moodColor, 0.2);
+    // In your build:
+    final lightMood = lighten(moodColor, 0.2);
 
     final weekDates = _getWeekDates(_selectedDate);
     final monthDates = _getMonthDates(_selectedDate);
 
-   return Container(
-  decoration: BoxDecoration(
-    gradient: LinearGradient(
-      begin: Alignment.topCenter,
-      end: Alignment.bottomCenter,
-      colors: [
-        lightMood,
-        Theme.of(context).scaffoldBackgroundColor,
-      ],
-      stops: const [0.0, 0.4],
-    ),
-  ),
-  child:  Scaffold(
-      backgroundColor:  Colors.transparent,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black87),
-          onPressed: _navigateToDashboard,
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [lightMood, Theme.of(context).scaffoldBackgroundColor],
+          stops: const [0.0, 0.5],
         ),
-        title: Column(
-          children: [
-            Text(
-              _getDateTitle(_selectedDate),
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
-              ),
-            ),
-            const SizedBox(height: 4),
-            GestureDetector(
-              onTap: _goToToday,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                decoration: BoxDecoration(
-                  color: _isSameDay(_selectedDate, DateTime.now()) 
-                      ? moodColor
-                      : Colors.grey[300],
-                  borderRadius: BorderRadius.circular(12),
+      ),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.black87),
+            onPressed: _navigateToDashboard,
+          ),
+          title: Column(
+            children: [
+              Text(
+                _getDateTitle(_selectedDate),
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
                 ),
-                child: Text(
-                  "Today",
-                  style: TextStyle(
-                    color: _isSameDay(_selectedDate, DateTime.now()) 
-                        ? Colors.white 
-                        : Colors.black87,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
+              ),
+              const SizedBox(height: 4),
+              GestureDetector(
+                onTap: _goToToday,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: _isSameDay(_selectedDate, DateTime.now())
+                        ? moodColor
+                        : Colors.grey[300],
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    "Today",
+                    style: TextStyle(
+                      color: _isSameDay(_selectedDate, DateTime.now())
+                          ? Colors.white
+                          : Colors.black87,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
+          centerTitle: true,
         ),
-        centerTitle: true,
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            // Expandable Calendar Section with FIXED overflow
-            GestureDetector(
-              onVerticalDragStart: _handleDragStart,
-              onVerticalDragUpdate: _handleDragUpdate,
-              onVerticalDragEnd: _handleDragEnd,
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                height: _isCalendarExpanded ? 350 : 140,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                margin: const EdgeInsets.all(16),
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      // Month and Year Header
-                      Padding(
-                        padding: const EdgeInsets.only(top: 12.0),
-                        child: Text(
-                          _getMonthYear(_selectedDate),
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black87,
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              // Expandable Calendar Section with FIXED overflow
+              GestureDetector(
+                onVerticalDragStart: _handleDragStart,
+                onVerticalDragUpdate: _handleDragUpdate,
+                onVerticalDragEnd: _handleDragEnd,
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  height: _isCalendarExpanded ? 350 : 140,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  margin: const EdgeInsets.all(16),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        // Month and Year Header
+                        Padding(
+                          padding: const EdgeInsets.only(top: 12.0),
+                          child: Text(
+                            _getMonthYear(_selectedDate),
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,
+                            ),
                           ),
                         ),
-                      ),
-                      // Week Calendar (always visible)
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) {
-                            return SizedBox(
-                              width: 36,
-                              child: Text(
-                                day,
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black54,
-                                ),
-                              ),
-                            );
-                          }).toList(),
-                        ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: weekDates.map((date) {
-                            final isSelected = _isSameDay(date, _selectedDate);
-                            final isToday = _isSameDay(date, DateTime.now());
-                            return GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  _selectedDate = date;
-                                });
-                                _loadTodosForDate(date);
-                              },
-                              child: Container(
-                                width: 36,
-                                height: 36,
-                                decoration: BoxDecoration(
-                                  color: isSelected ? moodColor : Colors.transparent,
-                                  border: isToday && !isSelected
-                                      ? Border.all(color: moodColor , width: 2)
-                                      : null,
-                                  borderRadius: BorderRadius.circular(18),
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    date.day.toString(),
-                                    style: TextStyle(
-                                      color: isSelected ? Colors.white : 
-                                            isToday ? moodColor  : Colors.black54,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            );
-                          }).toList(),
-                        ),
-                      ),
-                      
-                      // Expandable Month Calendar - FIXED overflow with proper constraints
-                      if (_isCalendarExpanded) ...[
-                        const SizedBox(height: 16),
+                        // Week Calendar (always visible)
                         Container(
-                          height: 200, // Fixed height to prevent overflow
-                          padding: const EdgeInsets.symmetric(horizontal: 8),
-                          child: GridView.builder(
-                            physics: const ClampingScrollPhysics(),
-                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 7,
-                              childAspectRatio: 1.0,
-                            ),
-                            itemCount: monthDates.length,
-                            itemBuilder: (context, index) {
-                              final date = monthDates[index];
-                              final isCurrentMonth = date.month == _selectedDate.month;
-                              final isSelected = _isSameDay(date, _selectedDate);
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children:
+                                [
+                                  'Sun',
+                                  'Mon',
+                                  'Tue',
+                                  'Wed',
+                                  'Thu',
+                                  'Fri',
+                                  'Sat',
+                                ].map((day) {
+                                  return SizedBox(
+                                    width: 36,
+                                    child: Text(
+                                      day,
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black54,
+                                      ),
+                                    ),
+                                  );
+                                }).toList(),
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: weekDates.map((date) {
+                              final isSelected = _isSameDay(
+                                date,
+                                _selectedDate,
+                              );
                               final isToday = _isSameDay(date, DateTime.now());
-                              
                               return GestureDetector(
                                 onTap: () {
                                   setState(() {
                                     _selectedDate = date;
-                                    _isCalendarExpanded = false;
                                   });
                                   _loadTodosForDate(date);
                                 },
                                 child: Container(
-                                  margin: const EdgeInsets.all(2),
+                                  width: 36,
+                                  height: 36,
                                   decoration: BoxDecoration(
-                                    color: isSelected ? moodColor: Colors.transparent,
+                                    color: isSelected
+                                        ? moodColor
+                                        : Colors.transparent,
                                     border: isToday && !isSelected
                                         ? Border.all(color: moodColor, width: 2)
                                         : null,
-                                    borderRadius: BorderRadius.circular(20),
+                                    borderRadius: BorderRadius.circular(18),
                                   ),
                                   child: Center(
                                     child: Text(
                                       date.day.toString(),
                                       style: TextStyle(
-                                        color: isSelected 
-                                            ? Colors.white 
-                                            : isCurrentMonth 
-                                              ? Colors.black87 
-                                              : Colors.grey,
-                                        fontWeight: isSelected || isToday 
-                                            ? FontWeight.bold 
-                                            : FontWeight.normal,
+                                        color: isSelected
+                                            ? Colors.white
+                                            : isToday
+                                            ? moodColor
+                                            : Colors.black54,
+                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                   ),
                                 ),
                               );
-                            },
+                            }).toList(),
                           ),
                         ),
+
+                        // Expandable Month Calendar - FIXED overflow with proper constraints
+                        if (_isCalendarExpanded) ...[
+                          const SizedBox(height: 16),
+                          Container(
+                            height: 200, // Fixed height to prevent overflow
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: GridView.builder(
+                              physics: const ClampingScrollPhysics(),
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 7,
+                                    childAspectRatio: 1.0,
+                                  ),
+                              itemCount: monthDates.length,
+                              itemBuilder: (context, index) {
+                                final date = monthDates[index];
+                                final isCurrentMonth =
+                                    date.month == _selectedDate.month;
+                                final isSelected = _isSameDay(
+                                  date,
+                                  _selectedDate,
+                                );
+                                final isToday = _isSameDay(
+                                  date,
+                                  DateTime.now(),
+                                );
+
+                                return GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      _selectedDate = date;
+                                      _isCalendarExpanded = false;
+                                    });
+                                    _loadTodosForDate(date);
+                                  },
+                                  child: Container(
+                                    margin: const EdgeInsets.all(2),
+                                    decoration: BoxDecoration(
+                                      color: isSelected
+                                          ? moodColor
+                                          : Colors.transparent,
+                                      border: isToday && !isSelected
+                                          ? Border.all(
+                                              color: moodColor,
+                                              width: 2,
+                                            )
+                                          : null,
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        date.day.toString(),
+                                        style: TextStyle(
+                                          color: isSelected
+                                              ? Colors.white
+                                              : isCurrentMonth
+                                              ? Colors.black87
+                                              : Colors.grey,
+                                          fontWeight: isSelected || isToday
+                                              ? FontWeight.bold
+                                              : FontWeight.normal,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+
+                        // Drag indicator
+                        if (!_isCalendarExpanded) // Only show when collapsed
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 8.0),
+                            child: Icon(
+                              _isCalendarExpanded
+                                  ? Icons.keyboard_arrow_up
+                                  : Icons.keyboard_arrow_down,
+                              color: Colors.grey,
+                            ),
+                          ),
                       ],
-                      
-                      // Drag indicator
-                      if (!_isCalendarExpanded) // Only show when collapsed
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),
-                          child: Icon(
-                            _isCalendarExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
-                            color: Colors.grey,
-                          ),
-                        ),
-                    ],
+                    ),
                   ),
                 ),
               ),
-            ),
-            
-            // To Do Section Header
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    "To Do",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
-                    ),
-                  ),
-                  Text(
-                    "${_todos.where((todo) => todo.isCompleted).length}/${_todos.length}",
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            
-            // Single Card with all todos
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Card(
-                elevation: 4,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
+
+              // To Do Section Header
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 16,
                 ),
-                child: Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      "To Do",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    Text(
+                      "${_todos.where((todo) => todo.isCompleted).length}/${_todos.length}",
+                      style: const TextStyle(fontSize: 14, color: Colors.grey),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Single Card with all todos
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Card(
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
-                    image: const DecorationImage(
-                      image: AssetImage('assets/images/todo2.png'),
-                      fit: BoxFit.cover,
-                    ),
                   ),
-                  child: _isLoading
-                      ? const Padding(
-                          padding: EdgeInsets.all(40.0),
-                          child: Center(child: CircularProgressIndicator()),
-                        )
-                      : _currentUser == null
-                          ? Padding(
-                              padding: const EdgeInsets.all(40.0),
-                              child: Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const Text(
-                                      'Please log in to view your todos',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        color: Colors.grey,
-                                      ),
+                  child: Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      image: const DecorationImage(
+                        image: AssetImage('assets/images/todo2.png'),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    child: _isLoading
+                        ? const Padding(
+                            padding: EdgeInsets.all(40.0),
+                            child: Center(child: CircularProgressIndicator()),
+                          )
+                        : _currentUser == null
+                        ? Padding(
+                            padding: const EdgeInsets.all(40.0),
+                            child: Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Text(
+                                    'Please log in to view your todos',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.grey,
                                     ),
-                                    const SizedBox(height: 16),
-                                    ElevatedButton(
-                                      onPressed: _redirectToLogin, // Changed to _redirectToLogin
-                                      child: const Text('Login'),
-                                    ),
-                                  ],
-                                ),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  ElevatedButton(
+                                    onPressed:
+                                        _redirectToLogin, // Changed to _redirectToLogin
+                                    child: const Text('Login'),
+                                  ),
+                                ],
                               ),
-                            )
-                          : _todos.isEmpty
-                              ? Padding(
-                                  padding: const EdgeInsets.all(40.0),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      const Icon(
-                                        Icons.task_outlined,
-                                        size: 60,
-                                        color: Colors.grey,
-                                      ),
-                                      const SizedBox(height: 16),
-                                      const Text(
-                                        'No tasks for today!',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 8),
-                                      const Text(
-                                        'Add a new task to get started',
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              : Padding(
-                                  padding: const EdgeInsets.all(20.0),
-                                  child: Column(
-                                    children: [
-                                      ..._todos.asMap().entries.map((entry) {
-                                        final index = entry.key;
-                                        final todo = entry.value;
-                                        return _buildTodoListItem(todo, index);
-                                      }).toList(),
-                                    ],
+                            ),
+                          )
+                        : _todos.isEmpty
+                        ? Padding(
+                            padding: const EdgeInsets.all(40.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(
+                                  Icons.task_outlined,
+                                  size: 60,
+                                  color: Colors.grey,
+                                ),
+                                const SizedBox(height: 16),
+                                const Text(
+                                  'No tasks for today!',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.grey,
                                   ),
                                 ),
+                                const SizedBox(height: 8),
+                                const Text(
+                                  'Add a new task to get started',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        : Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: Column(
+                              children: [
+                                ..._todos.asMap().entries.map((entry) {
+                                  final index = entry.key;
+                                  final todo = entry.value;
+                                  return _buildTodoListItem(todo, index);
+                                }).toList(),
+                              ],
+                            ),
+                          ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 100), // Extra space at bottom for FAB
+            ],
+          ),
+        ),
+        floatingActionButton: _currentUser != null
+            ? FloatingActionButton(
+                backgroundColor: moodColor,
+                onPressed: _addNewTodo,
+                child: const Icon(Icons.add, color: Colors.white),
+              )
+            : null,
+      ),
+    );
+  }
+
+  Widget _buildTodoListItem(ToDoItem todo, int index) {
+    return Dismissible(
+      key: Key(todo.id ?? 'todo_$index'),
+      direction: DismissDirection.endToStart,
+      background: Container(
+        decoration: BoxDecoration(
+          color: Colors.red,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.only(right: 20),
+        child: const Icon(Icons.delete, color: Colors.white),
+      ),
+      onDismissed: (direction) {
+        _deleteTodo(index);
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.5), // subtle background
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          crossAxisAlignment:
+              CrossAxisAlignment.center, // Align checkbox & text vertically
+          children: [
+            Checkbox(
+              value: todo.isCompleted,
+              onChanged: (bool? value) {
+                _toggleTodo(index);
+              },
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(4),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                todo.title,
+                style: TextStyle(
+                  fontSize: 16,
+                  decoration: todo.isCompleted
+                      ? TextDecoration.lineThrough
+                      : TextDecoration.none,
+                  color: todo.isCompleted ? Colors.grey : Colors.black87,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             ),
-            const SizedBox(height: 100), // Extra space at bottom for FAB
           ],
         ),
       ),
-      floatingActionButton: _currentUser != null
-          ? FloatingActionButton(
-              backgroundColor: moodColor,
-              onPressed: _addNewTodo,
-              child: const Icon(Icons.add, color: Colors.white),
-            )
-          : null,
-    ) );
+    );
   }
-
- Widget _buildTodoListItem(ToDoItem todo, int index) {
-  return Dismissible(
-    key: Key(todo.id ?? 'todo_$index'),
-    direction: DismissDirection.endToStart,
-    background: Container(
-      decoration: BoxDecoration(
-        color: Colors.red,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      alignment: Alignment.centerRight,
-      padding: const EdgeInsets.only(right: 20),
-      child: const Icon(Icons.delete, color: Colors.white),
-    ),
-    onDismissed: (direction) {
-      _deleteTodo(index);
-    },
-    child: Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.5), // subtle background
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center, // Align checkbox & text vertically
-        children: [
-          Checkbox(
-            value: todo.isCompleted,
-            onChanged: (bool? value) {
-              _toggleTodo(index);
-            },
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(4),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              todo.title,
-              style: TextStyle(
-                fontSize: 16,
-                decoration: todo.isCompleted ? TextDecoration.lineThrough : TextDecoration.none,
-                color: todo.isCompleted ? Colors.grey : Colors.black87,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
-}
-
 }

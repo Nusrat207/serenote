@@ -2,15 +2,17 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:serenote/features/timer/presentation/widgets/timer_settings_sheet.dart';
 import 'package:serenote/features/timer/presentation/widgets/timer_theme_sheet.dart';
-
-class TimerScreen extends StatefulWidget {
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:serenote/features/mood/presentation/providers/mood_provider.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+class TimerScreen extends ConsumerStatefulWidget {
   const TimerScreen({super.key});
 
   @override
-  State<TimerScreen> createState() => _TimerScreenState();
+  ConsumerState<TimerScreen> createState() => _TimerScreenState();
 }
 
-class _TimerScreenState extends State<TimerScreen> {
+class _TimerScreenState extends ConsumerState<TimerScreen> {
   int _pomodoroMinutes = 25;
   int _shortBreakMinutes = 5;
   int _longBreakMinutes = 15;
@@ -122,6 +124,15 @@ class _TimerScreenState extends State<TimerScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+     final moodColor = ref
+        .watch(moodColorProvider)
+        .maybeWhen(
+          data: (c) => c,
+          orElse: () => const Color(0xFF477D9E), // fallback
+        );
+
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Timer'),
@@ -139,93 +150,108 @@ class _TimerScreenState extends State<TimerScreen> {
               fit: BoxFit.cover,
             ),
           ),
-          SingleChildScrollView(
-            child: Column(
+         SingleChildScrollView(
+  child: ConstrainedBox(
+    constraints: BoxConstraints(
+      minHeight: MediaQuery.of(context).size.height,
+    ),
+    child: IntrinsicHeight(
+      child: Column(
+        children: [
+          // Mode Selector - Pomodoro / Normal Timer
+          Container(
+            margin: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(4),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade200.withOpacity(0.8), // Adjusted for visibility
+              borderRadius: BorderRadius.circular(25),
+            ),
+            child: Row(
               children: [
-                // Mode Selector - Pomodoro / Normal Timer
-                Container(
-                  margin: const EdgeInsets.all(20),
-                  padding: const EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade200.withOpacity(0.8), // Adjusted for visibility
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () => _toggleMode(true),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            decoration: BoxDecoration(
-                              color: _isPomodoroMode ? const Color.fromARGB(255, 71, 134, 145): Colors.transparent,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Text(
-                              'Pomodoro',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: _isPomodoroMode ? Colors.white : Colors.grey.shade800, // Adjusted text color
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () => _toggleMode(true),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      decoration: BoxDecoration(
+                        color: _isPomodoroMode ? moodColor : Colors.transparent,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        'Pomodoro',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: _isPomodoroMode
+                              ? Colors.white
+                              : Colors.grey.shade800,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () => _toggleMode(false),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            decoration: BoxDecoration(
-                              color: !_isPomodoroMode ? const Color.fromARGB(255, 71, 134, 145) : const Color.fromARGB(0, 255, 255, 255),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Text(
-                              'Normal Timer',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: !_isPomodoroMode ? Colors.white : Colors.grey.shade800, // Adjusted text color
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
-
-                // Pomodoro Type Selector (Removed this block)
-                if (_isPomodoroMode) ...[
-                  const SizedBox(height: 20),
-                ],
-
-
-                // Custom Time Input (only show in Normal Timer mode)
-                if (!_isPomodoroMode) ...[
-                  const SizedBox(height: 20),
-                  _buildCustomTimeInput(),
-                ],
-
-                const SizedBox(height: 40),
-
-                // Timer Display
-                _buildTimerDisplay(),
-
-                const SizedBox(height: 40),
-
-                // Control Buttons
-                _buildControlButtons(),
-
-                // Add some vertical space instead of the Spacer
-                const SizedBox(height: 20),
-
-                // Bottom Options - Only Settings and Themes
-                _buildBottomOptions(),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () => _toggleMode(false),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      decoration: BoxDecoration(
+                        color: !_isPomodoroMode
+                            ? moodColor
+                            : Colors.transparent,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        'Normal Timer',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: !_isPomodoroMode
+                              ? Colors.white
+                              : Colors.grey.shade800,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
+
+          // Pomodoro Mode
+          if (_isPomodoroMode) ...[
+            const SizedBox(height: 20),
+          ],
+
+          // Normal Timer Mode
+          if (!_isPomodoroMode) ...[
+            const SizedBox(height: 10),
+            _buildCustomTimeInput(),
+          ],
+
+          const SizedBox(height: 30),
+
+          // Timer Display
+          _buildTimerDisplay(),
+
+          const SizedBox(height: 30),
+
+          // Control Buttons
+          _buildControlButtons(moodColor),
+
+          const SizedBox(height: 5),
+
+          // Bottom Options
+          _buildBottomOptions(moodColor),
+
+          // Optional padding at bottom to ensure full coverage
+          const SizedBox(height: 30),
+        ],
+      ),
+    ),
+  ),
+),
+
         ],
       ),
       // ----------------------------------------------
@@ -378,7 +404,8 @@ class _TimerScreenState extends State<TimerScreen> {
     );
   }
 
-  Widget _buildControlButtons() {
+  Widget _buildControlButtons(Color moodColor) {
+
     return SizedBox(
       width: 200,
       child: ElevatedButton(
@@ -386,7 +413,7 @@ class _TimerScreenState extends State<TimerScreen> {
             ? null // Disable button if time is 0 and we are not running
             : _isRunning ? _pauseTimer : _startTimer,
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color.fromARGB(255, 71, 134, 145),
+          backgroundColor: moodColor,
           foregroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(vertical: 16),
           shape: RoundedRectangleBorder(
@@ -410,7 +437,7 @@ class _TimerScreenState extends State<TimerScreen> {
 
   // Removed _getButtonText function as it was related to TimerType
 
-  Widget _buildBottomOptions() {
+  Widget _buildBottomOptions(Color moodColor) {
     return Padding(
       padding: const EdgeInsets.all(20),
       child: Container( // Added Container for background
@@ -424,20 +451,21 @@ class _TimerScreenState extends State<TimerScreen> {
           children: [
             _buildBottomOption(Icons.refresh_outlined, 'Reset', () {
               _resetTimer();
-            }),
-            _buildBottomOption(Icons.settings_outlined, 'Settings', () {
-              _showSettingsSheet();
-            }),
-            _buildBottomOption(Icons.palette_outlined, 'Themes', () {
+            }, moodColor),
+           if (_isPomodoroMode) // 👈 show only in Pomodoro mode
+      _buildBottomOption(Icons.settings_outlined, 'Settings', () {
+        _showSettingsSheet();
+      }, moodColor),
+            _buildBottomOption(Icons.track_changes, 'Goals', () {
               _showThemeSheet();
-            }),
+            }, moodColor),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildBottomOption(IconData icon, String label, VoidCallback onTap) {
+  Widget _buildBottomOption(IconData icon, String label, VoidCallback onTap, Color moodColor) {
     return GestureDetector(
       onTap: onTap,
       child: Column(
@@ -445,7 +473,7 @@ class _TimerScreenState extends State<TimerScreen> {
           Icon(
             icon,
             size: 28,
-            color:  const Color.fromARGB(255, 71, 134, 145),
+            color:  moodColor,
           ),
           const SizedBox(height: 6),
           Text(
@@ -478,47 +506,48 @@ class _TimerScreenState extends State<TimerScreen> {
     }
   }
 
-  void _showSettingsSheet() {
-    // Temporarily pause the timer while settings are being adjusted
-    if (_isRunning) _pauseTimer(); 
+ void _showSettingsSheet() {
+  if (_isRunning) _pauseTimer();
 
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => TimerSettingsSheet(
-        pomodoroCycle: _pomodoroMinutes,
-        shortBreak: _shortBreakMinutes,
-        longBreak: _longBreakMinutes,
-        onSettingsChanged: (pomodoro, shortBreak, longBreak) {
-          setState(() {
-            _pomodoroMinutes = pomodoro;
-            _shortBreakMinutes = shortBreak;
-            _longBreakMinutes = longBreak;
-            _remainingSeconds = _getInitialSeconds();
-          });
-        },
-      ),
-    );
-  }
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    builder: (context) => TimerSettingsSheet(
+      pomodoroCycle: _pomodoroMinutes,
+      shortBreak: _shortBreakMinutes,
+      longBreak: _longBreakMinutes,
+      onSettingsChanged: (pomodoro, shortBreak, longBreak) {
+        setState(() {
+          _pomodoroMinutes = pomodoro;
+          _shortBreakMinutes = shortBreak;
+          _longBreakMinutes = longBreak;
+          _remainingSeconds = _getInitialSeconds();
+        });
+      },
+    ),
+  );
+}
+
 
   void _showThemeSheet() {
-    if (_isRunning) _pauseTimer();
+  if (_isRunning) _pauseTimer();
 
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => TimerThemeSheet(
-        currentTheme: _selectedTheme,
-        onThemeChanged: (theme) {
-          setState(() {
-            _selectedTheme = theme;
-          });
-        },
-      ),
-    );
-  }
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    builder: (context) => TimerThemeSheet(
+      currentTheme: _selectedTheme,
+      onThemeChanged: (theme) {
+        setState(() {
+          _selectedTheme = theme;
+        });
+      },
+    ),
+  );
+}
+
 }
 
 // Keeping the enum for external widget compatibility, but TimerScreen doesn't use it internally now
