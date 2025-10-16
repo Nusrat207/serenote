@@ -13,6 +13,7 @@ import '../widgets/sidebar.dart';
 import '../../../habits/presentation/screens/habits_screen.dart';
 import '../widgets/quick_mood_entry_card.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '../widgets/animated_app_bar.dart';
 class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({super.key});
 
@@ -202,55 +203,24 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   )
                 : null,
             child: SafeArea(
+              
               child: CustomScrollView(
                 slivers: [
-                  SliverAppBar(
-                    expandedHeight: 120,
-                    floating: false,
-                    pinned: true,
-                    backgroundColor: Colors.transparent,
-                    leading: Builder(
-                      builder: (context) => IconButton(
-                        icon: const Icon(Icons.menu, color: Colors.black87),
-                        onPressed: () => Scaffold.of(context).openDrawer(),
-                      ),
-                    ),
-                    flexibleSpace: FlexibleSpaceBar(
-                      title: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            _getGreeting(),
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          Text(
-                            DateFormat('EEEE, MMM dd').format(DateTime.now()),
-                            style: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w300,
-                            ),
-                          ),
-                        ],
-                      ),
-                      titlePadding: const EdgeInsets.only(left: 30, bottom: 16),
-                    ),
-                  ),
+                   AnimatedAppBar(),
                   SliverPadding(
                     padding: const EdgeInsets.all(20),
                     sliver: SliverList(
                       delegate: SliverChildListDelegate([
+                        const SizedBox(height: 16),
                         if (userId == null)
                           _buildLoginMessage()
                         else
                           _buildTodaysMoodCard(todaysMood),
-                        if (userId != null) const QuickMoodEntryCard(),
+                        if (userId != null) 
+                        const QuickMoodEntryCard(),
                         const SizedBox(height: 20),
                       
-                        _buildStatsOverview(allMoods, recentMoods),
+                        _buildStatsOverview(allMoods, recentMoods, todaysMood),
                         const SizedBox(height: 20),
                         if (userId != null) _buildWeeklyMoodGraph(weeklyMoods),
                         const SizedBox(height: 20),
@@ -263,7 +233,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               ),
             ),
           ),
-          bottomNavigationBar: _buildBottomNavBar(),
+          bottomNavigationBar: _buildBottomNavBar(todaysMood),
         );
       },
     );
@@ -279,7 +249,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   // ---------------- LOGIN MESSAGE ----------------
   Widget _buildLoginMessage() {
     return Card(
-      color: Colors.purple.shade50,
+      color: const Color.fromARGB(255, 221, 255, 245),
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
@@ -289,7 +259,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             Icon(
               Icons.sentiment_dissatisfied,
               size: 40,
-              color: Colors.purple.shade300,
+              color: const Color.fromARGB(255, 108, 192, 206),
             ),
             const SizedBox(height: 12),
             const Text(
@@ -412,6 +382,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   Widget _buildStatsOverview(
     List<MoodEntry> allMoods,
     List<MoodEntry> recentMoods,
+    MoodEntry? todaysMood,
   ) {
     final moodTodayCount = allMoods
         .where(
@@ -431,7 +402,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             icon: Icons.mood,
             value: moodTodayCount.toString(),
             label: 'Moods Tracked Today',
-            color: Colors.purple,
+            color: const Color.fromARGB(255, 17, 38, 38),
           ),
         ),
         const SizedBox(width: 12),
@@ -725,7 +696,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   }
 
   // ---------------- BOTTOM NAV ----------------
-  Widget _buildBottomNavBar() {
+  Widget _buildBottomNavBar(MoodEntry? mood) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -750,14 +721,18 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   context,
                   MaterialPageRoute(builder: (_) => const MoodScreen()),
                 ),
+                mood: mood,
               ),
               _buildNavItem(
-                icon: Icons.home,
-                label: 'Home',
+                icon: FontAwesomeIcons.book,
+                label: 'Journal',
                 onTap: () => Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const DashboardScreen()),
+                  MaterialPageRoute(builder: (_) => const JournalScreen()),
+                  
                 ),
+                
+                mood: mood,
               ),
               _buildNavItem(
                 icon: Icons.check_box,
@@ -766,6 +741,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   context,
                   MaterialPageRoute(builder: (_) => const HabitsScreen()),
                 ),
+                mood: mood,
               ),
             ],
           ),
@@ -778,7 +754,16 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     required IconData icon,
     required String label,
     required VoidCallback onTap,
+    MoodEntry? mood,
   }) {
+    Color baseColor = MoodColors.getColorForMood(mood?.detectedMood ?? 'black');
+Color darkerColor = Color.fromARGB(
+  baseColor.alpha,
+  (baseColor.red * 0.7).round(),
+  (baseColor.green * 0.7).round(),
+  (baseColor.blue * 0.7).round(),
+);
+
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
@@ -787,14 +772,14 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 28, color: Colors.purple),
+            Icon(icon, size: 25, color: darkerColor),
             const SizedBox(height: 4),
             Text(
               label,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.w500,
-                color: Colors.purple,
+                color: darkerColor,
               ),
             ),
           ],
