@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:serenote/core/services/supabase_service.dart';
 import 'package:serenote/core/models/todo_item.dart';
 import 'package:serenote/features/auth/presentation/screens/login_screen.dart';
-
-class RoutineScreen extends StatefulWidget {
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:serenote/features/mood/presentation/providers/mood_provider.dart';
+class RoutineScreen extends ConsumerStatefulWidget {
   const RoutineScreen({super.key});
 
   @override
-  State<RoutineScreen> createState() => _RoutineScreenState();
+  ConsumerState<RoutineScreen> createState() => _RoutineScreenState();
 }
 
-class _RoutineScreenState extends State<RoutineScreen> {
+class _RoutineScreenState extends ConsumerState<RoutineScreen> {
   final List<ToDoItem> _todos = [];
   DateTime _selectedDate = DateTime.now();
   bool _isLoading = false;
@@ -321,11 +323,36 @@ class _RoutineScreenState extends State<RoutineScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final moodColor = ref.watch(moodColorProvider).maybeWhen(
+  data: (c) => c,
+  orElse: () => const Color(0xFF477D9E), // fallback
+);
+
+Color lighten(Color color, [double amount = 0.5]) {
+  final hsl = HSLColor.fromColor(color);
+  return hsl.withLightness((hsl.lightness + amount).clamp(0, 1)).toColor();
+}
+
+// In your build:
+final lightMood = lighten(moodColor, 0.2);
+
     final weekDates = _getWeekDates(_selectedDate);
     final monthDates = _getMonthDates(_selectedDate);
 
-    return Scaffold(
-      backgroundColor: const Color(0xFFF5EFFF),
+   return Container(
+  decoration: BoxDecoration(
+    gradient: LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      colors: [
+        lightMood,
+        Theme.of(context).scaffoldBackgroundColor,
+      ],
+      stops: const [0.0, 0.4],
+    ),
+  ),
+  child:  Scaffold(
+      backgroundColor:  Colors.transparent,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -350,7 +377,7 @@ class _RoutineScreenState extends State<RoutineScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                 decoration: BoxDecoration(
                   color: _isSameDay(_selectedDate, DateTime.now()) 
-                      ? Colors.purpleAccent 
+                      ? moodColor
                       : Colors.grey[300],
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -380,7 +407,7 @@ class _RoutineScreenState extends State<RoutineScreen> {
               onVerticalDragEnd: _handleDragEnd,
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 300),
-                height: _isCalendarExpanded ? 400 : 120,
+                height: _isCalendarExpanded ? 350 : 140,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(16),
@@ -393,149 +420,151 @@ class _RoutineScreenState extends State<RoutineScreen> {
                   ],
                 ),
                 margin: const EdgeInsets.all(16),
-                child: Column(
-                  children: [
-                    // Month and Year Header
-                    Padding(
-                      padding: const EdgeInsets.only(top: 12.0),
-                      child: Text(
-                        _getMonthYear(_selectedDate),
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black87,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      // Month and Year Header
+                      Padding(
+                        padding: const EdgeInsets.only(top: 12.0),
+                        child: Text(
+                          _getMonthYear(_selectedDate),
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
+                          ),
                         ),
                       ),
-                    ),
-                    // Week Calendar (always visible)
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) {
-                          return SizedBox(
-                            width: 36,
-                            child: Text(
-                              day,
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black54,
-                              ),
-                            ),
-                          );
-                        }).toList(),
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: weekDates.map((date) {
-                          final isSelected = _isSameDay(date, _selectedDate);
-                          final isToday = _isSameDay(date, DateTime.now());
-                          return GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                _selectedDate = date;
-                              });
-                              _loadTodosForDate(date);
-                            },
-                            child: Container(
+                      // Week Calendar (always visible)
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) {
+                            return SizedBox(
                               width: 36,
-                              height: 36,
-                              decoration: BoxDecoration(
-                                color: isSelected ? Colors.purpleAccent : Colors.transparent,
-                                border: isToday && !isSelected
-                                    ? Border.all(color: Colors.purpleAccent, width: 2)
-                                    : null,
-                                borderRadius: BorderRadius.circular(18),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  date.day.toString(),
-                                  style: TextStyle(
-                                    color: isSelected ? Colors.white : 
-                                          isToday ? Colors.purpleAccent : Colors.black54,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                              child: Text(
+                                day,
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black54,
                                 ),
                               ),
-                            ),
-                          );
-                        }).toList(),
+                            );
+                          }).toList(),
+                        ),
                       ),
-                    ),
-                    
-                    // Expandable Month Calendar - FIXED overflow with proper constraints
-                    if (_isCalendarExpanded) ...[
-                      const SizedBox(height: 16),
                       Container(
-                        height: 200, // Fixed height to prevent overflow
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: GridView.builder(
-                          physics: const ClampingScrollPhysics(),
-                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 7,
-                            childAspectRatio: 1.0,
-                          ),
-                          itemCount: monthDates.length,
-                          itemBuilder: (context, index) {
-                            final date = monthDates[index];
-                            final isCurrentMonth = date.month == _selectedDate.month;
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: weekDates.map((date) {
                             final isSelected = _isSameDay(date, _selectedDate);
                             final isToday = _isSameDay(date, DateTime.now());
-                            
                             return GestureDetector(
                               onTap: () {
                                 setState(() {
                                   _selectedDate = date;
-                                  _isCalendarExpanded = false;
                                 });
                                 _loadTodosForDate(date);
                               },
                               child: Container(
-                                margin: const EdgeInsets.all(2),
+                                width: 36,
+                                height: 36,
                                 decoration: BoxDecoration(
-                                  color: isSelected ? Colors.purpleAccent : Colors.transparent,
+                                  color: isSelected ? moodColor : Colors.transparent,
                                   border: isToday && !isSelected
-                                      ? Border.all(color: Colors.purpleAccent, width: 2)
+                                      ? Border.all(color: moodColor , width: 2)
                                       : null,
-                                  borderRadius: BorderRadius.circular(20),
+                                  borderRadius: BorderRadius.circular(18),
                                 ),
                                 child: Center(
                                   child: Text(
                                     date.day.toString(),
                                     style: TextStyle(
-                                      color: isSelected 
-                                          ? Colors.white 
-                                          : isCurrentMonth 
-                                            ? Colors.black87 
-                                            : Colors.grey,
-                                      fontWeight: isSelected || isToday 
-                                          ? FontWeight.bold 
-                                          : FontWeight.normal,
+                                      color: isSelected ? Colors.white : 
+                                            isToday ? moodColor  : Colors.black54,
+                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                 ),
                               ),
                             );
-                          },
+                          }).toList(),
                         ),
                       ),
+                      
+                      // Expandable Month Calendar - FIXED overflow with proper constraints
+                      if (_isCalendarExpanded) ...[
+                        const SizedBox(height: 16),
+                        Container(
+                          height: 200, // Fixed height to prevent overflow
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: GridView.builder(
+                            physics: const ClampingScrollPhysics(),
+                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 7,
+                              childAspectRatio: 1.0,
+                            ),
+                            itemCount: monthDates.length,
+                            itemBuilder: (context, index) {
+                              final date = monthDates[index];
+                              final isCurrentMonth = date.month == _selectedDate.month;
+                              final isSelected = _isSameDay(date, _selectedDate);
+                              final isToday = _isSameDay(date, DateTime.now());
+                              
+                              return GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    _selectedDate = date;
+                                    _isCalendarExpanded = false;
+                                  });
+                                  _loadTodosForDate(date);
+                                },
+                                child: Container(
+                                  margin: const EdgeInsets.all(2),
+                                  decoration: BoxDecoration(
+                                    color: isSelected ? moodColor: Colors.transparent,
+                                    border: isToday && !isSelected
+                                        ? Border.all(color: moodColor, width: 2)
+                                        : null,
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      date.day.toString(),
+                                      style: TextStyle(
+                                        color: isSelected 
+                                            ? Colors.white 
+                                            : isCurrentMonth 
+                                              ? Colors.black87 
+                                              : Colors.grey,
+                                        fontWeight: isSelected || isToday 
+                                            ? FontWeight.bold 
+                                            : FontWeight.normal,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                      
+                      // Drag indicator
+                      if (!_isCalendarExpanded) // Only show when collapsed
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 8.0),
+                          child: Icon(
+                            _isCalendarExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                            color: Colors.grey,
+                          ),
+                        ),
                     ],
-                    
-                    // Drag indicator
-                    if (!_isCalendarExpanded) // Only show when collapsed
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 8.0),
-                        child: Icon(
-                          _isCalendarExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
-                          color: Colors.grey,
-                        ),
-                      ),
-                  ],
+                  ),
                 ),
               ),
             ),
@@ -661,59 +690,65 @@ class _RoutineScreenState extends State<RoutineScreen> {
       ),
       floatingActionButton: _currentUser != null
           ? FloatingActionButton(
-              backgroundColor: Colors.purpleAccent,
+              backgroundColor: moodColor,
               onPressed: _addNewTodo,
               child: const Icon(Icons.add, color: Colors.white),
             )
           : null,
-    );
+    ) );
   }
 
-  Widget _buildTodoListItem(ToDoItem todo, int index) {
-    return Dismissible(
-      key: Key(todo.id ?? 'todo_$index'),
-      direction: DismissDirection.endToStart,
-      background: Container(
-        decoration: BoxDecoration(
-          color: Colors.red,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        alignment: Alignment.centerRight,
-        padding: const EdgeInsets.only(right: 20),
-        child: const Icon(Icons.delete, color: Colors.white),
+ Widget _buildTodoListItem(ToDoItem todo, int index) {
+  return Dismissible(
+    key: Key(todo.id ?? 'todo_$index'),
+    direction: DismissDirection.endToStart,
+    background: Container(
+      decoration: BoxDecoration(
+        color: Colors.red,
+        borderRadius: BorderRadius.circular(8),
       ),
-      onDismissed: (direction) {
-        _deleteTodo(index);
-      },
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Checkbox(
-              value: todo.isCompleted,
-              onChanged: (bool? value) {
-                _toggleTodo(index);
-              },
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(4),
+      alignment: Alignment.centerRight,
+      padding: const EdgeInsets.only(right: 20),
+      child: const Icon(Icons.delete, color: Colors.white),
+    ),
+    onDismissed: (direction) {
+      _deleteTodo(index);
+    },
+    child: Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.5), // subtle background
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center, // Align checkbox & text vertically
+        children: [
+          Checkbox(
+            value: todo.isCompleted,
+            onChanged: (bool? value) {
+              _toggleTodo(index);
+            },
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(4),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              todo.title,
+              style: TextStyle(
+                fontSize: 16,
+                decoration: todo.isCompleted ? TextDecoration.lineThrough : TextDecoration.none,
+                color: todo.isCompleted ? Colors.grey : Colors.black87,
+                fontWeight: FontWeight.w500,
               ),
             ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                todo.title,
-                style: TextStyle(
-                  fontSize: 16,
-                  decoration: todo.isCompleted ? TextDecoration.lineThrough : TextDecoration.none,
-                  color: todo.isCompleted ? Colors.grey : Colors.black87,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
-    );
-  }
+    ),
+  );
+}
+
 }
