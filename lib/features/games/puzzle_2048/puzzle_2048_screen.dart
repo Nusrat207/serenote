@@ -416,6 +416,66 @@ class _Puzzle2048ScreenState extends State<Puzzle2048Screen>
     return value <= 4 ? const Color(0xFF666666) : Colors.white;
   }
 
+  void showHowToPlayDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: const Color(0xFFFFF5F7),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: const Row(
+          children: [
+            Icon(Icons.info_outline, color: Color(0xFFB4A7D6), size: 28),
+            SizedBox(width: 12),
+            Text(
+              'How to Play',
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF666666),
+              ),
+            ),
+          ],
+        ),
+        content: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                '• Swipe to move tiles in any direction\n\n'
+                '• When two tiles with the same number touch, they merge\n\n'
+                '• Create a tile with 2048 to win\n\n'
+                '• Keep playing to beat your high score!',
+                style: TextStyle(
+                  fontSize: 15,
+                  color: Colors.grey[700],
+                  height: 1.6,
+                ),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            style: TextButton.styleFrom(
+              backgroundColor: const Color(0xFFB4A7D6),
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            child: const Text(
+              'Got it!',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   void showWinDialog() {
     showDialog(
       context: context,
@@ -623,13 +683,20 @@ class _Puzzle2048ScreenState extends State<Puzzle2048Screen>
         elevation: 0,
         centerTitle: true,
         title: const Text(
-          '2048 Puzzle',
+          'Number Sliding',
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
             color: Color(0xFFFF69B4),
           ),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.help_outline, color: Color(0xFFFF69B4)),
+            onPressed: showHowToPlayDialog,
+            tooltip: 'How to Play',
+          ),
+        ],
       ),
       body: Container(
         decoration: BoxDecoration(
@@ -649,51 +716,7 @@ class _Puzzle2048ScreenState extends State<Puzzle2048Screen>
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Game Logo
-                Container(
-                  padding: const EdgeInsets.all(40),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        const Color(0xFFFFB3D9).withOpacity(0.8),
-                        const Color(0xFFB4A7D6).withOpacity(0.8),
-                      ],
-                    ),
-                    borderRadius: BorderRadius.circular(24),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFFFFB3D9).withOpacity(0.3),
-                        blurRadius: 20,
-                        offset: const Offset(0, 10),
-                      ),
-                    ],
-                  ),
-                  child: const Column(
-                    children: [
-                      Text(
-                        '2048',
-                        style: TextStyle(
-                          fontSize: 80,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                      Text(
-                        'Join the tiles, reach 2048!',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: 40),
+                const SizedBox(height: 20),
 
                 // Difficulty Cards
                 const Text(
@@ -799,56 +822,6 @@ class _Puzzle2048ScreenState extends State<Puzzle2048Screen>
                     ],
                   ),
                 ),
-
-                const SizedBox(height: 30),
-
-                // Instructions
-                Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFE6E6FA).withOpacity(0.4),
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: const Color(0xFFB4A7D6).withOpacity(0.3),
-                      width: 2,
-                    ),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Row(
-                        children: [
-                          Icon(
-                            Icons.info_outline,
-                            color: Color(0xFFB4A7D6),
-                            size: 24,
-                          ),
-                          SizedBox(width: 12),
-                          Text(
-                            'How to Play',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF666666),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 12),
-                      Text(
-                        '• Swipe to move tiles in any direction\n'
-                        '• When two tiles with the same number touch, they merge\n'
-                        '• Create a tile with 2048 to win\n'
-                        '• Keep playing to beat your high score!',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey[700],
-                          height: 1.6,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
               ],
             ),
           ),
@@ -918,6 +891,11 @@ class _Puzzle2048ScreenState extends State<Puzzle2048Screen>
         ),
         centerTitle: true,
         actions: [
+          IconButton(
+            icon: const Icon(Icons.help_outline, color: Color(0xFFFF69B4)),
+            onPressed: showHowToPlayDialog,
+            tooltip: 'How to Play',
+          ),
           IconButton(
             icon: const Icon(Icons.refresh, color: Color(0xFFFF69B4)),
             onPressed: () {
@@ -1082,80 +1060,38 @@ class _Puzzle2048ScreenState extends State<Puzzle2048Screen>
 
                   const SizedBox(height: 24),
 
-                  // Control Buttons
+                  // Swipe instruction
                   Container(
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 12,
+                    ),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.8),
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.05),
-                          blurRadius: 10,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
+                      color: const Color(0xFFE6E6FA).withOpacity(0.4),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: const Color(0xFFB4A7D6).withOpacity(0.3),
+                        width: 2,
+                      ),
                     ),
-                    child: Column(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        _DirectionButton(
-                          icon: Icons.keyboard_arrow_up,
-                          onPressed: () => move('up'),
+                        const Icon(
+                          Icons.swipe,
+                          color: Color(0xFFB4A7D6),
+                          size: 24,
                         ),
-                        const SizedBox(height: 8),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            _DirectionButton(
-                              icon: Icons.keyboard_arrow_left,
-                              onPressed: () => move('left'),
-                            ),
-                            const SizedBox(width: 8),
-                            Container(
-                              width: 64,
-                              height: 64,
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFE6E6FA).withOpacity(0.3),
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(
-                                  color: const Color(
-                                    0xFFB4A7D6,
-                                  ).withOpacity(0.3),
-                                  width: 2,
-                                ),
-                              ),
-                              child: const Center(
-                                child: Icon(
-                                  Icons.swipe,
-                                  color: Color(0xFFB4A7D6),
-                                  size: 32,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            _DirectionButton(
-                              icon: Icons.keyboard_arrow_right,
-                              onPressed: () => move('right'),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                        _DirectionButton(
-                          icon: Icons.keyboard_arrow_down,
-                          onPressed: () => move('down'),
+                        const SizedBox(width: 12),
+                        Text(
+                          'Swipe to move tiles',
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.grey[700],
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ],
-                    ),
-                  ),
-
-                  const SizedBox(height: 16),
-
-                  Text(
-                    'Swipe or use arrow buttons',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey[600],
-                      fontStyle: FontStyle.italic,
                     ),
                   ),
                 ],
@@ -1432,47 +1368,6 @@ class _ScoreCard extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _DirectionButton extends StatelessWidget {
-  final IconData icon;
-  final VoidCallback onPressed;
-
-  const _DirectionButton({required this.icon, required this.onPressed});
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onPressed,
-        borderRadius: BorderRadius.circular(12),
-        child: Container(
-          width: 64,
-          height: 64,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                const Color(0xFFB4A7D6).withOpacity(0.9),
-                const Color(0xFFB4A7D6),
-              ],
-            ),
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: const Color(0xFFB4A7D6).withOpacity(0.4),
-                blurRadius: 8,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          child: Icon(icon, size: 32, color: Colors.white),
-        ),
       ),
     );
   }

@@ -59,7 +59,7 @@ class SnakeGameScreen extends StatefulWidget {
 }
 
 class _SnakeGameScreenState extends State<SnakeGameScreen> {
-  Difficulty selectedDifficulty = Difficulty.medium;
+  Difficulty selectedDifficulty = Difficulty.easy;
 
   @override
   Widget build(BuildContext context) {

@@ -8,23 +8,17 @@ final journalListProvider = StateNotifierProvider<JournalListNotifier, AsyncValu
 
 class JournalListNotifier extends StateNotifier<AsyncValue<List<JournalEntity>>> {
   JournalListNotifier() : super(const AsyncValue.loading()) {
-    loadJournals();
+    _init();
   }
 
   final SupabaseClient _supabase = Supabase.instance.client;
+String? get _currentUserId => _supabase.auth.currentUser?.id;
 
-  String? get _currentUserId {
-    try {
-      final user = _supabase.auth.currentUser;
-      if (user == null) {
-        print('❌ No user logged in');
-        return null;
-      }
-      print('✅ Current user ID: ${user.id}');
-      return user.id;
-    } catch (e) {
-      print('❌ Error getting current user: $e');
-      return null;
+  void _init() {
+    if (_currentUserId == null) {
+      state = const AsyncValue.data([]); // No user, empty list
+    } else {
+      loadJournals();
     }
   }
 

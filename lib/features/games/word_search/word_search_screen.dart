@@ -54,71 +54,91 @@ class MenuScreen extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [Colors.orange.shade300, Colors.orange.shade600],
+            colors: [
+              const Color(0xFFB39DDB), // Light purple
+              const Color(0xFFF48FB1), // Pink
+              const Color(0xFFB3E5FC), // Powder blue
+            ],
           ),
         ),
         child: SafeArea(
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(Icons.search, size: 100, color: Colors.white),
-                const SizedBox(height: 20),
-                const Text(
-                  'Word Search',
-                  style: TextStyle(
-                    fontSize: 48,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    shadows: [
-                      Shadow(
-                        blurRadius: 10,
-                        color: Colors.black26,
-                        offset: Offset(2, 2),
+          child: Stack(
+            children: [
+              // Back button
+              Positioned(
+                top: 16,
+                left: 16,
+                child: IconButton(
+                  icon: const Icon(Icons.arrow_back, color: Colors.white),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ),
+
+              Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.search, size: 100, color: Colors.white),
+                    const SizedBox(height: 20),
+                    const Text(
+                      'Wordzee',
+                      style: TextStyle(
+                        fontSize: 48,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        shadows: [
+                          Shadow(
+                            blurRadius: 10,
+                            color: Colors.black26,
+                            offset: Offset(2, 2),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 10),
+                    const Text(
+                      'Find all the hidden words!',
+                      style: TextStyle(fontSize: 18, color: Colors.white70),
+                    ),
+                    const SizedBox(height: 60),
+                    const Text(
+                      'Select Difficulty',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 30),
+                    _buildDifficultyButton(
+                      context,
+                      'Easy',
+                      '6x6 Grid • 4 Words',
+                      const Color(0xFF81C784), // Soft green
+                      () => onStartGame('easy'),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildDifficultyButton(
+                      context,
+                      'Medium',
+                      '8x8 Grid • 6 Words',
+                      const Color(0xFFBA68C8), // Purple
+                      () => onStartGame('medium'),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildDifficultyButton(
+                      context,
+                      'Hard',
+                      '10x10 Grid • 8 Words',
+                      const Color(0xFFE57373), // Soft red
+                      () => onStartGame('hard'),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 10),
-                const Text(
-                  'Find all the hidden words!',
-                  style: TextStyle(fontSize: 18, color: Colors.white70),
-                ),
-                const SizedBox(height: 60),
-                const Text(
-                  'Select Difficulty',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(height: 30),
-                _buildDifficultyButton(
-                  context,
-                  'Easy',
-                  'Small grid, 4-5 letter words',
-                  Colors.green,
-                  () => onStartGame('easy'),
-                ),
-                const SizedBox(height: 16),
-                _buildDifficultyButton(
-                  context,
-                  'Medium',
-                  'Medium grid, 5-7 letter words',
-                  Colors.orange,
-                  () => onStartGame('medium'),
-                ),
-                const SizedBox(height: 16),
-                _buildDifficultyButton(
-                  context,
-                  'Hard',
-                  'Large grid, 6-10 letter words',
-                  Colors.red,
-                  () => onStartGame('hard'),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -470,7 +490,7 @@ class _GameScreenState extends State<GameScreen> {
               style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
-                color: Colors.orange,
+                color: Color(0xFFBA68C8),
               ),
             ),
           ],
@@ -488,7 +508,7 @@ class _GameScreenState extends State<GameScreen> {
               Navigator.pop(context);
               widget.onBackToMenu();
             },
-            child: const Text('Main Menu'),
+            child: const Text('Menu'),
           ),
         ],
       ),
@@ -532,12 +552,27 @@ class _GameScreenState extends State<GameScreen> {
     });
   }
 
+  Color _getThemeColor() {
+    switch (widget.difficulty) {
+      case 'easy':
+        return const Color(0xFFB3E5FC); // Powder blue
+      case 'medium':
+        return const Color(0xFFBA68C8); // Purple
+      case 'hard':
+        return const Color(0xFFF48FB1); // Pink
+      default:
+        return const Color(0xFFBA68C8);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final themeColor = _getThemeColor();
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Word Search - ${widget.difficulty.toUpperCase()}'),
-        backgroundColor: Colors.orange,
+        backgroundColor: themeColor,
         foregroundColor: Colors.white,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -556,8 +591,15 @@ class _GameScreenState extends State<GameScreen> {
           // Score display
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.all(16),
-            color: Colors.orange.shade50,
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  themeColor.withOpacity(0.1),
+                  themeColor.withOpacity(0.05),
+                ],
+              ),
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
@@ -565,14 +607,14 @@ class _GameScreenState extends State<GameScreen> {
                   children: [
                     const Text(
                       'Score',
-                      style: TextStyle(fontSize: 14, color: Colors.grey),
+                      style: TextStyle(fontSize: 12, color: Colors.grey),
                     ),
                     Text(
                       '$score',
-                      style: const TextStyle(
-                        fontSize: 28,
+                      style: TextStyle(
+                        fontSize: 20,
                         fontWeight: FontWeight.bold,
-                        color: Colors.orange,
+                        color: themeColor,
                       ),
                     ),
                   ],
@@ -581,14 +623,14 @@ class _GameScreenState extends State<GameScreen> {
                   children: [
                     const Text(
                       'Found',
-                      style: TextStyle(fontSize: 14, color: Colors.grey),
+                      style: TextStyle(fontSize: 12, color: Colors.grey),
                     ),
                     Text(
                       '${foundWords.length}/${wordList.length}',
                       style: const TextStyle(
-                        fontSize: 28,
+                        fontSize: 20,
                         fontWeight: FontWeight.bold,
-                        color: Colors.green,
+                        color: Color(0xFF81C784),
                       ),
                     ),
                   ],
@@ -599,49 +641,59 @@ class _GameScreenState extends State<GameScreen> {
 
           // Words list
           Container(
-            padding: const EdgeInsets.all(16),
-            child: Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: wordList.map((word) {
-                final found = foundWords.contains(word);
-                return Chip(
-                  label: Text(
-                    word,
-                    style: TextStyle(
-                      decoration: found
-                          ? TextDecoration.lineThrough
-                          : TextDecoration.none,
-                      color: found ? Colors.grey : Colors.black,
-                      fontWeight: FontWeight.bold,
+            height: widget.difficulty == 'hard' ? 100 : 90,
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            child: SingleChildScrollView(
+              child: Wrap(
+                spacing: 6,
+                runSpacing: 6,
+                children: wordList.map((word) {
+                  final found = foundWords.contains(word);
+                  return Chip(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 4,
+                      vertical: 2,
                     ),
-                  ),
-                  backgroundColor: found
-                      ? Colors.green.withOpacity(0.3)
-                      : Colors.orange.withOpacity(0.2),
-                  side: BorderSide(
-                    color: found ? Colors.green : Colors.orange,
-                    width: 1,
-                  ),
-                );
-              }).toList(),
+                    label: Text(
+                      word,
+                      style: TextStyle(
+                        fontSize: 11,
+                        decoration: found
+                            ? TextDecoration.lineThrough
+                            : TextDecoration.none,
+                        color: found ? Colors.grey : Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    backgroundColor: found
+                        ? const Color(0xFF81C784).withOpacity(0.3)
+                        : themeColor.withOpacity(0.2),
+                    side: BorderSide(
+                      color: found ? const Color(0xFF81C784) : themeColor,
+                      width: 1,
+                    ),
+                  );
+                }).toList(),
+              ),
             ),
           ),
 
           // Current word display
           Container(
-            height: 40,
+            height: 35,
             padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: currentWord.isNotEmpty
-                ? Text(
-                    'Current: $currentWord',
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.orange,
-                    ),
-                  )
-                : const SizedBox.shrink(),
+            child: Center(
+              child: currentWord.isNotEmpty
+                  ? Text(
+                      'Current: $currentWord',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: themeColor,
+                      ),
+                    )
+                  : const SizedBox.shrink(),
+            ),
           ),
 
           // Grid
@@ -649,11 +701,12 @@ class _GameScreenState extends State<GameScreen> {
             child: GestureDetector(
               onPanEnd: (_) => onDragEnd(),
               child: GridView.builder(
-                padding: const EdgeInsets.all(16),
+                padding: EdgeInsets.all(widget.difficulty == 'hard' ? 8 : 12),
+                physics: const NeverScrollableScrollPhysics(),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: gridSize,
-                  mainAxisSpacing: 4,
-                  crossAxisSpacing: 4,
+                  mainAxisSpacing: widget.difficulty == 'hard' ? 3 : 4,
+                  crossAxisSpacing: widget.difficulty == 'hard' ? 3 : 4,
                 ),
                 itemCount: gridSize * gridSize,
                 itemBuilder: (context, index) {
@@ -667,11 +720,11 @@ class _GameScreenState extends State<GameScreen> {
                     child: Container(
                       decoration: BoxDecoration(
                         color: isSelected
-                            ? Colors.orange.withOpacity(0.5)
-                            : Colors.orange.withOpacity(0.1),
+                            ? themeColor.withOpacity(0.5)
+                            : themeColor.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(
-                          color: Colors.orange.withOpacity(0.3),
+                          color: themeColor.withOpacity(0.3),
                           width: 1,
                         ),
                       ),
@@ -697,8 +750,8 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   double _getFontSize() {
-    if (gridSize <= 8) return 18;
+    if (gridSize <= 8) return 20;
     if (gridSize <= 10) return 16;
-    return 14;
+    return 12;
   }
 }
