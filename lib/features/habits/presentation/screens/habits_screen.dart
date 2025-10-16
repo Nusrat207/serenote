@@ -2,8 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../habits/presentation/widgets/habit_card_widget.dart';
-import '../../domain/entities/habit_entity.dart';
 import '../providers/habit_provider.dart';
 
 class HabitsScreen extends ConsumerStatefulWidget {
@@ -13,105 +13,242 @@ class HabitsScreen extends ConsumerStatefulWidget {
   ConsumerState<HabitsScreen> createState() => _HabitsScreenState();
 }
 
-class _HabitsScreenState extends ConsumerState<HabitsScreen> {
+class _HabitsScreenState extends ConsumerState<HabitsScreen>
+    with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() {
-      ref.read(habitNotifierProvider.notifier).loadHabits();
+    WidgetsBinding.instance.addObserver(this);
+
+    // Load habits initially
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadHabitsIfAuthenticated();
     });
+
+    // Listen to auth state changes
+    Supabase.instance.client.auth.onAuthStateChange.listen((data) {
+      final event = data.event;
+      if (event == AuthChangeEvent.signedIn ||
+          event == AuthChangeEvent.tokenRefreshed) {
+        // User just logged in or token refreshed, reload habits
+        if (mounted) {
+          ref.read(habitNotifierProvider.notifier).clearError();
+          ref.read(habitNotifierProvider.notifier).loadHabits();
+        }
+      } else if (event == AuthChangeEvent.signedOut) {
+        // User logged out, clear habits
+        if (mounted) {
+          ref.read(habitNotifierProvider.notifier).clearError();
+        }
+      }
+    });
+  }
+
+  void _loadHabitsIfAuthenticated() {
+    final user = Supabase.instance.client.auth.currentUser;
+    if (user != null) {
+      ref.read(habitNotifierProvider.notifier).clearError();
+      ref.read(habitNotifierProvider.notifier).loadHabits();
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      // Clear error and reload habits when app resumes
+      _loadHabitsIfAuthenticated();
+    }
+  }
+
+  bool _isAuthError(String? error) {
+    if (error == null) return false;
+    return error.contains('Unexpected null value') ||
+        error.toLowerCase().contains('not logged in') ||
+        error.toLowerCase().contains('authentication') ||
+        error.toLowerCase().contains('user not found');
   }
 
   @override
   Widget build(BuildContext context) {
     final habitState = ref.watch(habitNotifierProvider);
+    final user = Supabase.instance.client.auth.currentUser;
+    final isAuthenticated = user != null;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Habits'),
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.white.withValues(alpha: 0.95),
         elevation: 0,
         foregroundColor: Colors.black,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: () => _showAddHabitDialog(context),
+      ),
+      body: Stack(
+        children: [
+          // Scrollable background image with low opacity
+          Positioned.fill(
+            child: Opacity(
+              opacity: 0.2,
+              child: Image.asset(
+                'assets/images/habit_bg.png',
+                fit: BoxFit.cover,
+                repeat: ImageRepeat.repeat,
+                errorBuilder: (context, error, stackTrace) {
+                  // Fallback gradient if image not found
+                  return Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          Colors.purple.withValues(alpha: 0.05),
+                          Colors.blue.withValues(alpha: 0.05),
+                          Colors.cyan.withValues(alpha: 0.05),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
           ),
+          // Main scrollable content
+          !isAuthenticated
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.login, size: 64, color: Colors.blue),
+                      const SizedBox(height: 16),
+                      Text(
+                        'Please log in',
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                      const SizedBox(height: 8),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 32),
+                        child: Text(
+                          'You need to be logged in to view and manage your habits',
+                          style: Theme.of(context).textTheme.bodyMedium,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              : habitState.isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : habitState.error != null
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        _isAuthError(habitState.error)
+                            ? Icons.login
+                            : Icons.error_outline,
+                        size: 64,
+                        color: _isAuthError(habitState.error)
+                            ? Colors.blue
+                            : Colors.red.shade400,
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        _isAuthError(habitState.error)
+                            ? 'Please log in'
+                            : 'Error',
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                      const SizedBox(height: 8),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 32),
+                        child: Text(
+                          _isAuthError(habitState.error)
+                              ? 'You need to be logged in to view and manage your habits'
+                              : 'Error: ${habitState.error}',
+                          style: Theme.of(context).textTheme.bodyMedium,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          // Clear error and retry loading
+                          ref.read(habitNotifierProvider.notifier).clearError();
+                          ref.read(habitNotifierProvider.notifier).loadHabits();
+                        },
+                        icon: const Icon(Icons.refresh),
+                        label: const Text('Retry'),
+                      ),
+                    ],
+                  ),
+                )
+              : habitState.habits.isEmpty
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.check_circle_outline,
+                        size: 64,
+                        color: Colors.grey.shade400,
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        'No habits yet',
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Create your first habit to get started',
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                      const SizedBox(height: 24),
+                      ElevatedButton.icon(
+                        onPressed: () => _showAddHabitDialog(context),
+                        icon: const Icon(Icons.add),
+                        label: const Text('Add Habit'),
+                      ),
+                    ],
+                  ),
+                )
+              : ListView.builder(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: habitState.habits.length,
+                  itemBuilder: (context, index) {
+                    final habit = habitState.habits[index];
+                    return HabitCardWidget(
+                      habit: habit,
+                      onToggle: (date) {
+                        ref
+                            .read(habitNotifierProvider.notifier)
+                            .toggleHabitCompletion(habit.id, date);
+                      },
+                      onDelete: () {
+                        ref
+                            .read(habitNotifierProvider.notifier)
+                            .deleteHabit(habit.id);
+                      },
+                      assignedDays: habit.assignedDays,
+                    );
+                  },
+                ),
         ],
       ),
-      body: habitState.isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : habitState.error != null
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('Error: ${habitState.error}'),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () {
-                      ref.read(habitNotifierProvider.notifier).loadHabits();
-                    },
-                    child: const Text('Retry'),
-                  ),
-                ],
-              ),
+      floatingActionButton:
+          !habitState.isLoading &&
+              habitState.error == null &&
+              !_isAuthError(habitState.error)
+          ? FloatingActionButton(
+              onPressed: () => _showAddHabitDialog(context),
+              backgroundColor: Colors.purple,
+              child: const Icon(Icons.add),
             )
-          : habitState.habits.isEmpty
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.check_circle_outline,
-                    size: 64,
-                    color: Colors.grey.shade400,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'No habits yet',
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Create your first habit to get started',
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                  const SizedBox(height: 24),
-                  ElevatedButton.icon(
-                    onPressed: () => _showAddHabitDialog(context),
-                    icon: const Icon(Icons.add),
-                    label: const Text('Add Habit'),
-                  ),
-                ],
-              ),
-            )
-          : ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: habitState.habits.length,
-              itemBuilder: (context, index) {
-                final habit = habitState.habits[index];
-                return HabitCardWidget(
-                  habit: habit,
-                  onToggle: (date) {
-                    ref
-                        .read(habitNotifierProvider.notifier)
-                        .toggleHabitCompletion(habit.id, date);
-                  },
-                  onDelete: () {
-                    ref
-                        .read(habitNotifierProvider.notifier)
-                        .deleteHabit(habit.id);
-                  },
-                  assignedDays: habit.assignedDays,
-                );
-              },
-            ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _showAddHabitDialog(context),
-        backgroundColor: Colors.purple,
-        child: const Icon(Icons.add),
-      ),
+          : null,
     );
   }
 
@@ -300,11 +437,13 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen> {
                         assignedDays: selectedDays.toList()..sort(),
                       );
                   Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Habit created successfully!'),
-                    ),
-                  );
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Habit created successfully!'),
+                      ),
+                    );
+                  }
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Please enter a habit name')),

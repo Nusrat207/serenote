@@ -1,5 +1,3 @@
-// lib/features/habits/presentation/providers/habit_provider.dart
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/entities/habit_entity.dart';
 import '../../domain/usecases/create_habit_usecase.dart';
@@ -54,6 +52,38 @@ class HabitNotifier extends StateNotifier<HabitState> {
     required this.deleteHabitUseCase,
   }) : super(const HabitState());
 
+  // Helper: Normalize date to start of day (remove time component)
+  DateTime _normalizeDate(DateTime date) {
+    return DateTime(date.year, date.month, date.day);
+  }
+
+  // Helper: Check if a date can be marked as completed
+  bool _canMarkDateAsCompleted(DateTime date, DateTime habitCreatedAt) {
+    final today = _normalizeDate(DateTime.now());
+    final normalizedDate = _normalizeDate(date);
+    final normalizedCreatedAt = _normalizeDate(habitCreatedAt);
+
+    // Can't mark dates before habit was created
+    if (normalizedDate.isBefore(normalizedCreatedAt)) {
+      return false;
+    }
+
+    // Can't mark future dates
+    if (normalizedDate.isAfter(today)) {
+      return false;
+    }
+
+    return true;
+  }
+
+  // Helper: Check if date is an assigned day for the habit
+  bool _isAssignedDay(DateTime date, List<int>? assignedDays) {
+    if (assignedDays == null || assignedDays.isEmpty) {
+      return true;
+    }
+    return assignedDays.contains(date.weekday); // 1=Mon, 7=Sun
+  }
+
   Future<void> loadHabits({bool activeOnly = true, String? forMood}) async {
     state = state.copyWith(isLoading: true, error: null);
 
@@ -107,6 +137,32 @@ class HabitNotifier extends StateNotifier<HabitState> {
 
   Future<void> toggleHabitCompletion(String habitId, DateTime date) async {
     final habit = state.habits.firstWhere((h) => h.id == habitId);
+
+    // Validate: Can only complete today and past dates (after habit creation)
+    if (!_canMarkDateAsCompleted(date, habit.createdAt)) {
+      state = state.copyWith(
+        error:
+            'Cannot mark this date. You can only mark today and past dates (after habit creation).',
+      );
+      // Clear error after 3 seconds
+      Future.delayed(const Duration(seconds: 3), () {
+        state = state.copyWith(error: null);
+      });
+      return;
+    }
+
+    // Validate: Date must be an assigned day
+    if (!_isAssignedDay(date, habit.assignedDays)) {
+      state = state.copyWith(
+        error: 'This habit is not scheduled for this day of the week.',
+      );
+      // Clear error after 3 seconds
+      Future.delayed(const Duration(seconds: 3), () {
+        state = state.copyWith(error: null);
+      });
+      return;
+    }
+
     final isCompleted = habit.completedDates.any(
       (d) => d.year == date.year && d.month == date.month && d.day == date.day,
     );
@@ -117,20 +173,34 @@ class HabitNotifier extends StateNotifier<HabitState> {
       date: date,
     );
 
-    result.fold((failure) => state = state.copyWith(error: failure.message), (
-      updatedHabit,
-    ) {
-      final updatedHabits = state.habits
-          .map((h) => h.id == habitId ? updatedHabit : h)
-          .toList();
-      state = state.copyWith(habits: updatedHabits, error: null);
-    });
+    result.fold(
+      (failure) {
+        state = state.copyWith(error: failure.message);
+        // Clear error after 3 seconds
+        Future.delayed(const Duration(seconds: 3), () {
+          state = state.copyWith(error: null);
+        });
+      },
+      (updatedHabit) {
+        final updatedHabits = state.habits
+            .map((h) => h.id == habitId ? updatedHabit : h)
+            .toList();
+        state = state.copyWith(habits: updatedHabits, error: null);
+      },
+    );
   }
 
   Future<void> updateHabit(HabitEntity habit) async {
     state = state.copyWith(isLoading: true, error: null);
 
-    final result = await updateHabitUseCase(habit);
+    // Filter completed dates to remove any that are before habit creation
+    final validCompletedDates = habit.completedDates
+        .where((date) => _canMarkDateAsCompleted(date, habit.createdAt))
+        .toList();
+
+    final updatedHabit = habit.copyWith(completedDates: validCompletedDates);
+
+    final result = await updateHabitUseCase(updatedHabit);
 
     result.fold(
       (failure) =>
@@ -151,12 +221,21 @@ class HabitNotifier extends StateNotifier<HabitState> {
   Future<void> deleteHabit(String habitId) async {
     final result = await deleteHabitUseCase(habitId);
 
-    result.fold((failure) => state = state.copyWith(error: failure.message), (
-      _,
-    ) {
-      final updatedHabits = state.habits.where((h) => h.id != habitId).toList();
-      state = state.copyWith(habits: updatedHabits, error: null);
-    });
+    result.fold(
+      (failure) {
+        state = state.copyWith(error: failure.message);
+        // Clear error after 3 seconds
+        Future.delayed(const Duration(seconds: 3), () {
+          state = state.copyWith(error: null);
+        });
+      },
+      (_) {
+        final updatedHabits = state.habits
+            .where((h) => h.id != habitId)
+            .toList();
+        state = state.copyWith(habits: updatedHabits, error: null);
+      },
+    );
   }
 
   void selectHabit(HabitEntity? habit) {

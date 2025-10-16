@@ -1,5 +1,3 @@
-// lib/features/habits/data/repositories/habit_repository_impl.dart
-
 import 'package:fpdart/fpdart.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../core/errors/failures.dart';
@@ -11,6 +9,38 @@ class HabitRepositoryImpl implements HabitRepository {
   final SupabaseClient client;
 
   HabitRepositoryImpl({required this.client});
+
+  // Helper: Normalize date to start of day (remove time component)
+  DateTime _normalizeDate(DateTime date) {
+    return DateTime(date.year, date.month, date.day);
+  }
+
+  // Helper: Check if a date can be marked as completed
+  bool _canMarkDateAsCompleted(DateTime date, DateTime habitCreatedAt) {
+    final today = _normalizeDate(DateTime.now());
+    final normalizedDate = _normalizeDate(date);
+    final normalizedCreatedAt = _normalizeDate(habitCreatedAt);
+
+    // Can't mark dates before habit was created
+    if (normalizedDate.isBefore(normalizedCreatedAt)) {
+      return false;
+    }
+
+    // Can't mark future dates
+    if (normalizedDate.isAfter(today)) {
+      return false;
+    }
+
+    return true;
+  }
+
+  // Helper: Check if date is an assigned day for the habit
+  bool _isAssignedDay(DateTime date, List<int>? assignedDays) {
+    if (assignedDays == null || assignedDays.isEmpty) {
+      return true;
+    }
+    return assignedDays.contains(date.weekday); // 1=Mon, 7=Sun
+  }
 
   // ---------------- Get Habits ----------------
   @override
@@ -49,7 +79,7 @@ class HabitRepositoryImpl implements HabitRepository {
     try {
       final userId = client.auth.currentUser!.id;
 
-      // Create JSON without the 'id' field - let Supabase generate it
+      // Create JSON - assigned_days stored as JSONB in database
       final habitJson = {
         'user_id': userId,
         'name': name,
@@ -57,11 +87,11 @@ class HabitRepositoryImpl implements HabitRepository {
         'icon': icon,
         'color': color,
         'target_days_per_week': targetDaysPerWeek,
-        'completed_dates': [],
+        'completed_dates': [], // Empty JSONB array
         'created_at': DateTime.now().toIso8601String(),
         'is_active': true,
         'linked_mood': linkedMood,
-        'assigned_days': assignedDays,
+        'assigned_days': assignedDays ?? [], // JSONB array
       };
 
       final response = await client
@@ -97,16 +127,42 @@ class HabitRepositoryImpl implements HabitRepository {
 
       final habit = HabitModel.fromJson(habitData);
 
-      final completedDates = habit.completedDates.toList();
-      if (isCompleting) {
-        completedDates.add(date);
-      } else {
-        completedDates.removeWhere(
-          (d) =>
-              d.year == date.year && d.month == date.month && d.day == date.day,
+      // Validate: Can only complete today and past dates (after habit creation)
+      if (!_canMarkDateAsCompleted(date, habit.createdAt)) {
+        return Left(
+          CacheFailure(
+            'Cannot mark this date as completed. You can only mark today and past dates (after habit creation).',
+          ),
         );
       }
 
+      // Validate: Date must be an assigned day
+      if (!_isAssignedDay(date, habit.assignedDays)) {
+        return Left(
+          CacheFailure('This habit is not scheduled for this day of the week.'),
+        );
+      }
+
+      final normalizedDate = _normalizeDate(date);
+      final completedDates = habit.completedDates.toList();
+
+      if (isCompleting) {
+        // Check if date is already completed
+        final alreadyCompleted = completedDates.any(
+          (d) => _normalizeDate(d).isAtSameMomentAs(normalizedDate),
+        );
+
+        if (!alreadyCompleted) {
+          completedDates.add(normalizedDate);
+        }
+      } else {
+        // Remove the date
+        completedDates.removeWhere(
+          (d) => _normalizeDate(d).isAtSameMomentAs(normalizedDate),
+        );
+      }
+
+      // Update in database - completed_dates is JSONB
       final updatedData = await client
           .from('habits')
           .update({
@@ -133,9 +189,29 @@ class HabitRepositoryImpl implements HabitRepository {
       final userId = client.auth.currentUser!.id;
       final habitModel = HabitModel.fromEntity(habit);
 
+      // Filter completed dates to remove any that are before habit creation
+      final validCompletedDates = habit.completedDates
+          .where((date) => _canMarkDateAsCompleted(date, habit.createdAt))
+          .toList();
+
+      // Build update JSON with JSONB fields
+      final updateJson = {
+        'name': habitModel.name,
+        'description': habitModel.description,
+        'icon': habitModel.icon,
+        'color': habitModel.color,
+        'target_days_per_week': habitModel.targetDaysPerWeek,
+        'completed_dates': validCompletedDates
+            .map((d) => d.toIso8601String())
+            .toList(),
+        'is_active': habitModel.isActive,
+        'linked_mood': habitModel.linkedMood,
+        'assigned_days': habitModel.assignedDays ?? [],
+      };
+
       final data = await client
           .from('habits')
-          .update(habitModel.toJson(includeId: true))
+          .update(updateJson)
           .eq('id', habit.id)
           .eq('user_id', userId)
           .select()
