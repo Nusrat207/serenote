@@ -5,6 +5,11 @@ import '../../word_search/word_search_screen.dart';
 import '../../puzzle_2048/puzzle_2048_screen.dart';
 import 'package:serenote/features/games/wordle/wordle_screen.dart';
 import 'package:serenote/features/games/pacman/pacman_game.dart';
+import '../../slide_puzzle/screens/slide_puzzle_screen.dart';
+import '../../slide_puzzle/screens/difficulty_selection_screen.dart';
+import '../../tetris/screens/tetris_difficulty_screen.dart';
+
+
 
 import '../../bubble_breather/bubble_breather_screen.dart';
 import '../../concentration/screens/home_screen.dart';
@@ -90,21 +95,21 @@ final Color _cardBackgroundColor = Colors.transparent;  final bool _showShadow =
         color: Colors.blue,
       ),
       GameItem(
-        name: 'Public Mobile',
+        name: 'Sudoku',
         imageAsset: 'assets/images/Sudoku.jpeg',
-        route: const DashboardScreen(),
+        route: const SudokuGameScreen(),
         color: Colors.green,
       ),
       GameItem(
-        name: 'Magic Awakened',
-        imageAsset: 'assets/images/Wordzee.jpeg',
-        route: const DashboardScreen(),
+        name: 'Slide Puzzle',
+        imageAsset: 'assets/images/slide_puzzle.png',
+        route: const DifficultySelectionScreen(),
         color: Colors.purple,
       ),
       GameItem(
-        name: 'My Dear Farm',
-        imageAsset: 'assets/images/Wordzee.jpeg',
-        route: const DashboardScreen(),
+        name: 'Tetris',
+        imageAsset: 'assets/images/tetris.png',
+        route: const TetrisDifficultyScreen(),
         color: Colors.lightGreen,
       ),
     ];
