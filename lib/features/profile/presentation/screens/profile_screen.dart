@@ -6,7 +6,7 @@ import 'package:serenote/features/auth/presentation/screens/login_screen.dart';
 import '../../domain/entities/profile_entity.dart';
 import '../widgets/avatar_selection_grid.dart';
 import '../widgets/display_name_editor.dart';
-
+import 'package:serenote/features/mood/presentation/providers/mood_provider.dart';
 class ProfileScreen extends ConsumerStatefulWidget {
   final VoidCallback? onBackPressed; // Add this callback
 
@@ -69,7 +69,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final profile = ref.watch(profileProvider);
-    
+    final moodColor = ref
+        .watch(moodColorProvider)
+        .maybeWhen(
+          data: (c) => c,
+          orElse: () => const Color(0xFF477D9E), // fallback
+        );
     return Scaffold(
       backgroundColor: const Color(0xFFF5EFFF),
       body: Container(
@@ -89,9 +94,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   children: [
                     CircleAvatar(
                       radius: 20,
-                      backgroundColor: const Color.fromARGB(255, 71, 134, 145).withOpacity(0.8),
+                      backgroundColor: moodColor.withOpacity(0.8),
                       child: IconButton(
-                        icon: const Icon(Icons.arrow_back, size: 18),
+                        icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 18, color: Colors.white,),
                         onPressed: _goBackWithSidebar, // Use the new method
                         padding: EdgeInsets.zero,
                       ),
@@ -192,11 +197,17 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   }
 
   Widget _buildCurrentAvatarSection(ProfileEntity profile) {
+     final moodColor = ref
+        .watch(moodColorProvider)
+        .maybeWhen(
+          data: (c) => c,
+          orElse: () => const Color(0xFF477D9E), // fallback
+        );
     return Column(
       children: [
         CircleAvatar(
           radius: 50,
-          backgroundColor: const Color.fromARGB(255, 71, 134, 145),
+          backgroundColor: moodColor,
           child: (profile.avatarPath != null && profile.avatarPath!.isNotEmpty)
               ? ClipOval(
                   child: Image.asset(
