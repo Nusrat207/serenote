@@ -14,6 +14,8 @@ import '../../../habits/presentation/screens/habits_screen.dart';
 import '../widgets/quick_mood_entry_card.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../widgets/animated_app_bar.dart';
+import 'package:serenote/l10n/app_localizations.dart';
+
 class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({super.key});
 
@@ -198,7 +200,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                         ).withOpacity(0.3),
                         Theme.of(context).scaffoldBackgroundColor,
                       ],
-                      stops: const [0.0, 0.4],
+                      stops: const [0.0, 0.6],
                     ),
                   )
                 : null,
@@ -241,9 +243,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
   String _getGreeting() {
     final hour = DateTime.now().hour;
-    if (hour < 12) return 'Good Morning';
-    if (hour < 17) return 'Good Afternoon';
-    return 'Good Evening';
+    if (hour < 12) return AppLocalizations.of(context)?.good_morning ?? 'Good Morning';
+    if (hour < 17) return AppLocalizations.of(context)?.good_afternoon ?? 'Good Afternoon';
+    return AppLocalizations.of(context)?.good_evening ?? 'Good Evening';
   }
 
   // ---------------- LOGIN MESSAGE ----------------
@@ -262,15 +264,15 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               color: const Color.fromARGB(255, 108, 192, 206),
             ),
             const SizedBox(height: 12),
-            const Text(
-              "You're not logged in",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            Text(
+              AppLocalizations.of(context)?.you_not_logged_in ?? "You're not logged in",
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 6),
-            const Text(
-              "Sign in to start tracking your moods and progress.",
+            Text(
+              AppLocalizations.of(context)?.sign_in_to_track ?? "Sign in to start tracking your moods and progress.",
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.black54),
+              style: const TextStyle(color: Colors.black54),
             ),
           ],
         ),
@@ -288,11 +290,11 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             children: [
               Icon(Icons.mood_outlined, size: 48, color: Colors.grey.shade400),
               const SizedBox(height: 12),
-              Text(
-                'How are you feeling today?',
-                style: Theme.of(context).textTheme.titleMedium,
-                textAlign: TextAlign.center,
-              ),
+            Text(
+              AppLocalizations.of(context)?.how_feeling_today ?? 'How are you feeling today?',
+              style: Theme.of(context).textTheme.titleMedium,
+              textAlign: TextAlign.center,
+            ),
             ],
           ),
         ),
@@ -324,9 +326,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'Current Mood',
-                        style: TextStyle(color: Colors.white70, fontSize: 14),
+                      Text(
+                        AppLocalizations.of(context)?.current_mood ?? 'Current Mood',
+                        style: const TextStyle(color: Colors.white70, fontSize: 14),
                       ),
                       Text(
                         mood.detectedMood.toUpperCase(),
@@ -401,7 +403,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           child: _StatCard(
             icon: Icons.mood,
             value: moodTodayCount.toString(),
-            label: 'Moods Tracked Today',
+            label: AppLocalizations.of(context)?.moods_tracked_today ?? 'Moods Tracked Today',
             color: const Color.fromARGB(255, 17, 38, 38),
           ),
         ),
@@ -410,7 +412,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           child: _StatCard(
             icon: Icons.local_fire_department,
             value: streak.toString(),
-            label: 'Day Streak',
+            label: AppLocalizations.of(context)?.day_streak ?? 'Day Streak',
             color: Colors.orange,
           ),
         ),
@@ -458,9 +460,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Weekly Moods',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+        Text(
+          AppLocalizations.of(context)?.weekly_moods ?? 'Weekly Moods',
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
         ),
         const SizedBox(height: 16),
         Container(
@@ -634,9 +636,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Recent Mood Entries',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+        Text(
+          AppLocalizations.of(context)?.recent_moods ?? 'Recent Mood Entries',
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
         ),
         const SizedBox(height: 12),
         SizedBox(

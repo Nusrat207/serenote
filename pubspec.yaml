@@ -10,8 +10,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
 
- 
   # UI
   cupertino_icons: ^1.0.8
   google_fonts: ^6.1.0
@@ -47,18 +48,15 @@ dependencies:
   permission_handler: ^11.0.1
 
   # Utilities
-  intl: ^0.18.1
+  intl: 0.20.2
   uuid: ^4.2.1 
   equatable: ^2.0.5
   fpdart: ^1.1.0
   flutter_screenutil: ^5.9.3
   flame: ^1.14.0
-
   collection: ^1.18.0
   font_awesome_flutter: ^10.10.0
-
   english_words: ^4.0.0
-
   animated_background: ^2.0.0
   provider: ^6.0.2
   shared_preferences: ^2.0.13
@@ -67,23 +65,21 @@ dependencies:
   package_info_plus: 9.0.0 
   url_launcher: ^6.0.20
   page_transition: ^2.0.5
-
   image_picker: ^1.0.4
   cross_file: ^0.3.3
   universal_html: ^2.2.1
   sudoku_dart: ^1.2.0
-
-  
+  app_links: 6.2.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
   flutter_lints: ^5.0.0
   flutter_launcher_icons: ^0.13.1
 
 flutter:
   uses-material-design: true
+  generate: true 
   assets:
     - assets/.env
     - assets/images/
@@ -91,8 +87,9 @@ flutter:
     - assets/images/concentration/
     - assets/icon/
     - assets/avatars/
+
 flutter_icons:
-  android: true
+  android: true 
   ios: true
   image_path: "assets/icon/app_icon.jpg"
   adaptive_icon_background: "#FFFFFF"
