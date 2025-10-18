@@ -70,12 +70,7 @@ final Color _cardBackgroundColor = Colors.transparent;  final bool _showShadow =
         route: const WordSearchScreen(),
         color: Colors.orange,
       ),
-      GameItem(
-        name: 'Bubble Breather',
-        imageAsset: 'assets/images/bubble_breather.png',
-        route: const BubbleBreatherScreen(),
-        color: Colors.blue,
-      ),
+      
       GameItem(
         name: 'Wordle',
         imageAsset: 'assets/images/wordle.jpeg',
@@ -88,12 +83,7 @@ final Color _cardBackgroundColor = Colors.transparent;  final bool _showShadow =
         route: const HomeScreen(),
         color: Colors.blue,
       ),
-      GameItem(
-        name: 'Pacman',
-        imageAsset: 'assets/images/pacman.jpeg',
-        route: const PacmanGameScreen(),
-        color: Colors.blue,
-      ),
+      
       GameItem(
         name: 'Sudoku',
         imageAsset: 'assets/images/Sudoku.jpeg',
