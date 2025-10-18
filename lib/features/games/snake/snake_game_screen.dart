@@ -274,6 +274,7 @@ class GamePage extends StatefulWidget {
 
 class _GamePageState extends State<GamePage> {
   static const int gridSize = 15;
+  static const double swipeThreshold = 20.0;
 
   int score = 0;
   List<Point<int>> snake = [];
@@ -505,7 +506,7 @@ class _GamePageState extends State<GamePage> {
               ),
             ),
 
-            // Game Grid
+            // Game Grid - Now with swipe detection
             Expanded(
               child: Container(
                 margin: const EdgeInsets.all(16),
@@ -530,7 +531,7 @@ class _GamePageState extends State<GamePage> {
               ),
             ),
 
-            // Controls
+            // Play/Pause Button and Instructions
             Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
@@ -549,34 +550,31 @@ class _GamePageState extends State<GamePage> {
                   ),
                   const SizedBox(height: 16),
 
-                  // Direction Controls
-                  Column(
-                    children: [
-                      _DirectionButton(
-                        icon: Icons.arrow_upward,
-                        onPressed: () => _changeDirection('up'),
+                  // Swipe Instructions
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.blue.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: Colors.blue.withOpacity(0.3),
+                        width: 1,
                       ),
-                      const SizedBox(height: 8),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          _DirectionButton(
-                            icon: Icons.arrow_back,
-                            onPressed: () => _changeDirection('left'),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.swipe, size: 20, color: Colors.blue[700]),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Swipe on the game board to control',
+                          style: TextStyle(
+                            color: Colors.blue[700],
+                            fontSize: 14,
                           ),
-                          const SizedBox(width: 80),
-                          _DirectionButton(
-                            icon: Icons.arrow_forward,
-                            onPressed: () => _changeDirection('right'),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      _DirectionButton(
-                        icon: Icons.arrow_downward,
-                        onPressed: () => _changeDirection('down'),
-                      ),
-                    ],
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -588,19 +586,33 @@ class _GamePageState extends State<GamePage> {
   }
 
   Widget _buildGameGrid() {
+    double startX = 0;
+    double startY = 0;
+
     return GestureDetector(
-      onVerticalDragUpdate: (details) {
-        if (details.delta.dy > 0) {
-          _changeDirection('down');
-        } else if (details.delta.dy < 0) {
-          _changeDirection('up');
-        }
+      onPanStart: (details) {
+        startX = details.localPosition.dx;
+        startY = details.localPosition.dy;
       },
-      onHorizontalDragUpdate: (details) {
-        if (details.delta.dx > 0) {
-          _changeDirection('right');
-        } else if (details.delta.dx < 0) {
-          _changeDirection('left');
+      onPanEnd: (details) {
+        final dx = details.localPosition.dx - startX;
+        final dy = details.localPosition.dy - startY;
+
+        // Determine if swipe is more horizontal or vertical
+        if (dx.abs() > dy.abs()) {
+          // Horizontal swipe
+          if (dx > swipeThreshold) {
+            _changeDirection('right');
+          } else if (dx < -swipeThreshold) {
+            _changeDirection('left');
+          }
+        } else {
+          // Vertical swipe
+          if (dy > swipeThreshold) {
+            _changeDirection('down');
+          } else if (dy < -swipeThreshold) {
+            _changeDirection('up');
+          }
         }
       },
       child: Container(
@@ -653,25 +665,6 @@ class _GamePageState extends State<GamePage> {
           },
         ),
       ),
-    );
-  }
-}
-
-class _DirectionButton extends StatelessWidget {
-  final IconData icon;
-  final VoidCallback onPressed;
-
-  const _DirectionButton({required this.icon, required this.onPressed});
-
-  @override
-  Widget build(BuildContext context) {
-    return FilledButton.tonal(
-      onPressed: onPressed,
-      style: FilledButton.styleFrom(
-        shape: const CircleBorder(),
-        padding: const EdgeInsets.all(16),
-      ),
-      child: Icon(icon, size: 28),
     );
   }
 }
@@ -782,7 +775,17 @@ class GameOver extends StatelessWidget {
                   width: double.infinity,
                   child: OutlinedButton.icon(
                     onPressed: () {
-                      Navigator.of(context).popUntil((route) => route.isFirst);
+                      // Pop all game screens and return to snake menu
+                      Navigator.of(context).popUntil(
+                        (route) =>
+                            route.isFirst ||
+                            route.settings.name == '/snake' ||
+                            !route.willHandlePopInternally,
+                      );
+                      // Then push snake menu if we're not already there
+                      if (Navigator.of(context).canPop()) {
+                        Navigator.of(context).pop();
+                      }
                     },
                     icon: const Icon(Icons.home),
                     label: const Text('Back to Menu'),
