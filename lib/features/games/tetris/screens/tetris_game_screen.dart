@@ -9,6 +9,7 @@ import '../providers/tetris_provider.dart';
 import '../widgets/game_board.dart';
 import '../widgets/next_pieces_display.dart';
 import '../widgets/game_controls.dart';
+import 'tetris_difficulty_screen.dart'; // Import the difficulty screen
 
 class TetrisGameScreen extends StatefulWidget {
   final Difficulty difficulty;
@@ -117,7 +118,7 @@ class _TetrisGameScreenState extends State<TetrisGameScreen> {
 
   Widget _buildTopBar(TetrisProvider provider) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 1),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
         color: const Color(0xFF1A1F3A),
         boxShadow: [
@@ -131,14 +132,28 @@ class _TetrisGameScreenState extends State<TetrisGameScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          // Back Button
+          _buildBackButton(
+            onPressed: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const TetrisDifficultyScreen(),
+                ),
+              );
+            },
+            backgroundColor: const Color(0xFF00F0F0), // Tetris cyan color
+          ),
+          
+          // Score
           Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const Text(
                 'SCORE',
                 style: TextStyle(
                   color: Colors.white54,
-                  fontSize: 10,
+                  fontSize: 12,
                   letterSpacing: 1,
                 ),
               ),
@@ -146,33 +161,72 @@ class _TetrisGameScreenState extends State<TetrisGameScreen> {
                 provider.state.score.toString(),
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 10,
+                  fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ],
           ),
+          
+          // Level/High Score
           Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const Text(
-                'TOP',
+                'LEVEL',
                 style: TextStyle(
                   color: Colors.white54,
-                  fontSize: 10,
+                  fontSize: 12,
                   letterSpacing: 1,
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.all(4),
-                child: const Icon(
-                  Icons.emoji_events,
-                  color: Colors.amber,
-                  size: 10,
+              Text(
+                provider.state.level.toString(),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ],
           ),
         ],
+      ),
+    );
+  }
+
+  // Reusable Back Button Widget
+  Widget _buildBackButton({
+    required VoidCallback onPressed,
+    Color backgroundColor = const Color(0xFF478689), // Default color
+    Color iconColor = Colors.white,
+    double size = 40,
+  }) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.3),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onPressed,
+          borderRadius: BorderRadius.circular(size / 2),
+          child: Icon(
+            Icons.arrow_back,
+            color: iconColor,
+            size: size * 0.6,
+          ),
+        ),
       ),
     );
   }
@@ -295,6 +349,19 @@ class _TetrisGameScreenState extends State<TetrisGameScreen> {
                   ),
                 ),
               ),
+              const SizedBox(height: 16),
+              _buildBackButton(
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const TetrisDifficultyScreen(),
+                    ),
+                  );
+                },
+                backgroundColor: Colors.grey[800]!,
+                size: 50,
+              ),
             ],
           ),
         ),
@@ -386,6 +453,19 @@ class _TetrisGameScreenState extends State<TetrisGameScreen> {
                     ),
                   ),
                 ],
+              ),
+              const SizedBox(height: 16),
+              _buildBackButton(
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const TetrisDifficultyScreen(),
+                    ),
+                  );
+                },
+                backgroundColor: const Color(0xFF478689),
+                size: 50,
               ),
             ],
           ),
