@@ -5,6 +5,7 @@ import 'package:serenote/features/timer/presentation/widgets/timer_theme_sheet.d
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serenote/features/mood/presentation/providers/mood_provider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:serenote/l10n/app_localizations.dart';
 class TimerScreen extends ConsumerStatefulWidget {
   const TimerScreen({super.key});
 
@@ -80,9 +81,9 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Timer Complete!'),
+          title: Text(AppLocalizations.of(context)?.timer_complete_title ?? 'Timer Complete!'),
           // Simplified text since we don't track TimerType locally anymore
-          content: Text('Your session is complete.'), 
+          content: Text(AppLocalizations.of(context)?.timer_complete_body ?? 'Your session is complete.'), 
           actions: [
             TextButton(
               onPressed: () {
@@ -90,7 +91,7 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
                 // Auto-reset timer after completion dialog
                 _resetTimer(); 
               },
-              child: const Text('OK'),
+              child: Text(AppLocalizations.of(context)?.ok ?? 'OK'),
             ),
           ],
         );
@@ -135,10 +136,25 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Timer'),
+        title: Text(AppLocalizations.of(context)?.timer_title ?? 'Timer'),
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
         elevation: 0,
+        leading: IconButton(
+            icon: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: moodColor,
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.arrow_back_ios_new_rounded,
+                size: 20,
+                color: Colors.white,
+              ),
+            ),
+            onPressed: () => Navigator.pop(context),
+          ),
       ),
       // --- WRAP COLUMN IN SINGLECHILDSCROLLVIEW ---
       body: Stack( // Added Stack for background image
@@ -178,7 +194,7 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
-                        'Pomodoro',
+                        AppLocalizations.of(context)?.pomodoro ?? 'Pomodoro',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: _isPomodoroMode
@@ -202,7 +218,7 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
-                        'Normal Timer',
+                        AppLocalizations.of(context)?.normal_timer ?? 'Normal Timer',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: !_isPomodoroMode
@@ -225,8 +241,8 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
 
           // Normal Timer Mode
           if (!_isPomodoroMode) ...[
-            const SizedBox(height: 10),
-            _buildCustomTimeInput(),
+          const SizedBox(height: 10),
+          _buildCustomTimeInput(),
           ],
 
           const SizedBox(height: 30),
@@ -271,8 +287,8 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
       margin: const EdgeInsets.symmetric(horizontal: 20), // Added margin for spacing
       child: Column(
         children: [
-          const Text(
-            'Set Timer Duration',
+          Text(
+            AppLocalizations.of(context)?.set_timer_duration ?? 'Set Timer Duration',
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w600,
@@ -284,7 +300,7 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
             children: [
               Column(
                 children: [
-                  const Text('Hours'),
+                  Text(AppLocalizations.of(context)?.hours ?? 'Hours'),
                   const SizedBox(height: 8),
                   Container(
                     width: 80,
@@ -316,7 +332,7 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
               ),
               Column(
                 children: [
-                  const Text('Minutes'),
+                  Text(AppLocalizations.of(context)?.minutes ?? 'Minutes'),
                   const SizedBox(height: 8),
                   Container(
                     width: 80,
@@ -422,10 +438,10 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
         ),
         child: Text(
           _isRunning
-              ? 'Pause'
+              ? (AppLocalizations.of(context)?.pause ?? 'Pause')
               : _isPomodoroMode
-                  ? 'Start'
-                  : 'Start Timer',
+                  ? (AppLocalizations.of(context)?.start ?? 'Start')
+                  : (AppLocalizations.of(context)?.start_timer ?? 'Start Timer'),
           style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w600,
@@ -449,14 +465,14 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            _buildBottomOption(Icons.refresh_outlined, 'Reset', () {
+            _buildBottomOption(Icons.refresh_outlined, AppLocalizations.of(context)?.reset ?? 'Reset', () {
               _resetTimer();
             }, moodColor),
            if (_isPomodoroMode) // 👈 show only in Pomodoro mode
-      _buildBottomOption(Icons.settings_outlined, 'Settings', () {
+      _buildBottomOption(Icons.settings_outlined, AppLocalizations.of(context)?.settings ?? 'Settings', () {
         _showSettingsSheet();
       }, moodColor),
-            _buildBottomOption(Icons.track_changes, 'Goals', () {
+            _buildBottomOption(Icons.track_changes, AppLocalizations.of(context)?.goals ?? 'Goals', () {
               _showThemeSheet();
             }, moodColor),
           ],

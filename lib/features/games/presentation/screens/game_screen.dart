@@ -140,9 +140,9 @@ final Color _cardBackgroundColor = Colors.transparent;  final bool _showShadow =
                   children: [
                     CircleAvatar(
                       radius: 20,
-                      backgroundColor: const Color.fromARGB(255, 71, 134, 145).withOpacity(0.8),
+                      backgroundColor: const Color.fromARGB(255, 255, 255, 255).withOpacity(0.8),
                       child: IconButton(
-                        icon: const Icon(Icons.arrow_back, size: 18, color: Colors.white),
+                        icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 18, color: Color.fromARGB(255, 0, 0, 0)),
                         onPressed: () {
                           Navigator.push(
                             context,

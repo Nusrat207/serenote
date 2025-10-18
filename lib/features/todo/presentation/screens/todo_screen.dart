@@ -6,6 +6,8 @@ import 'package:serenote/core/models/todo_item.dart';
 import 'package:serenote/features/auth/presentation/screens/login_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serenote/features/mood/presentation/providers/mood_provider.dart';
+import 'package:serenote/l10n/app_localizations.dart';
+
 
 class RoutineScreen extends ConsumerStatefulWidget {
   const RoutineScreen({super.key});
@@ -26,25 +28,21 @@ class _RoutineScreenState extends ConsumerState<RoutineScreen> {
   bool _isDragging = false;
   double _dragStartY = 0.0;
 
-  @override
-  void initState() {
-    super.initState();
-    _getCurrentUser();
-    if (_currentUser != null) {
-      _loadTodosForDate(_selectedDate);
-    }
+ @override
+void initState() {
+  super.initState();
+  _getCurrentUser();
+  if (_supabase.auth.currentUser != null) {
+    _loadTodosForDate(_selectedDate);
   }
+}
 
-  void _getCurrentUser() {
+void _getCurrentUser() {
+  setState(() {
     _currentUser = _supabase.auth.currentUser;
-    if (_currentUser == null) {
-      print('No user logged in');
-      // Redirect to auth screen after build
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _redirectToLogin();
-      });
-    }
-  }
+  });
+}
+
 
   void _redirectToLogin() {
     if (mounted) {
@@ -57,7 +55,7 @@ class _RoutineScreenState extends ConsumerState<RoutineScreen> {
 
   Future<void> _loadTodosForDate(DateTime date) async {
     if (_currentUser == null) {
-      _redirectToLogin(); // Changed to _redirectToLogin
+      //_redirectToLogin(); // Changed to _redirectToLogin
       return;
     }
 
@@ -94,7 +92,7 @@ class _RoutineScreenState extends ConsumerState<RoutineScreen> {
 
   Future<void> _addNewTodo() async {
     if (_currentUser == null) {
-      _redirectToLogin(); // Changed to _redirectToLogin
+      //_redirectToLogin(); // Changed to _redirectToLogin
       return;
     }
 
@@ -108,14 +106,14 @@ class _RoutineScreenState extends ConsumerState<RoutineScreen> {
             onChanged: (value) {
               newTodo = value;
             },
-            decoration: const InputDecoration(hintText: 'Enter your task...'),
+            decoration: InputDecoration(hintText: AppLocalizations.of(context)?.todo_add_hint ?? 'Enter your task...'),
           ),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text('Cancel'),
+              child: Text(AppLocalizations.of(context)?.journal_cancel ?? 'Cancel'),
             ),
             ElevatedButton(
               onPressed: () {
@@ -123,7 +121,7 @@ class _RoutineScreenState extends ConsumerState<RoutineScreen> {
                   Navigator.of(context).pop(newTodo.trim());
                 }
               },
-              child: const Text('Add'),
+              child: Text(AppLocalizations.of(context)?.todo_add ?? 'Add'),
             ),
           ],
         );
@@ -137,7 +135,7 @@ class _RoutineScreenState extends ConsumerState<RoutineScreen> {
 
   Future<void> _saveTodoToSupabase(String title) async {
     if (_currentUser == null) {
-      _redirectToLogin(); // Changed to _redirectToLogin
+      //_redirectToLogin(); // Changed to _redirectToLogin
       return;
     }
 
@@ -167,7 +165,7 @@ class _RoutineScreenState extends ConsumerState<RoutineScreen> {
 
   Future<void> _toggleTodo(int index) async {
     if (_currentUser == null) {
-      _redirectToLogin(); // Changed to _redirectToLogin
+      //_redirectToLogin(); // Changed to _redirectToLogin
       return;
     }
 
@@ -198,7 +196,7 @@ class _RoutineScreenState extends ConsumerState<RoutineScreen> {
 
   Future<void> _deleteTodo(int index) async {
     if (_currentUser == null) {
-      _redirectToLogin(); // Changed to _redirectToLogin
+      //_redirectToLogin(); // Changed to _redirectToLogin
       return;
     }
 
@@ -388,8 +386,19 @@ class _RoutineScreenState extends ConsumerState<RoutineScreen> {
           backgroundColor: Colors.transparent,
           elevation: 0,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.black87),
-            onPressed: _navigateToDashboard,
+            icon: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: moodColor,
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.arrow_back_ios_new_rounded,
+                size: 20,
+                color: Colors.white,
+              ),
+            ),
+            onPressed: () => Navigator.pop(context),
           ),
           title: Column(
             children: [
@@ -416,7 +425,7 @@ class _RoutineScreenState extends ConsumerState<RoutineScreen> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
-                    "Today",
+                    AppLocalizations.of(context)?.today ?? "Today",
                     style: TextStyle(
                       color: _isSameDay(_selectedDate, DateTime.now())
                           ? Colors.white
@@ -647,9 +656,9 @@ class _RoutineScreenState extends ConsumerState<RoutineScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
-                      "To Do",
-                      style: TextStyle(
+                    Text(
+                      AppLocalizations.of(context)?.todo_title ?? "To Do",
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: Colors.black87,
@@ -686,29 +695,49 @@ class _RoutineScreenState extends ConsumerState<RoutineScreen> {
                             child: Center(child: CircularProgressIndicator()),
                           )
                         : _currentUser == null
-                        ? Padding(
-                            padding: const EdgeInsets.all(40.0),
-                            child: Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Text(
-                                    'Please log in to view your todos',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 16),
-                                  ElevatedButton(
-                                    onPressed:
-                                        _redirectToLogin, // Changed to _redirectToLogin
-                                    child: const Text('Login'),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          )
+  ? Padding(
+      padding: const EdgeInsets.all(32.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.lock_outline, size: 70, color: Colors.grey),
+          const SizedBox(height: 16),
+          Text(
+            AppLocalizations.of(context)?.todo_login_title ?? 'Login to manage your tasks',
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            AppLocalizations.of(context)?.todo_login_desc ?? 'Sign in to add, edit, and view your daily routines.',
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 14, color: Colors.grey),
+          ),
+          const SizedBox(height: 20),
+          ElevatedButton.icon(
+            onPressed: _redirectToLogin,
+            icon: const Icon(Icons.login, color: Colors.black),
+            label: Text(AppLocalizations.of(context)?.journal_login_button ?? 'Login'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color.fromARGB(255, 216, 240, 245),
+              foregroundColor: Colors.black,
+              padding: const EdgeInsets.symmetric(
+                horizontal: 24,
+                vertical: 12,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+          ),
+        ],
+      ),
+    )
+
                         : _todos.isEmpty
                         ? Padding(
                             padding: const EdgeInsets.all(40.0),
@@ -721,8 +750,8 @@ class _RoutineScreenState extends ConsumerState<RoutineScreen> {
                                   color: Colors.grey,
                                 ),
                                 const SizedBox(height: 16),
-                                const Text(
-                                  'No tasks for today!',
+                                Text(
+                                  AppLocalizations.of(context)?.todo_no_tasks ?? 'No tasks for today!',
                                   style: TextStyle(
                                     fontSize: 16,
                                     color: Colors.grey,
