@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:serenote/l10n/app_localizations.dart';
 
 class TimerSettingsSheet extends StatefulWidget {
   final int pomodoroCycle;
@@ -33,23 +34,21 @@ class _TimerSettingsSheetState extends State<TimerSettingsSheet> {
 
   @override
   Widget build(BuildContext context) {
-    // 1. Determine Max Height (e.g., up to 90% of screen height)
+    final loc = AppLocalizations.of(context)!;
     final double maxSheetHeight = MediaQuery.of(context).size.height * 0.9;
 
     return Container(
-      // 2. Set Max Height Constraint
       constraints: BoxConstraints(maxHeight: maxSheetHeight),
       padding: const EdgeInsets.only(top: 20),
       decoration: const BoxDecoration(
-        // Color removed as background image will cover it
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(20),
           topRight: Radius.circular(20),
         ),
       ),
-      child: Stack( // 3. Use Stack for background image
+      child: Stack(
         children: [
-          // Background Image Layer
+          // Background image
           Positioned.fill(
             child: ClipRRect(
               borderRadius: const BorderRadius.only(
@@ -57,122 +56,107 @@ class _TimerSettingsSheetState extends State<TimerSettingsSheet> {
                 topRight: Radius.circular(20),
               ),
               child: Image.asset(
-                'assets/images/timeer.png', // <--- REPLACE WITH YOUR IMAGE PATH
+                'assets/images/timeer.png',
                 fit: BoxFit.cover,
               ),
             ),
           ),
-          
-          // Content Layer (Scrollable Body and Fixed Footer)
+
+          // Foreground content
           Column(
-            mainAxisSize: MainAxisSize.min, // Allows Column to shrink to content height
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 4. Fixed Header Row
+              // Header
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
-                      'Settings',
-                      style: TextStyle(
+                    Text(
+                      loc.settingsTitle,
+                      style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
-                        color: Colors.black87, // Ensure visibility over background
+                        color: Colors.black87,
                       ),
                     ),
                     IconButton(
                       icon: const Icon(Icons.close, color: Colors.black87),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
+                      onPressed: () => Navigator.of(context).pop(),
                     ),
                   ],
                 ),
               ),
-              
+
               const SizedBox(height: 20),
-              
-              // 5. Scrollable Body
-              Flexible( // Allows SingleChildScrollView to take remaining space
+
+              // Scrollable body
+              Flexible(
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'Pomodoro Technique',
-                        style: TextStyle(
+                      Text(
+                        loc.pomodoroTechnique,
+                        style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w600,
-                          color: Colors.black87, // Ensure visibility
+                          color: Colors.black87,
                         ),
                       ),
-                      
                       const SizedBox(height: 20),
-                      
-                      // Pomodoro Cycle Setting
+
+                      // Focus Duration
                       _buildNumberSetting(
-                        'Focus Duration',
-                        'minutes',
+                        loc.focusDuration,
+                        loc.minutes,
                         _pomodoroCycle,
                         1,
                         60,
-                        (value) {
-                          setState(() {
-                            _pomodoroCycle = value;
-                          });
-                        },
+                        (value) => setState(() => _pomodoroCycle = value),
                       ),
-                      
+
                       const SizedBox(height: 16),
-                      
-                      // Short Break Setting
+
+                      // Short Break
                       _buildNumberSetting(
-                        'Short Break',
-                        'minutes',
+                        loc.shortBreak,
+                        loc.minutes,
                         _shortBreak,
                         1,
                         30,
-                        (value) {
-                          setState(() {
-                            _shortBreak = value;
-                          });
-                        },
+                        (value) => setState(() => _shortBreak = value),
                       ),
-                      
+
                       const SizedBox(height: 16),
-                      
-                      // Long Break Setting
+
+                      // Long Break
                       _buildNumberSetting(
-                        'Long Break',
-                        'minutes',
+                        loc.longBreak,
+                        loc.minutes,
                         _longBreak,
                         1,
                         60,
-                        (value) {
-                          setState(() {
-                            _longBreak = value;
-                          });
-                        },
+                        (value) => setState(() => _longBreak = value),
                       ),
-                      
+
                       const SizedBox(height: 30),
-                      // Add padding below the last setting before the button area
                     ],
                   ),
                 ),
               ),
-              
-              // 6. Fixed Footer Button
+
+              // Footer (Save button)
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
                 child: SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      widget.onSettingsChanged(_pomodoroCycle, _shortBreak, _longBreak);
+                      widget.onSettingsChanged(
+                          _pomodoroCycle, _shortBreak, _longBreak);
                       Navigator.of(context).pop();
                     },
                     style: ElevatedButton.styleFrom(
@@ -183,7 +167,7 @@ class _TimerSettingsSheetState extends State<TimerSettingsSheet> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    child: const Text('Save Settings'),
+                    child: Text(loc.saveSettings),
                   ),
                 ),
               ),
@@ -194,12 +178,18 @@ class _TimerSettingsSheetState extends State<TimerSettingsSheet> {
     );
   }
 
-  Widget _buildNumberSetting(String title, String unit, int value, int min, int max, Function(int) onChanged) {
+  Widget _buildNumberSetting(
+    String title,
+    String unit,
+    int value,
+    int min,
+    int max,
+    Function(int) onChanged,
+  ) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 10),
-      // Add a slight background for better contrast against the image
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.7), 
+        color: Colors.white.withOpacity(0.7),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Padding(
@@ -232,17 +222,16 @@ class _TimerSettingsSheetState extends State<TimerSettingsSheet> {
                   icon: const Icon(Icons.remove_circle_outline),
                   color: const Color.fromARGB(255, 71, 134, 145),
                   onPressed: () {
-                    if (value > min) {
-                      onChanged(value - 1);
-                    }
+                    if (value > min) onChanged(value - 1);
                   },
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.grey.shade300),
                     borderRadius: BorderRadius.circular(8),
-                    color: Colors.white, // Solid white background for value
+                    color: Colors.white,
                   ),
                   child: Text(
                     value.toString(),
@@ -256,9 +245,7 @@ class _TimerSettingsSheetState extends State<TimerSettingsSheet> {
                   icon: const Icon(Icons.add_circle_outline),
                   color: Colors.purple,
                   onPressed: () {
-                    if (value < max) {
-                      onChanged(value + 1);
-                    }
+                    if (value < max) onChanged(value + 1);
                   },
                 ),
               ],

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:serenote/l10n/app_localizations.dart';
 class DisplayNameEditor extends StatefulWidget {
   final String? currentName;
   final Function(String) onNameUpdated;
@@ -32,16 +32,17 @@ class _DisplayNameEditorState extends State<DisplayNameEditor> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Display Name',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        Text(
+  loc?.display_name ?? 'Display Name',
+  style: const TextStyle(
+    fontSize: 18,
+    fontWeight: FontWeight.bold,
+  ),
+),
         const SizedBox(height: 16),
         _isEditing
             ? Row(

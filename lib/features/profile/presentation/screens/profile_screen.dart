@@ -7,8 +7,10 @@ import '../../domain/entities/profile_entity.dart';
 import '../widgets/avatar_selection_grid.dart';
 import '../widgets/display_name_editor.dart';
 import 'package:serenote/features/mood/presentation/providers/mood_provider.dart';
+import 'package:serenote/l10n/app_localizations.dart'; // <-- import localization
+
 class ProfileScreen extends ConsumerStatefulWidget {
-  final VoidCallback? onBackPressed; // Add this callback
+  final VoidCallback? onBackPressed;
 
   const ProfileScreen({super.key, this.onBackPressed});
 
@@ -25,29 +27,42 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     super.initState();
     _loadProfile();
   }
+  @override
+void didChangeDependencies() {
+  super.didChangeDependencies();
+  // Only assign once
+  _loc ??= AppLocalizations.of(context);
+  if (!_profileLoaded) {
+    _profileLoaded = true;
+    _loadProfile();
+  }
+}
+
+AppLocalizations? _loc;
+bool _profileLoaded = false;
 
   Future<void> _loadProfile() async {
     try {
-      final user = Supabase.instance.client.auth.currentUser;
-      
-      if (user == null) {
-        setState(() {
-          _error = 'User not authenticated. Please log in.';
-          _isLoading = false;
-        });
-        return;
-      }
+  final user = Supabase.instance.client.auth.currentUser;
+  if (user == null) {
+    setState(() {
+      _error = _loc?.user_not_authenticated ?? 'User not authenticated. Please log in.';
+      _isLoading = false;
+    });
+    return;
+  }
 
-      await ref.read(profileProvider.notifier).loadProfile(user.id);
-      setState(() {
-        _isLoading = false;
-      });
-    } catch (e) {
-      setState(() {
-        _error = 'Failed to load profile: $e';
-        _isLoading = false;
-      });
-    }
+  await ref.read(profileProvider.notifier).loadProfile(user.id);
+  setState(() {
+    _isLoading = false;
+  });
+} catch (e) {
+  setState(() {
+    //_error = loc?.failed_to_load_profile(e.toString()) ?? 'Failed to load profile: $e';
+    _isLoading = false;
+  });
+}
+
   }
 
   void _navigateToLogin() {
@@ -58,7 +73,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   }
 
   void _goBackWithSidebar() {
-    // Use the callback if provided, otherwise just pop
     if (widget.onBackPressed != null) {
       widget.onBackPressed!();
     } else {
@@ -68,13 +82,16 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
+
     final profile = ref.watch(profileProvider);
     final moodColor = ref
         .watch(moodColorProvider)
         .maybeWhen(
           data: (c) => c,
-          orElse: () => const Color(0xFF477D9E), // fallback
+          orElse: () => const Color(0xFF477D9E),
         );
+
     return Scaffold(
       backgroundColor: const Color(0xFFF5EFFF),
       body: Container(
@@ -87,7 +104,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         child: SafeArea(
           child: Column(
             children: [
-              // Custom App Bar with Circle Back Button
+              // App Bar
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Row(
@@ -97,14 +114,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       backgroundColor: moodColor.withOpacity(0.8),
                       child: IconButton(
                         icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 18, color: Colors.white,),
-                        onPressed: _goBackWithSidebar, // Use the new method
+                        onPressed: _goBackWithSidebar,
                         padding: EdgeInsets.zero,
                       ),
                     ),
                     const SizedBox(width: 16),
-                    const Text(
-                      'Profile Settings',
-                      style: TextStyle(
+                    Text(
+                      loc?.profile_settings ?? 'Profile Settings',
+                      style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: Colors.black87,
@@ -130,7 +147,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                                   style: const TextStyle(fontSize: 16, color: Colors.red),
                                 ),
                                 const SizedBox(height: 16),
-                                // Login Button instead of Retry
                                 ElevatedButton(
                                   onPressed: _navigateToLogin,
                                   style: ElevatedButton.styleFrom(
@@ -141,9 +157,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                                       borderRadius: BorderRadius.circular(12),
                                     ),
                                   ),
-                                  child: const Text(
-                                    'Login',
-                                    style: TextStyle(
+                                  child: Text(
+                                    loc?.login ?? 'Login',
+                                    style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -153,20 +169,15 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                             ),
                           )
                         : profile == null
-                            ? const Center(child: Text('No profile data available'))
+                            ? Center(child: Text(loc?.no_profile_data ?? 'No profile data available'))
                             : SingleChildScrollView(
                                 padding: const EdgeInsets.all(16),
                                 child: Column(
                                   children: [
-                                    // Current Avatar Display
                                     _buildCurrentAvatarSection(profile),
                                     const SizedBox(height: 24),
-                                    
-                                    // Avatar Selection
                                     AvatarSelectionGrid(currentAvatar: profile.avatarPath),
                                     const SizedBox(height: 24),
-                                    
-                                    // Display Name Editor in a Card
                                     Card(
                                       elevation: 4,
                                       shape: RoundedRectangleBorder(
@@ -201,7 +212,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         .watch(moodColorProvider)
         .maybeWhen(
           data: (c) => c,
-          orElse: () => const Color(0xFF477D9E), // fallback
+          orElse: () => const Color(0xFF477D9E),
         );
     return Column(
       children: [
@@ -224,7 +235,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         ),
         const SizedBox(height: 16),
         Text(
-          profile.displayName ?? 'User',
+          profile.displayName ?? AppLocalizations.of(context)?.user_default_name ?? 'User',
           style: const TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,

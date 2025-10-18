@@ -212,7 +212,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get hours => 'Hours';
 
   @override
-  String get minutes => 'Minutes';
+  String get minutes => 'minutes';
 
   @override
   String get pause => 'Pause';
@@ -240,4 +240,241 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ok => 'OK';
+
+  @override
+  String get settingsTitle => 'Settings';
+
+  @override
+  String get pomodoroTechnique => 'Pomodoro Technique';
+
+  @override
+  String get focusDuration => 'Focus Duration';
+
+  @override
+  String get shortBreak => 'Short Break';
+
+  @override
+  String get longBreak => 'Long Break';
+
+  @override
+  String get saveSettings => 'Save Settings';
+
+  @override
+  String get customGoalsTitle => 'Custom Goals';
+
+  @override
+  String get defaultGoals => 'Default Goals';
+
+  @override
+  String get customGoals => 'Custom Goals';
+
+  @override
+  String get createCustomGoals => 'Create Custom Goals';
+
+  @override
+  String get enterGoalHint => 'Enter goal name...';
+
+  @override
+  String get applyGoals => 'Apply Goals';
+
+  @override
+  String goalCount(Object count) {
+    return '$count/50';
+  }
+
+  @override
+  String get focus => 'Focus';
+
+  @override
+  String get read => 'Read';
+
+  @override
+  String get study => 'Study';
+
+  @override
+  String get workout => 'Workout';
+
+  @override
+  String get work => 'Work';
+
+  @override
+  String get meditate => 'Meditate';
+
+  @override
+  String get relax => 'Relax';
+
+  @override
+  String get calendar_sun => 'Sun';
+
+  @override
+  String get calendar_mon => 'Mon';
+
+  @override
+  String get calendar_tue => 'Tue';
+
+  @override
+  String get calendar_wed => 'Wed';
+
+  @override
+  String get calendar_thu => 'Thu';
+
+  @override
+  String get calendar_fri => 'Fri';
+
+  @override
+  String get calendar_sat => 'Sat';
+
+  @override
+  String get month_january => 'January';
+
+  @override
+  String get month_february => 'February';
+
+  @override
+  String get month_march => 'March';
+
+  @override
+  String get month_april => 'April';
+
+  @override
+  String get month_may => 'May';
+
+  @override
+  String get month_june => 'June';
+
+  @override
+  String get month_july => 'July';
+
+  @override
+  String get month_august => 'August';
+
+  @override
+  String get month_september => 'September';
+
+  @override
+  String get month_october => 'October';
+
+  @override
+  String get month_november => 'November';
+
+  @override
+  String get month_december => 'December';
+
+  @override
+  String get todo_add_new_task_hint => 'Add a new task to get started';
+
+  @override
+  String get reset_password_title => 'Reset Password';
+
+  @override
+  String get reset_password_desc =>
+      'Enter your email to receive a password reset link';
+
+  @override
+  String get email_label => 'Email';
+
+  @override
+  String get send_reset_link => 'Send Reset Link';
+
+  @override
+  String get reset_link_sent_title => 'Reset Link Sent!';
+
+  @override
+  String get reset_link_sent_desc =>
+      'Check your email for a password reset link. If you don\'t see it, check your spam folder.';
+
+  @override
+  String get back_to_login => 'Back to Login';
+
+  @override
+  String error_occurred(Object error) {
+    return 'Error: $error';
+  }
+
+  @override
+  String get welcome_back => 'Welcome Back';
+
+  @override
+  String get sign_in_subtitle => 'Sign in to continue your journey';
+
+  @override
+  String get password_label => 'Password';
+
+  @override
+  String get forgot_password => 'Forgot Password?';
+
+  @override
+  String get sign_in_button => 'Sign In';
+
+  @override
+  String get signup_prompt => 'Don\'t have an account? Sign up';
+
+  @override
+  String get create_account => 'Create Account';
+
+  @override
+  String get signup_subtitle => 'Sign up to get started with SereNote';
+
+  @override
+  String get full_name_label => 'Full Name';
+
+  @override
+  String get confirm_password_label => 'Confirm Password';
+
+  @override
+  String get passwords_not_match => 'Passwords do not match';
+
+  @override
+  String get password_length_error => 'Password must be at least 6 characters';
+
+  @override
+  String get registration_success =>
+      'Registration successful! Please check your email for verification.';
+
+  @override
+  String get already_have_account => 'Already have an account? Login';
+
+  @override
+  String get create_account_button => 'Create Account';
+
+  @override
+  String get profile_settings => 'Profile Settings';
+
+  @override
+  String get user_not_authenticated => 'User not authenticated. Please log in.';
+
+  @override
+  String failed_to_load_profile(Object error) {
+    return 'Failed to load profile: $error';
+  }
+
+  @override
+  String get login => 'Login';
+
+  @override
+  String get no_profile_data => 'No profile data available';
+
+  @override
+  String get user_default_name => 'User';
+
+  @override
+  String get choose_avatar => 'Choose Avatar';
+
+  @override
+  String get display_name => 'Display Name';
+
+  @override
+  String get full_name_required => 'Full name is required';
+
+  @override
+  String get email_required => 'Email is required';
+
+  @override
+  String get email_invalid => 'Invalid email format';
+
+  @override
+  String get password_required => 'Password is required';
+
+  @override
+  String get confirm_password_required => 'Please confirm your password';
 }

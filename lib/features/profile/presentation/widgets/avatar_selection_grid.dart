@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:serenote/core/di/dependency_injection.dart';
-
+import 'package:serenote/l10n/app_localizations.dart';
 class AvatarSelectionGrid extends ConsumerWidget {
   final String? currentAvatar;
   
@@ -22,16 +22,17 @@ class AvatarSelectionGrid extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final loc = AppLocalizations.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Choose Avatar',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        Text(
+  loc?.choose_avatar ?? 'Choose Avatar',
+  style: const TextStyle(
+    fontSize: 18,
+    fontWeight: FontWeight.bold,
+  ),
+),
         const SizedBox(height: 16),
         GridView.builder(
           shrinkWrap: true,
