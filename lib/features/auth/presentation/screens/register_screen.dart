@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'package:serenote/core/services/auth_service.dart';
 import 'login_screen.dart';
+import 'package:serenote/l10n/app_localizations.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -17,35 +19,69 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
   bool _isLoading = false;
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
+  bool _agreedToTerms = false;
   
   AnimationController? _shimmerController;
   AnimationController? _pulseController;
   
-  bool get _passwordsMatch {
-    return _confirmPasswordController.text.isEmpty || 
+  // Validation flags
+  bool _emailTouched = false;
+  bool _passwordTouched = false;
+  bool _confirmPasswordTouched = false;
+  bool _fullNameTouched = false;
+
+  bool get _isEmailValid {
+  final email = _emailController.text.trim();
+  if (email.isEmpty) return false;
+  
+  // More comprehensive email regex
+  final emailRegex = RegExp(
+    r'^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$'
+  );
+  
+  return emailRegex.hasMatch(email);
+}
+
+  bool get _isPasswordValid {
+    return _passwordController.text.length >= 6;
+  }
+
+  bool get _isConfirmPasswordValid {
+    return _confirmPasswordController.text.isNotEmpty &&
            _passwordController.text == _confirmPasswordController.text;
+  }
+
+  bool get _isFullNameValid {
+    return _fullNameController.text.trim().isNotEmpty;
+  }
+
+  bool get _isFormValid {
+    return _isEmailValid && 
+           _isPasswordValid && 
+           _isConfirmPasswordValid && 
+           _isFullNameValid &&
+           _agreedToTerms;
   }
 
   @override
   void initState() {
     super.initState();
     
-    // Shimmer animation for title - continuous
     _shimmerController = AnimationController(
       duration: const Duration(milliseconds: 2500),
       vsync: this,
     )..repeat();
     
-    // Pulse animation for button - continuous
     _pulseController = AnimationController(
       duration: const Duration(milliseconds: 1500),
       vsync: this,
     )..repeat(reverse: true);
     
-    // Listen for password changes to update UI
-    _confirmPasswordController.addListener(() {
-      setState(() {});
-    });
+    // Add listeners to update state when text changes
+    _emailController.addListener(() => setState(() {}));
+    _passwordController.addListener(() => setState(() {}));
+    _confirmPasswordController.addListener(() => setState(() {}));
+    _fullNameController.addListener(() => setState(() {}));
   }
 
   @override
@@ -59,20 +95,162 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
     super.dispose();
   }
 
-  Future<void> _register() async {
-    if (_passwordController.text != _confirmPasswordController.text) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Passwords do not match')),
-      );
-      return;
-    }
+  void _showTermsAndConditions() {
+    showDialog(
+      
+      context: context,
+      builder: (context) => Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Container(
+          constraints: const BoxConstraints(maxHeight: 600),
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  const Icon(
+                    Icons.description,
+                    color: Color.fromARGB(255, 71, 134, 145),
+                    size: 28,
+                  ),
+                  const SizedBox(width: 12),
+                  const Expanded(
+                    child: Text(
+                      'Terms & Conditions',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(255, 71, 134, 145),
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    icon: const Icon(Icons.close),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildTermsSection(
+                        'Welcome to SereNote',
+                        'SereNote is your mindful companion for emotional awareness, mood tracking, and personal growth. By using our app, you agree to the following terms.',
+                      ),
+                      _buildTermsSection(
+                        '1. Use of Service',
+                        'SereNote provides tools for mood tracking, journaling, habit tracking, and mindfulness exercises. This service is for personal, non-commercial use only.',
+                      ),
+                      _buildTermsSection(
+                        '2. Privacy & Data',
+                        'We respect your privacy. Your journal entries, mood data, and personal information are securely stored and never shared with third parties without your explicit consent. You maintain full ownership of your data.',
+                      ),
+                      _buildTermsSection(
+                        '3. User Content',
+                        'You retain all rights to content you create in SereNote, including journal entries, notes, and habit logs. We do not claim ownership of your personal reflections.',
+                      ),
+                      _buildTermsSection(
+                        '4. Health Disclaimer',
+                        'SereNote is a wellness tool and not a substitute for professional medical or mental health advice. If you\'re experiencing a mental health crisis, please contact a qualified healthcare provider or emergency services.',
+                      ),
+                      _buildTermsSection(
+                        '5. Account Security',
+                        'You are responsible for maintaining the confidentiality of your account credentials. Please notify us immediately if you suspect unauthorized access.',
+                      ),
+                      _buildTermsSection(
+                        '6. Changes to Terms',
+                        'We may update these terms periodically. Continued use of SereNote after changes constitutes acceptance of the updated terms.',
+                      ),
+                      _buildTermsSection(
+                        '7. Mindful Community',
+                        'SereNote is built on principles of kindness, respect, and mindfulness. We encourage users to approach their journey with compassion for themselves and others.',
+                      ),
+                      const SizedBox(height: 16),
+                      const Text(
+                        'Last updated: October 2025',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      _agreedToTerms = true;
+                    });
+                    Navigator.of(context).pop();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 71, 134, 145),
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Text(
+                    'I Agree',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
-    if (_passwordController.text.length < 6) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Password must be at least 6 characters')),
-      );
-      return;
-    }
+  Widget _buildTermsSection(String title, String content) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Color.fromARGB(255, 50, 100, 110),
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            content,
+            style: const TextStyle(
+              fontSize: 14,
+              color: Colors.black87,
+              height: 1.5,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _register() async {
+    final loc = AppLocalizations.of(context);
+
+    if (!_isFormValid) return;
 
     setState(() {
       _isLoading = true;
@@ -86,7 +264,7 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
       );
       
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Registration successful! Please check your email for verification.')),
+        SnackBar(content: Text(loc?.registration_success ?? 'Registration successful! Please check your email for verification.')),
       );
       
       Navigator.of(context).pushReplacement(
@@ -94,7 +272,7 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: ${e.toString()}')),
+        SnackBar(content: Text(loc?.error_occurred(e.toString()) ?? 'Error: ${e.toString()}')),
       );
     } finally {
       setState(() {
@@ -103,8 +281,55 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
     }
   }
 
+  String? _getFullNameError() {
+    final loc = AppLocalizations.of(context);
+    if (!_fullNameTouched) return null;
+    if (_fullNameController.text.trim().isEmpty) {
+      return loc?.full_name_required ?? 'Full name is required';
+    }
+    return null;
+  }
+
+  String? _getEmailError() {
+    final loc = AppLocalizations.of(context);
+    if (!_emailTouched) return null;
+    if (_emailController.text.trim().isEmpty) {
+      return loc?.email_required ?? 'Email is required';
+    }
+    if (!_isEmailValid) {
+      return loc?.email_invalid ?? 'Invalid email format';
+    }
+    return null;
+  }
+
+  String? _getPasswordError() {
+    final loc = AppLocalizations.of(context);
+    if (!_passwordTouched) return null;
+    if (_passwordController.text.isEmpty) {
+      return loc?.password_required ?? 'Password is required';
+    }
+    if (_passwordController.text.length < 6) {
+      return loc?.password_length_error ?? 'Password must be at least 6 characters';
+    }
+    return null;
+  }
+
+  String? _getConfirmPasswordError() {
+    final loc = AppLocalizations.of(context);
+    if (!_confirmPasswordTouched) return null;
+    if (_confirmPasswordController.text.isEmpty) {
+      return loc?.confirm_password_required ?? 'Please confirm your password';
+    }
+    if (_passwordController.text != _confirmPasswordController.text) {
+      return loc?.passwords_not_match ?? 'Passwords do not match';
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
+
     if (_shimmerController == null || _pulseController == null) {
       return const Scaffold(
         backgroundColor: Color.fromARGB(255, 239, 245, 247),
@@ -113,14 +338,14 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
     }
 
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 239, 245, 247),
+      backgroundColor: const Color.fromARGB(255, 239, 245, 247),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Back button with slide in from left
+              // Back button
               TweenAnimationBuilder<double>(
                 tween: Tween(begin: -50.0, end: 0.0),
                 duration: const Duration(milliseconds: 600),
@@ -139,7 +364,7 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
               ),
               const SizedBox(height: 20),
               
-              // Title with continuous shimmer effect
+              // Title with shimmer
               AnimatedBuilder(
                 animation: _shimmerController!,
                 builder: (context, child) {
@@ -165,9 +390,9 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
                         end: Alignment.bottomRight,
                       ).createShader(bounds);
                     },
-                    child: const Text(
-                      'Create Account',
-                      style: TextStyle(
+                    child: Text(
+                      loc?.create_account ?? 'Create Account',
+                      style: const TextStyle(
                         fontSize: 32,
                         fontWeight: FontWeight.bold,
                       ),
@@ -176,80 +401,155 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
                 },
               ),
               
-              // Subtitle with fade in
+              // Subtitle
               TweenAnimationBuilder<double>(
                 tween: Tween(begin: 0.0, end: 1.0),
                 duration: const Duration(milliseconds: 800),
                 builder: (context, value, child) {
                   return Opacity(
                     opacity: value,
-                    child: const Text(
-                      'Sign up to get started with SereNote',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.grey,
-                      ),
+                    child: Text(
+                      loc?.signup_subtitle ?? 'Sign up to get started with SereNote',
+                      style: const TextStyle(fontSize: 16, color: Colors.grey),
                     ),
                   );
                 },
               ),
               const SizedBox(height: 40),
               
-              // Text fields with staggered slide and fade
+              // Text fields
               _buildAnimatedTextField(
                 controller: _fullNameController,
-                label: 'Full Name',
+                label: loc?.full_name_label ?? 'Full Name',
                 icon: Icons.person,
                 delay: 200,
+                errorText: _getFullNameError(),
+                onChanged: (value) {
+                  setState(() {
+                    _fullNameTouched = true;
+                  });
+                },
               ),
               const SizedBox(height: 16),
               _buildAnimatedTextField(
                 controller: _emailController,
-                label: 'Email',
+                label: loc?.email_label ?? 'Email',
                 icon: Icons.email,
                 keyboardType: TextInputType.emailAddress,
                 delay: 400,
+                errorText: _getEmailError(),
+                onChanged: (value) {
+                  setState(() {
+                    _emailTouched = true;
+                  });
+                },
               ),
               const SizedBox(height: 16),
               _buildAnimatedTextField(
                 controller: _passwordController,
-                label: 'Password',
+                label: loc?.password_label ?? 'Password',
                 icon: Icons.lock,
                 obscureText: _obscurePassword,
                 delay: 600,
+                errorText: _getPasswordError(),
                 suffixIcon: IconButton(
-                  icon: Icon(
-                    _obscurePassword ? Icons.visibility : Icons.visibility_off,
-                  ),
+                  icon: Icon(_obscurePassword ? Icons.visibility : Icons.visibility_off),
                   onPressed: () {
                     setState(() {
                       _obscurePassword = !_obscurePassword;
                     });
                   },
                 ),
+                onChanged: (value) {
+                  setState(() {
+                    _passwordTouched = true;
+                  });
+                },
               ),
               const SizedBox(height: 16),
               _buildAnimatedTextField(
                 controller: _confirmPasswordController,
-                label: 'Confirm Password',
+                label: loc?.confirm_password_label ?? 'Confirm Password',
                 icon: Icons.lock,
                 obscureText: _obscureConfirmPassword,
                 delay: 800,
-                isError: !_passwordsMatch,
+                errorText: _getConfirmPasswordError(),
                 suffixIcon: IconButton(
-                  icon: Icon(
-                    _obscureConfirmPassword ? Icons.visibility : Icons.visibility_off,
-                  ),
+                  icon: Icon(_obscureConfirmPassword ? Icons.visibility : Icons.visibility_off),
                   onPressed: () {
                     setState(() {
                       _obscureConfirmPassword = !_obscureConfirmPassword;
                     });
                   },
                 ),
+                onChanged: (value) {
+                  setState(() {
+                    _confirmPasswordTouched = true;
+                  });
+                },
+              ),
+              const SizedBox(height: 20),
+              
+              // Terms and Conditions Checkbox
+              TweenAnimationBuilder<double>(
+                tween: Tween(begin: 0.0, end: 1.0),
+                duration: const Duration(milliseconds: 1000),
+                builder: (context, value, child) {
+                  return Opacity(
+                    opacity: value,
+                    child: Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: Colors.grey.shade300,
+                          width: 1,
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Checkbox(
+                            value: _agreedToTerms,
+                            onChanged: (value) {
+                              setState(() {
+                                _agreedToTerms = value ?? false;
+                              });
+                            },
+                            activeColor: const Color.fromARGB(255, 71, 134, 145),
+                          ),
+                          Expanded(
+                            child: RichText(
+                              text: TextSpan(
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.black87,
+                                ),
+                                children: [
+                                  const TextSpan(text: 'I agree to the '),
+                                  TextSpan(
+                                    text: 'Terms & Conditions',
+                                    style: const TextStyle(
+                                      color: Color.fromARGB(255, 71, 134, 145),
+                                      fontWeight: FontWeight.bold,
+                                      decoration: TextDecoration.underline,
+                                    ),
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = _showTermsAndConditions,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
               ),
               const SizedBox(height: 24),
               
-              // Button with pulse effect
+              // Button
               _isLoading
                   ? const Center(child: CircularProgressIndicator())
                   : TweenAnimationBuilder<double>(
@@ -261,37 +561,40 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
                           child: AnimatedBuilder(
                             animation: _pulseController!,
                             builder: (context, child) {
-                              final scale = 1.0 + (_pulseController!.value * 0.03);
+                              final scale = _isFormValid ? 1.0 + (_pulseController!.value * 0.03) : 1.0;
                               return Transform.scale(
                                 scale: scale,
                                 child: Container(
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(12),
-                                    boxShadow: [
+                                    boxShadow: _isFormValid ? [
                                       BoxShadow(
                                         color: const Color.fromARGB(255, 71, 134, 145)
                                             .withOpacity(0.3 * _pulseController!.value),
                                         blurRadius: 15 * _pulseController!.value,
                                         spreadRadius: 2 * _pulseController!.value,
                                       ),
-                                    ],
+                                    ] : [],
                                   ),
                                   child: SizedBox(
                                     width: double.infinity,
                                     child: ElevatedButton(
-                                      onPressed: _register,
+                                      onPressed: _isFormValid ? _register : null,
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: const Color.fromARGB(255, 71, 134, 145),
+                                        backgroundColor: _isFormValid 
+                                            ? const Color.fromARGB(255, 71, 134, 145)
+                                            : Colors.grey.shade400,
+                                        disabledBackgroundColor: Colors.grey.shade400,
                                         padding: const EdgeInsets.symmetric(vertical: 16),
                                         shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular(12),
                                         ),
-                                        elevation: 4,
+                                        elevation: _isFormValid ? 4 : 1,
                                       ),
-                                      child: const Text(
-                                        'Create Account',
+                                      child: Text(
+                                        loc?.create_account_button ?? 'Create Account',
                                         style: TextStyle(
-                                          color: Colors.white,
+                                          color: _isFormValid ? Colors.white : Colors.grey.shade600,
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold,
                                         ),
@@ -307,7 +610,7 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
                     ),
               const SizedBox(height: 20),
               
-              // Login link with bounce
+              // Login link
               TweenAnimationBuilder<double>(
                 tween: Tween(begin: 0.0, end: 1.0),
                 duration: const Duration(milliseconds: 2700),
@@ -322,9 +625,9 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
                             MaterialPageRoute(builder: (context) => const LoginScreen()),
                           );
                         },
-                        child: const Text(
-                          "Already have an account? Login",
-                          style: TextStyle(color: Color.fromARGB(255, 71, 134, 145)),
+                        child: Text(
+                          loc?.already_have_account ?? "Already have an account? Login",
+                          style: const TextStyle(color: Color.fromARGB(255, 71, 134, 145)),
                         ),
                       ),
                     ),
@@ -346,35 +649,60 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
     TextInputType? keyboardType,
     bool obscureText = false,
     Widget? suffixIcon,
-    bool isError = false,
+    String? errorText,
+    Function(String)? onChanged,
   }) {
-    return TextField(
-      controller: controller,
-      keyboardType: keyboardType,
-      obscureText: obscureText,
-      decoration: InputDecoration(
-        labelText: label,
-        border: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: isError ? Colors.red : Colors.grey,
-            width: isError ? 2 : 1,
+    final hasError = errorText != null;
+    
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TextField(
+          controller: controller,
+          keyboardType: keyboardType,
+          obscureText: obscureText,
+          onChanged: onChanged,
+          decoration: InputDecoration(
+            labelText: label,
+            border: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: hasError ? Colors.red : Colors.grey,
+                width: hasError ? 2 : 1,
+              ),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: hasError ? Colors.red : Colors.grey,
+                width: hasError ? 2 : 1,
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: hasError ? Colors.red : const Color.fromARGB(255, 71, 134, 145),
+                width: 2,
+              ),
+            ),
+            prefixIcon: Icon(
+              icon,
+              color: hasError ? Colors.red : null,
+            ),
+            suffixIcon: suffixIcon,
           ),
         ),
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: isError ? Colors.red : Colors.grey,
-            width: isError ? 2 : 1,
+        if (hasError) ...[
+          const SizedBox(height: 4),
+          Padding(
+            padding: const EdgeInsets.only(left: 12),
+            child: Text(
+              errorText,
+              style: const TextStyle(
+                color: Colors.red,
+                fontSize: 12,
+              ),
+            ),
           ),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: isError ? Colors.red : const Color.fromARGB(255, 71, 134, 145),
-            width: 2,
-          ),
-        ),
-        prefixIcon: Icon(icon),
-        suffixIcon: suffixIcon,
-      ),
+        ],
+      ],
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:serenote/core/services/auth_service.dart';
+import 'package:serenote/l10n/app_localizations.dart'; // <-- import localizations
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -18,6 +19,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       _isLoading = true;
     });
 
+    final loc = AppLocalizations.of(context);
+
     try {
       await AuthService().resetPassword(_emailController.text.trim());
       setState(() {
@@ -25,7 +28,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: ${e.toString()}')),
+       SnackBar(content: Text(loc?.error_occurred(e.toString()) ?? 'Error: ${e.toString()}')),
       );
     } finally {
       setState(() {
@@ -36,13 +39,15 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
+
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 239, 245, 247),
+      backgroundColor: const Color.fromARGB(255, 239, 245, 247),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: const Color.fromARGB(255, 71, 134, 145)),
+          icon: const Icon(Icons.arrow_back, color: Color.fromARGB(255, 71, 134, 145)),
           onPressed: () {
             Navigator.of(context).pop();
           },
@@ -54,18 +59,18 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 20),
-            const Text(
-              'Reset Password',
-              style: TextStyle(
+            Text(
+              loc?.reset_password_title ?? 'Reset Password',
+              style: const TextStyle(
                 fontSize: 32,
                 fontWeight: FontWeight.bold,
-                color: const Color.fromARGB(255, 71, 134, 145),
+                color: Color.fromARGB(255, 71, 134, 145),
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
-              'Enter your email to receive a password reset link',
-              style: TextStyle(
+            Text(
+              loc?.reset_password_desc ?? 'Enter your email to receive a password reset link',
+              style: const TextStyle(
                 fontSize: 16,
                 color: Colors.grey,
               ),
@@ -75,10 +80,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               TextField(
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
-                decoration: const InputDecoration(
-                  labelText: 'Email',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.email),
+                decoration: InputDecoration(
+                  labelText: loc?.email_label ?? 'Email',
+                  border: const OutlineInputBorder(),
+                  prefixIcon: const Icon(Icons.email),
                 ),
               ),
               const SizedBox(height: 24),
@@ -95,9 +100,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        child: const Text(
-                          'Send Reset Link',
-                          style: TextStyle(
+                        child: Text(
+                          loc?.send_reset_link ?? 'Send Reset Link',
+                          style: const TextStyle(
                             color: Colors.white,
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -113,23 +118,23 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(color: Colors.green),
                 ),
-                child: const Column(
+                child: Column(
                   children: [
-                    Icon(Icons.check_circle, color: Colors.green, size: 48),
-                    SizedBox(height: 16),
+                    const Icon(Icons.check_circle, color: Colors.green, size: 48),
+                    const SizedBox(height: 16),
                     Text(
-                      'Reset Link Sent!',
-                      style: TextStyle(
+                      loc?.reset_link_sent_title ?? 'Reset Link Sent!',
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: Colors.green,
                       ),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Text(
-                      'Check your email for a password reset link. If you don\'t see it, check your spam folder.',
+                      loc?.reset_link_sent_desc ?? "Check your email for a password reset link. If you don't see it, check your spam folder.",
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.green),
+                      style: const TextStyle(color: Colors.green),
                     ),
                   ],
                 ),
@@ -148,9 +153,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child: const Text(
-                    'Back to Login',
-                    style: TextStyle(
+                  child: Text(
+                    loc?.back_to_login ?? 'Back to Login',
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 16,
                       fontWeight: FontWeight.bold,

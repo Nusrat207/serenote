@@ -25,7 +25,7 @@ import 'core/localization/locale_notifier.dart';
 
 // Import reset password screen
 import 'features/auth/presentation/screens/reset_password_screen.dart';
-
+import 'features/auth/presentation/screens/reset_password_handler_screen.dart';
 /// Convert the existing ChangeNotifier providers into Riverpod providers
 final settingsProvider = ChangeNotifierProvider<SettingsProvider>((ref) {
   return SettingsProvider();
@@ -61,7 +61,6 @@ Future<void> main() async {
       authOptions: const FlutterAuthClientOptions(
         authFlowType: AuthFlowType.pkce,
       ),
-      // This helps handle deep links automatically
       debug: true,
     );
 
@@ -133,7 +132,18 @@ class SerenoteApp extends ConsumerWidget {
             '/game': (context) => const GameScreen(),
             '/games_list': (context) => const GamesMenuScreen(),
             '/reset-password': (context) => const ResetPasswordScreen(),
+            
           },
+           onGenerateRoute: (settings) {
+    // Handle deep links for password reset
+    if (settings.name?.contains('auth-callback') == true) {
+      return MaterialPageRoute(
+        builder: (context) => const ResetPasswordHandlerScreen(),
+      );
+    }
+    
+    // ... your other routes
+  },
         );
       }),
     );
