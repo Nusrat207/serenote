@@ -31,9 +31,15 @@ class AuthService {
   Future<void> resetPassword(String email) async {
     await _client.auth.resetPasswordForEmail(
       email,
-      redirectTo: 'io.supabase.flutter://reset-password', // Update this with your app scheme
+      //redirectTo: 'io.supabase.flutter://reset-password', // Update this with your app scheme
+       redirectTo: 'serenote://auth-callback',
     );
   }
+
+  bool isPasswordRecovery() {
+  final session = _client.auth.currentSession;
+  return session != null && session.user.userMetadata?['is_password_recovery'] == true;
+}
 
   Future<void> updatePassword(String newPassword) async {
     await _client.auth.updateUser(

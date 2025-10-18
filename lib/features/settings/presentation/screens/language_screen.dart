@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:serenote/l10n/app_localizations.dart';
+import 'package:serenote/core/localization/locale_notifier.dart';
 
-class LanguageScreen extends StatelessWidget {
+class LanguageScreen extends ConsumerWidget {
   const LanguageScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currentLocale = ref.watch(localeProvider);
+    final loc = AppLocalizations.of(context);
+
     return Scaffold(
       backgroundColor: const Color(0xFFF5EFFF),
       appBar: AppBar(
-        title: const Text('Language Settings'),
+        title: Text(loc?.languageSettings ?? 'Language Settings'),
         backgroundColor: const Color.fromARGB(255, 71, 134, 145),
         foregroundColor: Colors.white,
       ),
@@ -34,17 +40,31 @@ class LanguageScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'Select Language',
-                        style: TextStyle(
+                      Text(
+                        loc?.selectLanguage ?? 'Select Language',
+                        style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                           color: Colors.black87,
                         ),
                       ),
                       const SizedBox(height: 16),
-                      _buildLanguageOption('English', true),
-                      _buildLanguageOption('Bangla', false),
+                      _buildLanguageOption(
+                        context,
+                        ref,
+                        label: 'English',
+                        locale: const Locale('en'),
+                        isSelected: (currentLocale?.languageCode ?? 'en') == 'en',
+                      ),
+                      _buildLanguageOption(
+                        context,
+                        ref,
+                        label: 'বাংলা',
+                        locale: const Locale('bn'),
+                        isSelected: (currentLocale?.languageCode ?? 'en') == 'bn',
+                      ),
+                      const SizedBox(height: 8),
+                      _buildSystemDefault(context, ref, isSelected: currentLocale == null),
                     ],
                   ),
                 ),
@@ -56,27 +76,74 @@ class LanguageScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildLanguageOption(String language, bool isSelected) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        children: [
-          Expanded(
-            child: Text(
-              language,
-              style: TextStyle(
-                fontSize: 16,
-                color: isSelected ? const Color.fromARGB(255, 71, 134, 145) : Colors.black87,
-                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+  Widget _buildLanguageOption(
+    BuildContext context,
+    WidgetRef ref, {
+    required String label,
+    required Locale locale,
+    required bool isSelected,
+  }) {
+    return GestureDetector(
+      onTap: () => ref.read(localeProvider.notifier).setLocale(locale),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                label,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: isSelected
+                      ? const Color.fromARGB(255, 71, 134, 145)
+                      : Colors.black87,
+                  fontWeight:
+                      isSelected ? FontWeight.bold : FontWeight.normal,
+                ),
               ),
             ),
-          ),
-          if (isSelected)
-            const Icon(
-              Icons.check_circle,
-              color: Color.fromARGB(255, 71, 134, 145),
+            if (isSelected)
+              const Icon(
+                Icons.check_circle,
+                color: Color.fromARGB(255, 71, 134, 145),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSystemDefault(
+    BuildContext context,
+    WidgetRef ref, {
+    required bool isSelected,
+  }) {
+    return GestureDetector(
+      onTap: () => ref.read(localeProvider.notifier).setLocale(null),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                'Use device language',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: isSelected
+                      ? const Color.fromARGB(255, 71, 134, 145)
+                      : Colors.black87,
+                  fontWeight:
+                      isSelected ? FontWeight.bold : FontWeight.normal,
+                ),
+              ),
             ),
-        ],
+            if (isSelected)
+              const Icon(
+                Icons.check_circle,
+                color: Color.fromARGB(255, 71, 134, 145),
+              ),
+          ],
+        ),
       ),
     );
   }

@@ -9,6 +9,7 @@ import '../widgets/qr_code_dialog.dart';
 import 'journal_editor_screen.dart';
 import 'package:serenote/features/mood/presentation/providers/mood_provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../../auth/presentation/screens/login_screen.dart';
 class JournalScreen extends ConsumerStatefulWidget {
   const JournalScreen({super.key});
 
@@ -151,6 +152,7 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
             onPressed: () => Navigator.pop(context),
           ),
           actions: [
+            if(isLoggedIn)
             IconButton(
               icon: Container(
                 padding: const EdgeInsets.all(8),
@@ -315,6 +317,18 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
                       ),
                       textAlign: TextAlign.center,
                     ),
+                    const SizedBox(height: 12),
+                    ElevatedButton.icon(
+                        onPressed: () => Navigator.push(context,  MaterialPageRoute(builder: (context) => const LoginScreen()),),
+                       icon: const Icon(Icons.login, color: Colors.black), 
+                        label: const Text('Login'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              const Color.fromARGB(255, 216, 240, 245),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 24, vertical: 12),
+                        ),
+                      ),
                     if (!notLoggedIn && _searchQuery.isEmpty) ...[
                       const SizedBox(height: 32),
                       ElevatedButton.icon(
