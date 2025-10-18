@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:serenote/features/mood/presentation/providers/mood_provider.dart';
 
-class TimerThemeSheet extends StatefulWidget {
+class TimerThemeSheet extends ConsumerStatefulWidget {
   final String currentTheme;
   final Function(String) onThemeChanged;
 
@@ -11,21 +13,31 @@ class TimerThemeSheet extends StatefulWidget {
   });
 
   @override
-  State<TimerThemeSheet> createState() => _TimerThemeSheetState();
+  ConsumerState<TimerThemeSheet> createState() => _TimerThemeSheetState();
 }
 
-class _TimerThemeSheetState extends State<TimerThemeSheet> {
+class _TimerThemeSheetState extends ConsumerState<TimerThemeSheet> {
   late String _selectedTheme;
   final TextEditingController _customThemeController = TextEditingController();
-  final List<String> _defaultThemes = ['Focus', 'Read', 'Study', 'Workout', 'Work', 'Meditate', 'Relax'];
-  final List<String> _customThemes = []; // Custom themes should ideally be loaded from state/storage
+
+  final List<String> _defaultThemes = [
+    'Focus',
+    'Read',
+    'Study',
+    'Workout',
+    'Work',
+    'Meditate',
+    'Relax',
+  ];
+
+  final List<String> _customThemes = []; // Ideally persisted with state/storage
 
   @override
   void initState() {
     super.initState();
     _selectedTheme = widget.currentTheme;
   }
-  
+
   @override
   void dispose() {
     _customThemeController.dispose();
@@ -34,59 +46,59 @@ class _TimerThemeSheetState extends State<TimerThemeSheet> {
 
   @override
   Widget build(BuildContext context) {
-    // Determine the height for the modal (up to 90% of screen height)
+    final moodColor = ref.watch(moodColorProvider).maybeWhen(
+          data: (c) => c,
+          orElse: () => const Color(0xFF477D9E),
+        );
+
     final double maxSheetHeight = MediaQuery.of(context).size.height * 0.9;
-    
+
     return Container(
-      // Set height constraint for the Modal, allowing content to scroll within it
       constraints: BoxConstraints(maxHeight: maxSheetHeight),
-      padding: const EdgeInsets.only(top: 20), // Padding for the header/top edge
+      padding: const EdgeInsets.only(top: 20),
       decoration: const BoxDecoration(
-        // Remove the direct color here as the Stack will handle the background
-        // color: Colors.white, 
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(20),
           topRight: Radius.circular(20),
         ),
       ),
-      child: Stack( // <--- Added Stack for background image
+      child: Stack(
         children: [
-          // Background Image (placed first to be at the bottom)
+          // Background image
           Positioned.fill(
-            child: ClipRRect( // Clip to respect the border radius of the parent Container
+            child: ClipRRect(
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(20),
                 topRight: Radius.circular(20),
               ),
               child: Image.asset(
-                'assets/images/timeer.png', // <--- REPLACE WITH YOUR IMAGE PATH
+                'assets/images/timeer.png',
                 fit: BoxFit.cover,
               ),
             ),
           ),
-          // Existing content (Column) placed on top of the image
-          Column( 
-            mainAxisSize: MainAxisSize.min, 
+
+          // Content
+          Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              // 1. Header Row (Fixed)
+              // Header
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text(
-                      'Custom Themes',
+                      'Custom Goals',
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
-                        color: Colors.black87, // Ensure text is visible over background
+                        color: Colors.black87,
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.close, color: Colors.black87), // Ensure icon is visible
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
+                      icon: const Icon(Icons.close, color: Colors.black87),
+                      onPressed: () => Navigator.of(context).pop(),
                     ),
                   ],
                 ),
@@ -94,113 +106,123 @@ class _TimerThemeSheetState extends State<TimerThemeSheet> {
 
               const SizedBox(height: 8),
 
-              // 2. Scrollable Body
-              Flexible( 
+              // Scrollable Content
+              Flexible(
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '${_customThemes.length}/50',
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey, // Adjusted for visibility
-                        ),
-                      ),
-                      
-                      const SizedBox(height: 20),
-                      
-                      // Default Themes Grid
-                      const Text(
-                        'Default Themes',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black87, // Ensure text is visible
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      Wrap(
-                        spacing: 12,
-                        runSpacing: 12,
-                        children: _defaultThemes.map((theme) {
-                          return _buildThemeChip(theme);
-                        }).toList(),
-                      ),
-                      
-                      const SizedBox(height: 20),
-                      
-                      // Custom Themes
-                      if (_customThemes.isNotEmpty) ...[
-                        const Text(
-                          'Custom Themes',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black87, // Ensure text is visible
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        Wrap(
-                          spacing: 12,
-                          runSpacing: 12,
-                          children: _customThemes.map((theme) {
-                            return _buildThemeChip(theme);
-                          }).toList(),
-                        ),
-                        const SizedBox(height: 20),
-                      ],
-                      
-                      // Custom Theme Input
-                      Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey.shade300),
-                          borderRadius: BorderRadius.circular(12),
-                          color: Colors.white.withOpacity(0.8), // Slightly opaque background for readability
-                        ),
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minHeight: MediaQuery.of(context).size.height * 0.5,
+                    ),
+                    child: IntrinsicHeight(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            Text(
+                              '${_customThemes.length}/50',
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey,
+                              ),
+                            ),
+
+                            const SizedBox(height: 20),
+
+                            // Default Goals
                             const Text(
-                              'Create Custom Theme',
+                              'Default Goals',
                               style: TextStyle(
                                 fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.black87, // Ensure text is visible
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black87,
                               ),
                             ),
                             const SizedBox(height: 12),
-                            TextField(
-                              controller: _customThemeController,
-                              decoration: InputDecoration(
-                                hintText: 'Enter theme name...',
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                fillColor: Colors.white, // Ensure text field has a solid background
-                                filled: true,
-                                suffixIcon: IconButton(
-                                  icon: const Icon(Icons.add),
-                                  onPressed: _addCustomTheme,
+                            Wrap(
+                              spacing: 12,
+                              runSpacing: 12,
+                              children: _defaultThemes
+                                  .map((theme) => _buildThemeChip(theme))
+                                  .toList(),
+                            ),
+
+                            const SizedBox(height: 20),
+
+                            // Custom Goals
+                            if (_customThemes.isNotEmpty) ...[
+                              const Text(
+                                'Custom Goals',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black87,
                                 ),
                               ),
-                              onSubmitted: (value) => _addCustomTheme(),
+                              const SizedBox(height: 12),
+                              Wrap(
+                                spacing: 12,
+                                runSpacing: 12,
+                                children: _customThemes
+                                    .map((theme) => _buildThemeChip(theme))
+                                    .toList(),
+                              ),
+                              const SizedBox(height: 20),
+                            ],
+
+                            // Custom Goal Input
+                            Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                border:
+                                    Border.all(color: Colors.grey.shade300),
+                                borderRadius: BorderRadius.circular(12),
+                                color: Colors.white.withOpacity(0.8),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'Create Custom Goals',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.black87,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  TextField(
+                                    controller: _customThemeController,
+                                    decoration: InputDecoration(
+                                      hintText: 'Enter goal name...',
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      fillColor: Colors.white,
+                                      filled: true,
+                                      suffixIcon: IconButton(
+                                        icon: const Icon(Icons.add),
+                                        onPressed: _addCustomTheme,
+                                      ),
+                                    ),
+                                    onSubmitted: (value) => _addCustomTheme(),
+                                  ),
+                                ],
+                              ),
                             ),
+
+                            const SizedBox(height: 20),
                           ],
                         ),
                       ),
-                      
-                      const SizedBox(height: 20), 
-                    ],
+                    ),
                   ),
                 ),
               ),
-              
-              // 3. Apply Theme Button (Fixed)
+
+              // Apply Button
               Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 20), 
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
                 child: SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
@@ -209,14 +231,14 @@ class _TimerThemeSheetState extends State<TimerThemeSheet> {
                       Navigator.of(context).pop();
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor:  const Color.fromARGB(255, 71, 134, 145),
+                      backgroundColor: moodColor,
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    child: const Text('Apply Theme'),
+                    child: const Text('Apply Goals'),
                   ),
                 ),
               ),
@@ -228,6 +250,10 @@ class _TimerThemeSheetState extends State<TimerThemeSheet> {
   }
 
   Widget _buildThemeChip(String theme) {
+      final moodColor = ref.watch(moodColorProvider).maybeWhen(
+          data: (c) => c,
+          orElse: () => const Color(0xFF477D9E),
+        );
     final bool isSelected = _selectedTheme == theme;
     return GestureDetector(
       onTap: () {
@@ -238,10 +264,14 @@ class _TimerThemeSheetState extends State<TimerThemeSheet> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? const Color.fromARGB(255, 71, 134, 145) : Colors.grey.shade100.withOpacity(0.7), // Adjusted opacity
+          color: isSelected
+              ? moodColor
+              : Colors.grey.shade100.withOpacity(0.7),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isSelected ? const Color.fromARGB(255, 71, 134, 145): Colors.grey.shade300.withOpacity(0.7), // Adjusted opacity
+            color: isSelected
+                ? moodColor
+                : Colors.grey.shade300.withOpacity(0.7),
           ),
         ),
         child: Text(
@@ -257,7 +287,10 @@ class _TimerThemeSheetState extends State<TimerThemeSheet> {
 
   void _addCustomTheme() {
     final themeName = _customThemeController.text.trim();
-    if (themeName.isNotEmpty && _customThemes.length < 50 && !_defaultThemes.contains(themeName) && !_customThemes.contains(themeName)) {
+    if (themeName.isNotEmpty &&
+        _customThemes.length < 50 &&
+        !_defaultThemes.contains(themeName) &&
+        !_customThemes.contains(themeName)) {
       setState(() {
         _customThemes.add(themeName);
         _selectedTheme = themeName;
