@@ -1,17 +1,26 @@
 import 'package:flutter/material.dart';
+import '../../../../l10n/app_localizations.dart'; // Add this import
 
 class HelpCenterScreen extends StatelessWidget {
   const HelpCenterScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context); // Add this line
+
     return Scaffold(
       backgroundColor: const Color(0xFFF5EFFF),
       appBar: AppBar(
-        title: const Text('Help Center'),
-        backgroundColor: const Color.fromARGB(255, 71, 134, 145),
-        foregroundColor: Colors.white,
-      ),
+  title: Text(
+    l10n.help_center_title,
+    style: const TextStyle(
+      color: Colors.white, // Explicitly set text color
+    ),
+  ),
+  backgroundColor: const Color.fromARGB(255, 71, 134, 145),
+  foregroundColor: Colors.white,
+),
+      
       body: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
@@ -25,11 +34,10 @@ class HelpCenterScreen extends StatelessWidget {
             children: [
               _buildHelpCard(
                 context,
-                'Getting Started',
-                'Learn how to use Serenote features',
+                l10n.getting_started, // Updated
+                l10n.getting_started_desc, // Updated
                 Icons.play_arrow,
                 () {
-                  // Navigate to Getting Started screen
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -40,11 +48,10 @@ class HelpCenterScreen extends StatelessWidget {
               ),
               _buildHelpCard(
                 context,
-                'FAQ',
-                'Frequently asked questions',
+                l10n.faq, // Updated
+                l10n.faq_desc, // Updated
                 Icons.question_answer,
                 () {
-                  // Navigate to FAQ screen
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -55,11 +62,10 @@ class HelpCenterScreen extends StatelessWidget {
               ),
               _buildHelpCard(
                 context,
-                'Contact Support',
-                'Get in touch with our team',
+                l10n.contact_support, // Updated
+                l10n.contact_support_desc, // Updated
                 Icons.contact_support,
                 () {
-                  // Navigate to Contact Support screen
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -70,11 +76,10 @@ class HelpCenterScreen extends StatelessWidget {
               ),
               _buildHelpCard(
                 context,
-                'Privacy Policy',
-                'Learn about our privacy practices',
+                l10n.privacy_policy, // Updated
+                l10n.privacy_policy_desc, // Updated
                 Icons.privacy_tip,
                 () {
-                  // Navigate to Privacy Policy screen
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -148,10 +153,13 @@ class GettingStartedScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context); // Add this line
+
     return Scaffold(
       backgroundColor: const Color(0xFFF5EFFF),
       appBar: AppBar(
-        title: const Text('Getting Started'),
+        title: Text(l10n.getting_started,
+        style: TextStyle(color: Colors.white),), // Updated
         backgroundColor: const Color.fromARGB(255, 71, 134, 145),
         foregroundColor: Colors.white,
       ),
@@ -165,31 +173,31 @@ class GettingStartedScreen extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: ListView(
-            children: const [
+            children: [
               _GuideStep(
                 step: '1',
-                title: 'Create Your Account',
-                description: 'Sign up or log in to start using Serenote. Your data will be synced across all your devices.',
+                title: l10n.guide_step_1, // Updated
+                description: l10n.guide_step_1_desc, // Updated
               ),
               _GuideStep(
                 step: '2',
-                title: 'Set Up Your Profile',
-                description: 'Add a display name and avatar to personalize your experience.',
+                title: l10n.guide_step_2, // Updated
+                description: l10n.guide_step_2_desc, // Updated
               ),
               _GuideStep(
                 step: '3',
-                title: 'Explore Features',
-                description: 'Try out Todo, Journal, Timer, and Games to discover what works best for you.',
+                title: l10n.guide_step_3, // Updated
+                description: l10n.guide_step_3_desc, // Updated
               ),
               _GuideStep(
                 step: '4',
-                title: 'Create Your First Todo',
-                description: 'Start by adding tasks to your todo list to stay organized.',
+                title: l10n.guide_step_4, // Updated
+                description: l10n.guide_step_4_desc, // Updated
               ),
               _GuideStep(
                 step: '5',
-                title: 'Write Your First Journal',
-                description: 'Express your thoughts and reflections in your personal journal.',
+                title: l10n.guide_step_5, // Updated
+                description: l10n.guide_step_5_desc, // Updated
               ),
             ],
           ),
@@ -276,10 +284,13 @@ class FAQScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context); // Add this line
+
     return Scaffold(
       backgroundColor: const Color(0xFFF5EFFF),
       appBar: AppBar(
-        title: const Text('Frequently Asked Questions'),
+        title: Text(l10n.faq,
+        style: TextStyle(color: Colors.white),), // Updated
         backgroundColor: const Color.fromARGB(255, 71, 134, 145),
         foregroundColor: Colors.white,
       ),
@@ -293,26 +304,26 @@ class FAQScreen extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: ListView(
-            children: const [
+            children: [
               _FAQItem(
-                question: 'How do I reset my password?',
-                answer: 'Go to Login screen, click "Forgot Password" and follow the instructions sent to your email.',
+                question: l10n.faq_question_1, // Updated
+                answer: l10n.faq_answer_1, // Updated
               ),
               _FAQItem(
-                question: 'Is my data secure?',
-                answer: 'Yes, all your data is encrypted and stored securely. We use industry-standard security practices.',
+                question: l10n.faq_question_2, // Updated
+                answer: l10n.faq_answer_2, // Updated
               ),
               _FAQItem(
-                question: 'Can I use Serenote offline?',
-                answer: 'Yes, most features work offline. Your data will sync when you reconnect to the internet.',
+                question: l10n.faq_question_3, // Updated
+                answer: l10n.faq_answer_3, // Updated
               ),
               _FAQItem(
-                question: 'How do I delete my account?',
-                answer: 'Contact support from the Help Center to request account deletion.',
+                question: l10n.faq_question_4, // Updated
+                answer: l10n.faq_answer_4, // Updated
               ),
               _FAQItem(
-                question: 'Are there any subscription fees?',
-                answer: 'Serenote is currently free to use. We may introduce premium features in the future.',
+                question: l10n.faq_question_5, // Updated
+                answer: l10n.faq_answer_5, // Updated
               ),
             ],
           ),
@@ -371,13 +382,18 @@ class ContactSupportScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context); // Add this line
+
     return Scaffold(
       backgroundColor: const Color(0xFFF5EFFF),
       appBar: AppBar(
-        title: const Text('Contact Support'),
-        backgroundColor: const Color.fromARGB(255, 71, 134, 145),
-        foregroundColor: Colors.white,
-      ),
+  title: Text(
+    l10n.contact_support,
+    style: TextStyle(color: Colors.white), // Add text color here
+  ),
+  backgroundColor: const Color.fromARGB(255, 71, 134, 145),
+  foregroundColor: Colors.white,
+),
       body: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
@@ -390,44 +406,46 @@ class ContactSupportScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Get in Touch',
-                style: TextStyle(
+              Text(
+                l10n.contact_get_in_touch, // Updated
+                style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black87,
+                  color: Color.fromARGB(221, 0, 0, 0),
                 ),
               ),
               const SizedBox(height: 8),
-              const Text(
-                'We\'re here to help you with any issues or questions.',
-                style: TextStyle(
+              Text(
+                l10n.contact_help_desc, // Updated
+                style: const TextStyle(
                   fontSize: 14,
                   color: Colors.grey,
                 ),
               ),
               const SizedBox(height: 24),
               _buildContactOption(
+                context,
                 icon: Icons.email,
-                title: 'Email Support',
-                subtitle: 'support@serenote.com',
+                title: l10n.contact_email_support, // Updated
+                subtitle: l10n.contact_email, // Updated
                 onTap: () {
                   // Implement email functionality
                 },
               ),
               _buildContactOption(
+                context,
                 icon: Icons.chat,
-                title: 'Live Chat',
-                subtitle: 'Available 9AM-6PM Mon-Fri',
+                title: l10n.contact_live_chat, // Updated
+                subtitle: l10n.contact_chat_hours, // Updated
                 onTap: () {
                   // Implement chat functionality
                 },
               ),
               
               const SizedBox(height: 32),
-              const Text(
-                'Send us a Message',
-                style: TextStyle(
+              Text(
+                l10n.contact_send_message, // Updated
+                style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: Colors.black87,
@@ -435,9 +453,9 @@ class ContactSupportScreen extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               TextFormField(
-                decoration: const InputDecoration(
-                  labelText: 'Your Email',
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: l10n.contact_your_email, // Updated
+                  border: const OutlineInputBorder(),
                   filled: true,
                   fillColor: Colors.white,
                 ),
@@ -445,9 +463,9 @@ class ContactSupportScreen extends StatelessWidget {
               const SizedBox(height: 12),
               TextFormField(
                 maxLines: 4,
-                decoration: const InputDecoration(
-                  labelText: 'Message',
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: l10n.contact_message, // Updated
+                  border: const OutlineInputBorder(),
                   filled: true,
                   fillColor: Colors.white,
                 ),
@@ -457,10 +475,9 @@ class ContactSupportScreen extends StatelessWidget {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    // Implement send message functionality
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Message sent to support team!'),
+                      SnackBar(
+                        content: Text(l10n.contact_message_sent), // Updated
                       ),
                     );
                   },
@@ -468,9 +485,9 @@ class ContactSupportScreen extends StatelessWidget {
                     backgroundColor: const Color.fromARGB(255, 71, 134, 145),
                     padding: const EdgeInsets.symmetric(vertical: 12),
                   ),
-                  child: const Text(
-                    'Send Message',
-                    style: TextStyle(
+                  child: Text(
+                    l10n.contact_send_button, // Updated
+                    style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
@@ -485,7 +502,9 @@ class ContactSupportScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildContactOption({
+  Widget _buildContactOption(
+    BuildContext context, // Add context parameter
+    {
     required IconData icon,
     required String title,
     required String subtitle,
@@ -511,10 +530,13 @@ class PrivacyPolicyScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context); // Add this line
+
     return Scaffold(
       backgroundColor: const Color(0xFFF5EFFF),
       appBar: AppBar(
-        title: const Text('Privacy Policy'),
+        title: Text(l10n.privacy_policy,
+        style: TextStyle(color: Colors.white),), // Updated
         backgroundColor: const Color.fromARGB(255, 71, 134, 145),
         foregroundColor: Colors.white,
       ),
@@ -528,26 +550,26 @@ class PrivacyPolicyScreen extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: ListView(
-            children: const [
+            children: [
               _PolicySection(
-                title: 'Information We Collect',
-                content: 'We collect information you provide directly to us, such as when you create an account, use our features, or contact us for support.',
+                title: l10n.privacy_info_collected, // Updated
+                content: l10n.privacy_info_collected_desc, // Updated
               ),
               _PolicySection(
-                title: 'How We Use Your Information',
-                content: 'We use the information we collect to provide, maintain, and improve our services, to develop new ones, and to protect Serenote and our users.',
+                title: l10n.privacy_info_usage, // Updated
+                content: l10n.privacy_info_usage_desc, // Updated
               ),
               _PolicySection(
-                title: 'Information Sharing',
-                content: 'We do not share your personal information with companies, organizations, or individuals outside of Serenote except in the following cases: with your consent, for legal reasons, or with domain administrators.',
+                title: l10n.privacy_info_sharing, // Updated
+                content: l10n.privacy_info_sharing_desc, // Updated
               ),
               _PolicySection(
-                title: 'Data Security',
-                content: 'We work hard to protect our users from unauthorized access to or unauthorized alteration, disclosure, or destruction of information we hold.',
+                title: l10n.privacy_data_security, // Updated
+                content: l10n.privacy_data_security_desc, // Updated
               ),
               _PolicySection(
-                title: 'Your Rights',
-                content: 'You have the right to access, correct, or delete your personal information. You can also object to our processing of your personal information.',
+                title: l10n.privacy_your_rights, // Updated
+                content: l10n.privacy_your_rights_desc, // Updated
               ),
             ],
           ),

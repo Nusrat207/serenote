@@ -1,17 +1,25 @@
 import 'package:flutter/material.dart';
+import '../../../../l10n/app_localizations.dart'; 
+
 
 class AboutScreen extends StatelessWidget {
   const AboutScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+     final l10n = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: const Color(0xFFF5EFFF),
       appBar: AppBar(
-        title: const Text('About Serenote'),
-        backgroundColor: const Color.fromARGB(255, 71, 134, 145),
-        foregroundColor: Colors.white,
-      ),
+  title: Text(
+    l10n.about_title,
+    style: const TextStyle(
+      color: Color.fromARGB(255, 255, 255, 255),
+    ),
+  ),
+  backgroundColor: const Color.fromARGB(255, 71, 134, 145),
+  foregroundColor: Colors.white,
+),
       body: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
@@ -44,11 +52,10 @@ class AboutScreen extends StatelessWidget {
                const SizedBox(height: 40),
               
               // Removed the Card widget and kept only the text
-              const Padding(
+               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 5.0),
                 child: Text(
-                  'SereNote A mindful companion. '
-                  'SereNote is designed to help users cultivate emotional awareness, track their moods and habits, and find calm through reflection and focus-enhancing mini-games. It blends journaling, micro-habit tracking, motivational quotes, and soft gamification — creating a space for gentle growth, balance, and insight.',
+                  l10n.about_description,
                   style: TextStyle(
                     fontSize: 16,
                     color: Colors.black87,
