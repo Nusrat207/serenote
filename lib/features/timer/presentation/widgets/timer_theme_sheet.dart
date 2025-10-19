@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serenote/features/mood/presentation/providers/mood_provider.dart';
+import 'package:serenote/l10n/app_localizations.dart';
 
 class TimerThemeSheet extends ConsumerStatefulWidget {
   final String currentTheme;
@@ -20,17 +21,17 @@ class _TimerThemeSheetState extends ConsumerState<TimerThemeSheet> {
   late String _selectedTheme;
   final TextEditingController _customThemeController = TextEditingController();
 
-  final List<String> _defaultThemes = [
-    'Focus',
-    'Read',
-    'Study',
-    'Workout',
-    'Work',
-    'Meditate',
-    'Relax',
-  ];
+  //final List<String> _defaultThemes = [
+  //  'Focus',
+  //  'Read',
+  //  'Study',
+  //  'Workout',
+  //  'Work',
+  //  'Meditate',
+  //  'Relax',
+  //];
 
-  final List<String> _customThemes = []; // Ideally persisted with state/storage
+  final List<String> _customThemes = [];
 
   @override
   void initState() {
@@ -46,6 +47,8 @@ class _TimerThemeSheetState extends ConsumerState<TimerThemeSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+
     final moodColor = ref.watch(moodColorProvider).maybeWhen(
           data: (c) => c,
           orElse: () => const Color(0xFF477D9E),
@@ -78,7 +81,7 @@ class _TimerThemeSheetState extends ConsumerState<TimerThemeSheet> {
             ),
           ),
 
-          // Content
+          // Foreground content
           Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -88,9 +91,9 @@ class _TimerThemeSheetState extends ConsumerState<TimerThemeSheet> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
-                      'Custom Goals',
-                      style: TextStyle(
+                    Text(
+                      loc.customGoalsTitle,
+                      style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: Colors.black87,
@@ -120,7 +123,7 @@ class _TimerThemeSheetState extends ConsumerState<TimerThemeSheet> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              '${_customThemes.length}/50',
+                              loc.goalCount(_customThemes.length.toString()),
                               style: const TextStyle(
                                 fontSize: 14,
                                 color: Colors.grey,
@@ -130,9 +133,9 @@ class _TimerThemeSheetState extends ConsumerState<TimerThemeSheet> {
                             const SizedBox(height: 20),
 
                             // Default Goals
-                            const Text(
-                              'Default Goals',
-                              style: TextStyle(
+                            Text(
+                              loc.defaultGoals,
+                              style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
                                 color: Colors.black87,
@@ -149,11 +152,11 @@ class _TimerThemeSheetState extends ConsumerState<TimerThemeSheet> {
 
                             const SizedBox(height: 20),
 
-                            // Custom Goals
+                            // Custom Goals Section
                             if (_customThemes.isNotEmpty) ...[
-                              const Text(
-                                'Custom Goals',
-                                style: TextStyle(
+                              Text(
+                                loc.customGoals,
+                                style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
                                   color: Colors.black87,
@@ -182,9 +185,9 @@ class _TimerThemeSheetState extends ConsumerState<TimerThemeSheet> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Text(
-                                    'Create Custom Goals',
-                                    style: TextStyle(
+                                  Text(
+                                    loc.createCustomGoals,
+                                    style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w500,
                                       color: Colors.black87,
@@ -194,7 +197,7 @@ class _TimerThemeSheetState extends ConsumerState<TimerThemeSheet> {
                                   TextField(
                                     controller: _customThemeController,
                                     decoration: InputDecoration(
-                                      hintText: 'Enter goal name...',
+                                      hintText: loc.enterGoalHint,
                                       border: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(8),
                                       ),
@@ -238,7 +241,7 @@ class _TimerThemeSheetState extends ConsumerState<TimerThemeSheet> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    child: const Text('Apply Goals'),
+                    child: Text(loc.applyGoals),
                   ),
                 ),
               ),
@@ -250,11 +253,13 @@ class _TimerThemeSheetState extends ConsumerState<TimerThemeSheet> {
   }
 
   Widget _buildThemeChip(String theme) {
-      final moodColor = ref.watch(moodColorProvider).maybeWhen(
+    final moodColor = ref.watch(moodColorProvider).maybeWhen(
           data: (c) => c,
           orElse: () => const Color(0xFF477D9E),
         );
+
     final bool isSelected = _selectedTheme == theme;
+
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -284,8 +289,22 @@ class _TimerThemeSheetState extends ConsumerState<TimerThemeSheet> {
       ),
     );
   }
+  List<String> get _defaultThemes {
+  final loc = AppLocalizations.of(context)!;
+  return [
+    loc.focus,
+    loc.read,
+    loc.study,
+    loc.workout,
+    loc.work,
+    loc.meditate,
+    loc.relax,
+  ];
+}
+
 
   void _addCustomTheme() {
+    
     final themeName = _customThemeController.text.trim();
     if (themeName.isNotEmpty &&
         _customThemes.length < 50 &&

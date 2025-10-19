@@ -491,7 +491,7 @@ abstract class AppLocalizations {
   /// No description provided for @minutes.
   ///
   /// In en, this message translates to:
-  /// **'Minutes'**
+  /// **'minutes'**
   String get minutes;
 
   /// No description provided for @pause.
@@ -547,6 +547,840 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'OK'**
   String get ok;
+
+  /// No description provided for @settingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settingsTitle;
+
+  /// No description provided for @pomodoroTechnique.
+  ///
+  /// In en, this message translates to:
+  /// **'Pomodoro Technique'**
+  String get pomodoroTechnique;
+
+  /// No description provided for @focusDuration.
+  ///
+  /// In en, this message translates to:
+  /// **'Focus Duration'**
+  String get focusDuration;
+
+  /// No description provided for @shortBreak.
+  ///
+  /// In en, this message translates to:
+  /// **'Short Break'**
+  String get shortBreak;
+
+  /// No description provided for @longBreak.
+  ///
+  /// In en, this message translates to:
+  /// **'Long Break'**
+  String get longBreak;
+
+  /// No description provided for @saveSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Settings'**
+  String get saveSettings;
+
+  /// No description provided for @customGoalsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom Goals'**
+  String get customGoalsTitle;
+
+  /// No description provided for @defaultGoals.
+  ///
+  /// In en, this message translates to:
+  /// **'Default Goals'**
+  String get defaultGoals;
+
+  /// No description provided for @customGoals.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom Goals'**
+  String get customGoals;
+
+  /// No description provided for @createCustomGoals.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Custom Goals'**
+  String get createCustomGoals;
+
+  /// No description provided for @enterGoalHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter goal name...'**
+  String get enterGoalHint;
+
+  /// No description provided for @applyGoals.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply Goals'**
+  String get applyGoals;
+
+  /// No description provided for @goalCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count}/50'**
+  String goalCount(Object count);
+
+  /// No description provided for @focus.
+  ///
+  /// In en, this message translates to:
+  /// **'Focus'**
+  String get focus;
+
+  /// No description provided for @read.
+  ///
+  /// In en, this message translates to:
+  /// **'Read'**
+  String get read;
+
+  /// No description provided for @study.
+  ///
+  /// In en, this message translates to:
+  /// **'Study'**
+  String get study;
+
+  /// No description provided for @workout.
+  ///
+  /// In en, this message translates to:
+  /// **'Workout'**
+  String get workout;
+
+  /// No description provided for @work.
+  ///
+  /// In en, this message translates to:
+  /// **'Work'**
+  String get work;
+
+  /// No description provided for @meditate.
+  ///
+  /// In en, this message translates to:
+  /// **'Meditate'**
+  String get meditate;
+
+  /// No description provided for @relax.
+  ///
+  /// In en, this message translates to:
+  /// **'Relax'**
+  String get relax;
+
+  /// No description provided for @calendar_sun.
+  ///
+  /// In en, this message translates to:
+  /// **'Sun'**
+  String get calendar_sun;
+
+  /// No description provided for @calendar_mon.
+  ///
+  /// In en, this message translates to:
+  /// **'Mon'**
+  String get calendar_mon;
+
+  /// No description provided for @calendar_tue.
+  ///
+  /// In en, this message translates to:
+  /// **'Tue'**
+  String get calendar_tue;
+
+  /// No description provided for @calendar_wed.
+  ///
+  /// In en, this message translates to:
+  /// **'Wed'**
+  String get calendar_wed;
+
+  /// No description provided for @calendar_thu.
+  ///
+  /// In en, this message translates to:
+  /// **'Thu'**
+  String get calendar_thu;
+
+  /// No description provided for @calendar_fri.
+  ///
+  /// In en, this message translates to:
+  /// **'Fri'**
+  String get calendar_fri;
+
+  /// No description provided for @calendar_sat.
+  ///
+  /// In en, this message translates to:
+  /// **'Sat'**
+  String get calendar_sat;
+
+  /// No description provided for @month_january.
+  ///
+  /// In en, this message translates to:
+  /// **'January'**
+  String get month_january;
+
+  /// No description provided for @month_february.
+  ///
+  /// In en, this message translates to:
+  /// **'February'**
+  String get month_february;
+
+  /// No description provided for @month_march.
+  ///
+  /// In en, this message translates to:
+  /// **'March'**
+  String get month_march;
+
+  /// No description provided for @month_april.
+  ///
+  /// In en, this message translates to:
+  /// **'April'**
+  String get month_april;
+
+  /// No description provided for @month_may.
+  ///
+  /// In en, this message translates to:
+  /// **'May'**
+  String get month_may;
+
+  /// No description provided for @month_june.
+  ///
+  /// In en, this message translates to:
+  /// **'June'**
+  String get month_june;
+
+  /// No description provided for @month_july.
+  ///
+  /// In en, this message translates to:
+  /// **'July'**
+  String get month_july;
+
+  /// No description provided for @month_august.
+  ///
+  /// In en, this message translates to:
+  /// **'August'**
+  String get month_august;
+
+  /// No description provided for @month_september.
+  ///
+  /// In en, this message translates to:
+  /// **'September'**
+  String get month_september;
+
+  /// No description provided for @month_october.
+  ///
+  /// In en, this message translates to:
+  /// **'October'**
+  String get month_october;
+
+  /// No description provided for @month_november.
+  ///
+  /// In en, this message translates to:
+  /// **'November'**
+  String get month_november;
+
+  /// No description provided for @month_december.
+  ///
+  /// In en, this message translates to:
+  /// **'December'**
+  String get month_december;
+
+  /// No description provided for @todo_add_new_task_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a new task to get started'**
+  String get todo_add_new_task_hint;
+
+  /// No description provided for @reset_password_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset Password'**
+  String get reset_password_title;
+
+  /// No description provided for @reset_password_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your email to receive a password reset link'**
+  String get reset_password_desc;
+
+  /// No description provided for @email_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get email_label;
+
+  /// No description provided for @send_reset_link.
+  ///
+  /// In en, this message translates to:
+  /// **'Send Reset Link'**
+  String get send_reset_link;
+
+  /// No description provided for @reset_link_sent_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset Link Sent!'**
+  String get reset_link_sent_title;
+
+  /// No description provided for @reset_link_sent_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Check your email for a password reset link. If you don\'t see it, check your spam folder.'**
+  String get reset_link_sent_desc;
+
+  /// No description provided for @back_to_login.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to Login'**
+  String get back_to_login;
+
+  /// No description provided for @error_occurred.
+  ///
+  /// In en, this message translates to:
+  /// **'Error: {error}'**
+  String error_occurred(Object error);
+
+  /// No description provided for @welcome_back.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome Back'**
+  String get welcome_back;
+
+  /// No description provided for @sign_in_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to continue your journey'**
+  String get sign_in_subtitle;
+
+  /// No description provided for @password_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get password_label;
+
+  /// No description provided for @forgot_password.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot Password?'**
+  String get forgot_password;
+
+  /// No description provided for @sign_in_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign In'**
+  String get sign_in_button;
+
+  /// No description provided for @signup_prompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t have an account? Sign up'**
+  String get signup_prompt;
+
+  /// No description provided for @create_account.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Account'**
+  String get create_account;
+
+  /// No description provided for @signup_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign up to get started with SereNote'**
+  String get signup_subtitle;
+
+  /// No description provided for @full_name_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Full Name'**
+  String get full_name_label;
+
+  /// No description provided for @confirm_password_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Password'**
+  String get confirm_password_label;
+
+  /// No description provided for @passwords_not_match.
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords do not match'**
+  String get passwords_not_match;
+
+  /// No description provided for @password_length_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must be at least 6 characters'**
+  String get password_length_error;
+
+  /// No description provided for @registration_success.
+  ///
+  /// In en, this message translates to:
+  /// **'Registration successful! Please check your email for verification.'**
+  String get registration_success;
+
+  /// No description provided for @already_have_account.
+  ///
+  /// In en, this message translates to:
+  /// **'Already have an account? Login'**
+  String get already_have_account;
+
+  /// No description provided for @create_account_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Account'**
+  String get create_account_button;
+
+  /// No description provided for @profile_settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile Settings'**
+  String get profile_settings;
+
+  /// No description provided for @user_not_authenticated.
+  ///
+  /// In en, this message translates to:
+  /// **'User not authenticated. Please log in.'**
+  String get user_not_authenticated;
+
+  /// No description provided for @failed_to_load_profile.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load profile: {error}'**
+  String failed_to_load_profile(Object error);
+
+  /// No description provided for @login.
+  ///
+  /// In en, this message translates to:
+  /// **'Login'**
+  String get login;
+
+  /// No description provided for @no_profile_data.
+  ///
+  /// In en, this message translates to:
+  /// **'No profile data available'**
+  String get no_profile_data;
+
+  /// No description provided for @user_default_name.
+  ///
+  /// In en, this message translates to:
+  /// **'User'**
+  String get user_default_name;
+
+  /// No description provided for @choose_avatar.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose Avatar'**
+  String get choose_avatar;
+
+  /// No description provided for @display_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Display Name'**
+  String get display_name;
+
+  /// No description provided for @full_name_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Full name is required'**
+  String get full_name_required;
+
+  /// No description provided for @email_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Email is required'**
+  String get email_required;
+
+  /// No description provided for @email_invalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid email format'**
+  String get email_invalid;
+
+  /// No description provided for @password_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Password is required'**
+  String get password_required;
+
+  /// No description provided for @confirm_password_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Please confirm your password'**
+  String get confirm_password_required;
+
+  /// No description provided for @this_week.
+  ///
+  /// In en, this message translates to:
+  /// **'This Week'**
+  String get this_week;
+
+  /// No description provided for @monday_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Mon'**
+  String get monday_short;
+
+  /// No description provided for @tuesday_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Tue'**
+  String get tuesday_short;
+
+  /// No description provided for @wednesday_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Wed'**
+  String get wednesday_short;
+
+  /// No description provided for @thursday_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Thu'**
+  String get thursday_short;
+
+  /// No description provided for @friday_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Fri'**
+  String get friday_short;
+
+  /// No description provided for @saturday_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Sat'**
+  String get saturday_short;
+
+  /// No description provided for @sunday_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Sun'**
+  String get sunday_short;
+
+  /// No description provided for @january_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Jan'**
+  String get january_short;
+
+  /// No description provided for @february_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Feb'**
+  String get february_short;
+
+  /// No description provided for @march_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Mar'**
+  String get march_short;
+
+  /// No description provided for @april_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Apr'**
+  String get april_short;
+
+  /// No description provided for @may_short.
+  ///
+  /// In en, this message translates to:
+  /// **'May'**
+  String get may_short;
+
+  /// No description provided for @june_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Jun'**
+  String get june_short;
+
+  /// No description provided for @july_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Jul'**
+  String get july_short;
+
+  /// No description provided for @august_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Aug'**
+  String get august_short;
+
+  /// No description provided for @september_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Sep'**
+  String get september_short;
+
+  /// No description provided for @october_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Oct'**
+  String get october_short;
+
+  /// No description provided for @november_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Nov'**
+  String get november_short;
+
+  /// No description provided for @december_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Dec'**
+  String get december_short;
+
+  /// No description provided for @stat_current.
+  ///
+  /// In en, this message translates to:
+  /// **'Current'**
+  String get stat_current;
+
+  /// No description provided for @stat_longest.
+  ///
+  /// In en, this message translates to:
+  /// **'Longest'**
+  String get stat_longest;
+
+  /// No description provided for @stat_total.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get stat_total;
+
+  /// No description provided for @mood_anxious.
+  ///
+  /// In en, this message translates to:
+  /// **'ANXIOUS'**
+  String get mood_anxious;
+
+  /// No description provided for @mood_angry.
+  ///
+  /// In en, this message translates to:
+  /// **'ANGRY'**
+  String get mood_angry;
+
+  /// No description provided for @mood_sad.
+  ///
+  /// In en, this message translates to:
+  /// **'SAD'**
+  String get mood_sad;
+
+  /// No description provided for @mood_neutral.
+  ///
+  /// In en, this message translates to:
+  /// **'NEUTRAL'**
+  String get mood_neutral;
+
+  /// No description provided for @mood_joy.
+  ///
+  /// In en, this message translates to:
+  /// **'JOY'**
+  String get mood_joy;
+
+  /// No description provided for @quick_mood_title.
+  ///
+  /// In en, this message translates to:
+  /// **'How do you feel?'**
+  String get quick_mood_title;
+
+  /// No description provided for @quick_mood_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick check-in • Takes 10 seconds'**
+  String get quick_mood_subtitle;
+
+  /// No description provided for @good_night.
+  ///
+  /// In en, this message translates to:
+  /// **'Good Night'**
+  String get good_night;
+
+  /// No description provided for @how_are_you_feeling.
+  ///
+  /// In en, this message translates to:
+  /// **'How are you feeling?'**
+  String get how_are_you_feeling;
+
+  /// No description provided for @select_your_mood.
+  ///
+  /// In en, this message translates to:
+  /// **'Select your mood'**
+  String get select_your_mood;
+
+  /// No description provided for @happy.
+  ///
+  /// In en, this message translates to:
+  /// **'Happy'**
+  String get happy;
+
+  /// No description provided for @neutral.
+  ///
+  /// In en, this message translates to:
+  /// **'Neutral'**
+  String get neutral;
+
+  /// No description provided for @sad.
+  ///
+  /// In en, this message translates to:
+  /// **'Sad'**
+  String get sad;
+
+  /// No description provided for @anxious.
+  ///
+  /// In en, this message translates to:
+  /// **'Anxious'**
+  String get anxious;
+
+  /// No description provided for @angry.
+  ///
+  /// In en, this message translates to:
+  /// **'Angry'**
+  String get angry;
+
+  /// No description provided for @save_mood.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Mood'**
+  String get save_mood;
+
+  /// No description provided for @say_or_type_feeling.
+  ///
+  /// In en, this message translates to:
+  /// **'Say or type how you\'re feeling'**
+  String get say_or_type_feeling;
+
+  /// No description provided for @please_select_mood.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a mood'**
+  String get please_select_mood;
+
+  /// No description provided for @mood_saved_successfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Mood saved successfully!'**
+  String get mood_saved_successfully;
+
+  /// No description provided for @error_saving_mood.
+  ///
+  /// In en, this message translates to:
+  /// **'Error saving mood: '**
+  String get error_saving_mood;
+
+  /// No description provided for @user_not_logged_in.
+  ///
+  /// In en, this message translates to:
+  /// **'User not logged in'**
+  String get user_not_logged_in;
+
+  /// No description provided for @mood_mirror.
+  ///
+  /// In en, this message translates to:
+  /// **'MoodMirror'**
+  String get mood_mirror;
+
+  /// No description provided for @welcome_mood_mirror.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to MoodMirror'**
+  String get welcome_mood_mirror;
+
+  /// No description provided for @mood_mirror_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Login to track your mood, receive uplifting quotes, and enjoy music that matches how you feel.'**
+  String get mood_mirror_description;
+
+  /// No description provided for @login_to_continue.
+  ///
+  /// In en, this message translates to:
+  /// **'Login to Continue'**
+  String get login_to_continue;
+
+  /// No description provided for @please_enter_feeling.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter or speak how you feel'**
+  String get please_enter_feeling;
+
+  /// No description provided for @mood_detected.
+  ///
+  /// In en, this message translates to:
+  /// **'Mood detected'**
+  String get mood_detected;
+
+  /// No description provided for @error_text.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get error_text;
+
+  /// No description provided for @todays_mood.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s Mood'**
+  String get todays_mood;
+
+  /// No description provided for @confidence.
+  ///
+  /// In en, this message translates to:
+  /// **'confidence'**
+  String get confidence;
+
+  /// No description provided for @type_or_speak_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Type or speak how you feel...'**
+  String get type_or_speak_hint;
+
+  /// No description provided for @stop.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop'**
+  String get stop;
+
+  /// No description provided for @voice_input.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice Input'**
+  String get voice_input;
+
+  /// No description provided for @analyzing.
+  ///
+  /// In en, this message translates to:
+  /// **'Analyzing...'**
+  String get analyzing;
+
+  /// No description provided for @analyze.
+  ///
+  /// In en, this message translates to:
+  /// **'Analyze'**
+  String get analyze;
+
+  /// No description provided for @bubble_breather.
+  ///
+  /// In en, this message translates to:
+  /// **'Bubble Breather'**
+  String get bubble_breather;
+
+  /// No description provided for @bubble_breather_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Close your eyes, take a slow breath in… imagine a bubble floating higher with every exhale. Let your tension drift away with it.'**
+  String get bubble_breather_desc;
+
+  /// No description provided for @for_you.
+  ///
+  /// In en, this message translates to:
+  /// **'For You'**
+  String get for_you;
+
+  /// No description provided for @inspirational_quote.
+  ///
+  /// In en, this message translates to:
+  /// **'Inspirational Quote'**
+  String get inspirational_quote;
+
+  /// No description provided for @recommended_music.
+  ///
+  /// In en, this message translates to:
+  /// **'Recommended Music'**
+  String get recommended_music;
 }
 
 class _AppLocalizationsDelegate

@@ -11,14 +11,14 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_localizations:
-    sdk: flutter
-
+    sdk: flutter 
+ 
   # UI
   cupertino_icons: ^1.0.8
   google_fonts: ^6.1.0
   flutter_animate: ^4.3.0
   fl_chart: ^0.65.0
-  rive: ^0.13.0
+  rive: ^0.13.0 
 
   # State Management
   flutter_riverpod: ^2.4.0
@@ -73,23 +73,23 @@ dependencies:
 
 dev_dependencies:
   flutter_test:
-    sdk: flutter
+    sdk: flutter 
   flutter_lints: ^5.0.0
   flutter_launcher_icons: ^0.13.1
 
 flutter:
   uses-material-design: true
   generate: true 
-  assets:
-    - assets/.env
-    - assets/images/
+  assets:     
+    - assets/.env 
+    - assets/images/ 
     - assets/images/retro/
-    - assets/images/concentration/
-    - assets/icon/
+    - assets/images/concentration/ 
+    - assets/icon/   
     - assets/avatars/
-
-flutter_icons:
-  android: true 
+  
+flutter_icons:  
+  android: true  
   ios: true
   image_path: "assets/icon/app_icon.jpg"
   adaptive_icon_background: "#FFFFFF"

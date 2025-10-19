@@ -87,23 +87,23 @@ class AppLocalizationsBn extends AppLocalizations {
   String get journal_close => 'বন্ধ';
 
   @override
-  String get todo_title => 'টু-ডু';
+  String get todo_title => 'করণীয় কাজ';
 
   @override
-  String get todo_login_title => 'টাস্ক ম্যানেজ করতে লগইন করুন';
+  String get todo_login_title => 'আপনার কাজ পরিচালনা করতে লগইন করুন';
 
   @override
   String get todo_login_desc =>
-      'প্রতিদিনের রুটিন যোগ, সম্পাদনা ও দেখার জন্য সাইন ইন করুন।';
+      'আপনার দৈনন্দিন রুটিন যোগ, সম্পাদনা এবং দেখার জন্য সাইন ইন করুন।';
 
   @override
-  String get todo_no_tasks => 'আজ কোনো টাস্ক নেই!';
+  String get todo_no_tasks => 'আজকের জন্য কোন কাজ নেই!';
 
   @override
-  String get todo_add_hint => 'আপনার টাস্ক লিখুন...';
+  String get todo_add_hint => 'আপনার কাজ লিখুন...';
 
   @override
-  String get todo_add => 'অ্যাড';
+  String get todo_add => 'যোগ করুন';
 
   @override
   String get today => 'আজ';
@@ -112,7 +112,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get tomorrow => 'আগামীকাল';
 
   @override
-  String get good_morning => 'সুপ্রভাত';
+  String get good_morning => 'শুভ সকাল';
 
   @override
   String get good_afternoon => 'শুভ অপরাহ্ন';
@@ -238,4 +238,435 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get ok => 'ঠিক আছে';
+
+  @override
+  String get settingsTitle => 'সেটিংস';
+
+  @override
+  String get pomodoroTechnique => 'পোমোডোরো টেকনিক';
+
+  @override
+  String get focusDuration => 'মনোযোগ সময়কাল';
+
+  @override
+  String get shortBreak => 'সংক্ষিপ্ত বিরতি';
+
+  @override
+  String get longBreak => 'দীর্ঘ বিরতি';
+
+  @override
+  String get saveSettings => 'সেটিংস সংরক্ষণ করুন';
+
+  @override
+  String get customGoalsTitle => 'কাস্টম লক্ষ্য';
+
+  @override
+  String get defaultGoals => 'ডিফল্ট লক্ষ্য';
+
+  @override
+  String get customGoals => 'নিজস্ব লক্ষ্য';
+
+  @override
+  String get createCustomGoals => 'নিজস্ব লক্ষ্য তৈরি করুন';
+
+  @override
+  String get enterGoalHint => 'লক্ষ্যের নাম লিখুন...';
+
+  @override
+  String get applyGoals => 'লক্ষ্য প্রয়োগ করুন';
+
+  @override
+  String goalCount(Object count) {
+    return '$count/৫০';
+  }
+
+  @override
+  String get focus => 'মনোযোগ';
+
+  @override
+  String get read => 'পড়া';
+
+  @override
+  String get study => 'পড়াশোনা';
+
+  @override
+  String get workout => 'ব্যায়াম';
+
+  @override
+  String get work => 'কাজ';
+
+  @override
+  String get meditate => 'ধ্যান';
+
+  @override
+  String get relax => 'আরাম';
+
+  @override
+  String get calendar_sun => 'রবি';
+
+  @override
+  String get calendar_mon => 'সোম';
+
+  @override
+  String get calendar_tue => 'মঙ্গল';
+
+  @override
+  String get calendar_wed => 'বুধ';
+
+  @override
+  String get calendar_thu => 'বৃহস্পতি';
+
+  @override
+  String get calendar_fri => 'শুক্র';
+
+  @override
+  String get calendar_sat => 'শনি';
+
+  @override
+  String get month_january => 'জানুয়ারি';
+
+  @override
+  String get month_february => 'ফেব্রুয়ারি';
+
+  @override
+  String get month_march => 'মার্চ';
+
+  @override
+  String get month_april => 'এপ্রিল';
+
+  @override
+  String get month_may => 'মে';
+
+  @override
+  String get month_june => 'জুন';
+
+  @override
+  String get month_july => 'জুলাই';
+
+  @override
+  String get month_august => 'আগস্ট';
+
+  @override
+  String get month_september => 'সেপ্টেম্বর';
+
+  @override
+  String get month_october => 'অক্টোবর';
+
+  @override
+  String get month_november => 'নভেম্বর';
+
+  @override
+  String get month_december => 'ডিসেম্বর';
+
+  @override
+  String get todo_add_new_task_hint =>
+      'কাজ শুরু করার জন্য একটি নতুন কাজ যোগ করুন';
+
+  @override
+  String get reset_password_title => 'পাসওয়ার্ড রিসেট করুন';
+
+  @override
+  String get reset_password_desc =>
+      'পাসওয়ার্ড রিসেট লিঙ্ক পেতে আপনার ইমেল লিখুন';
+
+  @override
+  String get email_label => 'ইমেল';
+
+  @override
+  String get send_reset_link => 'রিসেট লিঙ্ক পাঠান';
+
+  @override
+  String get reset_link_sent_title => 'রিসেট লিঙ্ক পাঠানো হয়েছে!';
+
+  @override
+  String get reset_link_sent_desc =>
+      'পাসওয়ার্ড রিসেট লিঙ্কের জন্য আপনার ইমেল চেক করুন। যদি না দেখেন, স্প্যাম ফোল্ডার চেক করুন।';
+
+  @override
+  String get back_to_login => 'লগইনে ফিরে যান';
+
+  @override
+  String error_occurred(Object error) {
+    return 'ত্রুটি: $error';
+  }
+
+  @override
+  String get welcome_back => 'স্বাগতম';
+
+  @override
+  String get sign_in_subtitle => 'আপনার যাত্রা চালিয়ে যেতে সাইন ইন করুন';
+
+  @override
+  String get password_label => 'পাসওয়ার্ড';
+
+  @override
+  String get forgot_password => 'পাসওয়ার্ড ভুলে গেছেন?';
+
+  @override
+  String get sign_in_button => 'সাইন ইন';
+
+  @override
+  String get signup_prompt => 'অ্যাকাউন্ট নেই? সাইন আপ করুন';
+
+  @override
+  String get create_account => 'অ্যাকাউন্ট তৈরি করুন';
+
+  @override
+  String get signup_subtitle => 'SereNote ব্যবহার শুরু করতে সাইন আপ করুন';
+
+  @override
+  String get full_name_label => 'পূর্ণ নাম';
+
+  @override
+  String get confirm_password_label => 'পাসওয়ার্ড নিশ্চিত করুন';
+
+  @override
+  String get passwords_not_match => 'পাসওয়ার্ড মেলে না';
+
+  @override
+  String get password_length_error => 'পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে';
+
+  @override
+  String get registration_success =>
+      'রেজিস্ট্রেশন সফল! যাচাইয়ের জন্য আপনার ইমেল পরীক্ষা করুন।';
+
+  @override
+  String get already_have_account => 'ইতিমধ্যেই একটি অ্যাকাউন্ট আছে? লগইন করুন';
+
+  @override
+  String get create_account_button => 'অ্যাকাউন্ট তৈরি করুন';
+
+  @override
+  String get profile_settings => 'প্রোফাইল সেটিংস';
+
+  @override
+  String get user_not_authenticated =>
+      'ব্যবহারকারী প্রমাণীকৃত নয়। অনুগ্রহ করে লগইন করুন।';
+
+  @override
+  String failed_to_load_profile(Object error) {
+    return 'প্রোফাইল লোড করতে ব্যর্থ: $error';
+  }
+
+  @override
+  String get login => 'লগইন';
+
+  @override
+  String get no_profile_data => 'প্রোফাইল ডেটা পাওয়া যায়নি';
+
+  @override
+  String get user_default_name => 'ব্যবহারকারী';
+
+  @override
+  String get choose_avatar => 'অবতার নির্বাচন করুন';
+
+  @override
+  String get display_name => 'প্রদর্শিত নাম';
+
+  @override
+  String get full_name_required => 'পুরো নাম প্রয়োজন';
+
+  @override
+  String get email_required => 'ইমেইল প্রয়োজন';
+
+  @override
+  String get email_invalid => 'ইমেইল ফরমেট সঠিক নয়';
+
+  @override
+  String get password_required => 'পাসওয়ার্ড প্রয়োজন';
+
+  @override
+  String get confirm_password_required =>
+      'দয়া করে আপনার পাসওয়ার্ড নিশ্চিত করুন';
+
+  @override
+  String get this_week => 'এই সপ্তাহ';
+
+  @override
+  String get monday_short => 'সোম';
+
+  @override
+  String get tuesday_short => 'মঙ্গল';
+
+  @override
+  String get wednesday_short => 'বুধ';
+
+  @override
+  String get thursday_short => 'বৃহঃ';
+
+  @override
+  String get friday_short => 'শুক্র';
+
+  @override
+  String get saturday_short => 'শনি';
+
+  @override
+  String get sunday_short => 'রবি';
+
+  @override
+  String get january_short => 'জানু';
+
+  @override
+  String get february_short => 'ফেব্রু';
+
+  @override
+  String get march_short => 'মার্চ';
+
+  @override
+  String get april_short => 'এপ্রিল';
+
+  @override
+  String get may_short => 'মে';
+
+  @override
+  String get june_short => 'জুন';
+
+  @override
+  String get july_short => 'জুলাই';
+
+  @override
+  String get august_short => 'আগস্ট';
+
+  @override
+  String get september_short => 'সেপ্টে';
+
+  @override
+  String get october_short => 'অক্টো';
+
+  @override
+  String get november_short => 'নভে';
+
+  @override
+  String get december_short => 'ডিসে';
+
+  @override
+  String get stat_current => 'বর্তমান';
+
+  @override
+  String get stat_longest => 'সর্বোচ্চ';
+
+  @override
+  String get stat_total => 'মোট';
+
+  @override
+  String get mood_anxious => 'উদ্বিগ্ন';
+
+  @override
+  String get mood_angry => 'রাগান্বিত';
+
+  @override
+  String get mood_sad => 'দুঃখিত';
+
+  @override
+  String get mood_neutral => 'নিরপেক্ষ';
+
+  @override
+  String get mood_joy => 'আনন্দিত';
+
+  @override
+  String get quick_mood_title => 'আপনি কেমন অনুভব করছেন?';
+
+  @override
+  String get quick_mood_subtitle => 'দ্রুত চেক-ইন •  ১০ সেকেন্ড লাগবে ';
+
+  @override
+  String get good_night => 'শুভ রাত্রি';
+
+  @override
+  String get how_are_you_feeling => 'আপনি কেমন অনুভব করছেন?';
+
+  @override
+  String get select_your_mood => 'আপনার মূড নির্বাচন করুন';
+
+  @override
+  String get happy => 'খুশি';
+
+  @override
+  String get neutral => 'নিরপেক্ষ';
+
+  @override
+  String get sad => 'দুঃখিত';
+
+  @override
+  String get anxious => 'উদ্বিগ্ন';
+
+  @override
+  String get angry => 'রাগান্বিত';
+
+  @override
+  String get save_mood => 'মূড সংরক্ষণ করুন';
+
+  @override
+  String get say_or_type_feeling => 'বলুন বা লিখুন আপনি কেমন অনুভব করছেন';
+
+  @override
+  String get please_select_mood => 'দয়া করে একটি মূড নির্বাচন করুন';
+
+  @override
+  String get mood_saved_successfully => 'মূড সফলভাবে সংরক্ষণ করা হয়েছে!';
+
+  @override
+  String get error_saving_mood => 'মূড সংরক্ষণ করতে ত্রুটি: ';
+
+  @override
+  String get user_not_logged_in => 'ব্যবহারকারী লগইন করেননি';
+
+  @override
+  String get mood_mirror => 'মুড মিরর';
+
+  @override
+  String get welcome_mood_mirror => 'মুড মিররে স্বাগতম';
+
+  @override
+  String get mood_mirror_description =>
+      'আপনার মুড ট্র্যাক করতে, অনুপ্রেরণামূলক উক্তি পেতে এবং আপনার অনুভূতির সাথে মানানসই সঙ্গীত উপভোগ করতে লগইন করুন।';
+
+  @override
+  String get login_to_continue => 'চালিয়ে যেতে লগইন করুন';
+
+  @override
+  String get please_enter_feeling => 'আপনি কেমন অনুভব করছেন তা লিখুন বা বলুন';
+
+  @override
+  String get mood_detected => 'মুড সনাক্ত করা হয়েছে';
+
+  @override
+  String get error_text => 'ত্রুটি';
+
+  @override
+  String get todays_mood => 'আজকের মুড';
+
+  @override
+  String get confidence => 'আত্মবিশ্বাস';
+
+  @override
+  String get type_or_speak_hint => 'লিখুন বা বলুন আপনি কেমন অনুভব করছেন...';
+
+  @override
+  String get stop => 'থামুন';
+
+  @override
+  String get voice_input => 'ভয়েস ইনপুট';
+
+  @override
+  String get analyzing => 'বিশ্লেষণ করা হচ্ছে...';
+
+  @override
+  String get analyze => 'বিশ্লেষণ করুন';
+
+  @override
+  String get bubble_breather => 'বাবল ব্রিদার';
+
+  @override
+  String get bubble_breather_desc =>
+      'চোখ বন্ধ করুন, ধীরে শ্বাস নিন... প্রতিটি নিঃশ্বাসের সাথে একটি বুদবুদ উপরে ভাসতে কল্পনা করুন। এর সাথে আপনার উত্তেজনা দূরে সরে যেতে দিন।';
+
+  @override
+  String get for_you => 'আপনার জন্য';
+
+  @override
+  String get inspirational_quote => 'অনুপ্রেরণামূলক উক্তি';
+
+  @override
+  String get recommended_music => 'প্রস্তাবিত সঙ্গীত';
 }

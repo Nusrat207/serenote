@@ -212,7 +212,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get hours => 'Hours';
 
   @override
-  String get minutes => 'Minutes';
+  String get minutes => 'minutes';
 
   @override
   String get pause => 'Pause';
@@ -240,4 +240,432 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ok => 'OK';
+
+  @override
+  String get settingsTitle => 'Settings';
+
+  @override
+  String get pomodoroTechnique => 'Pomodoro Technique';
+
+  @override
+  String get focusDuration => 'Focus Duration';
+
+  @override
+  String get shortBreak => 'Short Break';
+
+  @override
+  String get longBreak => 'Long Break';
+
+  @override
+  String get saveSettings => 'Save Settings';
+
+  @override
+  String get customGoalsTitle => 'Custom Goals';
+
+  @override
+  String get defaultGoals => 'Default Goals';
+
+  @override
+  String get customGoals => 'Custom Goals';
+
+  @override
+  String get createCustomGoals => 'Create Custom Goals';
+
+  @override
+  String get enterGoalHint => 'Enter goal name...';
+
+  @override
+  String get applyGoals => 'Apply Goals';
+
+  @override
+  String goalCount(Object count) {
+    return '$count/50';
+  }
+
+  @override
+  String get focus => 'Focus';
+
+  @override
+  String get read => 'Read';
+
+  @override
+  String get study => 'Study';
+
+  @override
+  String get workout => 'Workout';
+
+  @override
+  String get work => 'Work';
+
+  @override
+  String get meditate => 'Meditate';
+
+  @override
+  String get relax => 'Relax';
+
+  @override
+  String get calendar_sun => 'Sun';
+
+  @override
+  String get calendar_mon => 'Mon';
+
+  @override
+  String get calendar_tue => 'Tue';
+
+  @override
+  String get calendar_wed => 'Wed';
+
+  @override
+  String get calendar_thu => 'Thu';
+
+  @override
+  String get calendar_fri => 'Fri';
+
+  @override
+  String get calendar_sat => 'Sat';
+
+  @override
+  String get month_january => 'January';
+
+  @override
+  String get month_february => 'February';
+
+  @override
+  String get month_march => 'March';
+
+  @override
+  String get month_april => 'April';
+
+  @override
+  String get month_may => 'May';
+
+  @override
+  String get month_june => 'June';
+
+  @override
+  String get month_july => 'July';
+
+  @override
+  String get month_august => 'August';
+
+  @override
+  String get month_september => 'September';
+
+  @override
+  String get month_october => 'October';
+
+  @override
+  String get month_november => 'November';
+
+  @override
+  String get month_december => 'December';
+
+  @override
+  String get todo_add_new_task_hint => 'Add a new task to get started';
+
+  @override
+  String get reset_password_title => 'Reset Password';
+
+  @override
+  String get reset_password_desc =>
+      'Enter your email to receive a password reset link';
+
+  @override
+  String get email_label => 'Email';
+
+  @override
+  String get send_reset_link => 'Send Reset Link';
+
+  @override
+  String get reset_link_sent_title => 'Reset Link Sent!';
+
+  @override
+  String get reset_link_sent_desc =>
+      'Check your email for a password reset link. If you don\'t see it, check your spam folder.';
+
+  @override
+  String get back_to_login => 'Back to Login';
+
+  @override
+  String error_occurred(Object error) {
+    return 'Error: $error';
+  }
+
+  @override
+  String get welcome_back => 'Welcome Back';
+
+  @override
+  String get sign_in_subtitle => 'Sign in to continue your journey';
+
+  @override
+  String get password_label => 'Password';
+
+  @override
+  String get forgot_password => 'Forgot Password?';
+
+  @override
+  String get sign_in_button => 'Sign In';
+
+  @override
+  String get signup_prompt => 'Don\'t have an account? Sign up';
+
+  @override
+  String get create_account => 'Create Account';
+
+  @override
+  String get signup_subtitle => 'Sign up to get started with SereNote';
+
+  @override
+  String get full_name_label => 'Full Name';
+
+  @override
+  String get confirm_password_label => 'Confirm Password';
+
+  @override
+  String get passwords_not_match => 'Passwords do not match';
+
+  @override
+  String get password_length_error => 'Password must be at least 6 characters';
+
+  @override
+  String get registration_success =>
+      'Registration successful! Please check your email for verification.';
+
+  @override
+  String get already_have_account => 'Already have an account? Login';
+
+  @override
+  String get create_account_button => 'Create Account';
+
+  @override
+  String get profile_settings => 'Profile Settings';
+
+  @override
+  String get user_not_authenticated => 'User not authenticated. Please log in.';
+
+  @override
+  String failed_to_load_profile(Object error) {
+    return 'Failed to load profile: $error';
+  }
+
+  @override
+  String get login => 'Login';
+
+  @override
+  String get no_profile_data => 'No profile data available';
+
+  @override
+  String get user_default_name => 'User';
+
+  @override
+  String get choose_avatar => 'Choose Avatar';
+
+  @override
+  String get display_name => 'Display Name';
+
+  @override
+  String get full_name_required => 'Full name is required';
+
+  @override
+  String get email_required => 'Email is required';
+
+  @override
+  String get email_invalid => 'Invalid email format';
+
+  @override
+  String get password_required => 'Password is required';
+
+  @override
+  String get confirm_password_required => 'Please confirm your password';
+
+  @override
+  String get this_week => 'This Week';
+
+  @override
+  String get monday_short => 'Mon';
+
+  @override
+  String get tuesday_short => 'Tue';
+
+  @override
+  String get wednesday_short => 'Wed';
+
+  @override
+  String get thursday_short => 'Thu';
+
+  @override
+  String get friday_short => 'Fri';
+
+  @override
+  String get saturday_short => 'Sat';
+
+  @override
+  String get sunday_short => 'Sun';
+
+  @override
+  String get january_short => 'Jan';
+
+  @override
+  String get february_short => 'Feb';
+
+  @override
+  String get march_short => 'Mar';
+
+  @override
+  String get april_short => 'Apr';
+
+  @override
+  String get may_short => 'May';
+
+  @override
+  String get june_short => 'Jun';
+
+  @override
+  String get july_short => 'Jul';
+
+  @override
+  String get august_short => 'Aug';
+
+  @override
+  String get september_short => 'Sep';
+
+  @override
+  String get october_short => 'Oct';
+
+  @override
+  String get november_short => 'Nov';
+
+  @override
+  String get december_short => 'Dec';
+
+  @override
+  String get stat_current => 'Current';
+
+  @override
+  String get stat_longest => 'Longest';
+
+  @override
+  String get stat_total => 'Total';
+
+  @override
+  String get mood_anxious => 'ANXIOUS';
+
+  @override
+  String get mood_angry => 'ANGRY';
+
+  @override
+  String get mood_sad => 'SAD';
+
+  @override
+  String get mood_neutral => 'NEUTRAL';
+
+  @override
+  String get mood_joy => 'JOY';
+
+  @override
+  String get quick_mood_title => 'How do you feel?';
+
+  @override
+  String get quick_mood_subtitle => 'Quick check-in • Takes 10 seconds';
+
+  @override
+  String get good_night => 'Good Night';
+
+  @override
+  String get how_are_you_feeling => 'How are you feeling?';
+
+  @override
+  String get select_your_mood => 'Select your mood';
+
+  @override
+  String get happy => 'Happy';
+
+  @override
+  String get neutral => 'Neutral';
+
+  @override
+  String get sad => 'Sad';
+
+  @override
+  String get anxious => 'Anxious';
+
+  @override
+  String get angry => 'Angry';
+
+  @override
+  String get save_mood => 'Save Mood';
+
+  @override
+  String get say_or_type_feeling => 'Say or type how you\'re feeling';
+
+  @override
+  String get please_select_mood => 'Please select a mood';
+
+  @override
+  String get mood_saved_successfully => 'Mood saved successfully!';
+
+  @override
+  String get error_saving_mood => 'Error saving mood: ';
+
+  @override
+  String get user_not_logged_in => 'User not logged in';
+
+  @override
+  String get mood_mirror => 'MoodMirror';
+
+  @override
+  String get welcome_mood_mirror => 'Welcome to MoodMirror';
+
+  @override
+  String get mood_mirror_description =>
+      'Login to track your mood, receive uplifting quotes, and enjoy music that matches how you feel.';
+
+  @override
+  String get login_to_continue => 'Login to Continue';
+
+  @override
+  String get please_enter_feeling => 'Please enter or speak how you feel';
+
+  @override
+  String get mood_detected => 'Mood detected';
+
+  @override
+  String get error_text => 'Error';
+
+  @override
+  String get todays_mood => 'Today\'s Mood';
+
+  @override
+  String get confidence => 'confidence';
+
+  @override
+  String get type_or_speak_hint => 'Type or speak how you feel...';
+
+  @override
+  String get stop => 'Stop';
+
+  @override
+  String get voice_input => 'Voice Input';
+
+  @override
+  String get analyzing => 'Analyzing...';
+
+  @override
+  String get analyze => 'Analyze';
+
+  @override
+  String get bubble_breather => 'Bubble Breather';
+
+  @override
+  String get bubble_breather_desc =>
+      'Close your eyes, take a slow breath in… imagine a bubble floating higher with every exhale. Let your tension drift away with it.';
+
+  @override
+  String get for_you => 'For You';
+
+  @override
+  String get inspirational_quote => 'Inspirational Quote';
+
+  @override
+  String get recommended_music => 'Recommended Music';
 }

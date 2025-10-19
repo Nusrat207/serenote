@@ -8,6 +8,7 @@ import 'register_screen.dart';
 import 'forgot_password_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:serenote/features/auth/presentation/widgets/animated_welcome_back.dart';
+import 'package:serenote/l10n/app_localizations.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -23,7 +24,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
   bool _isLoading = false;
   bool _obscurePassword = true;
 
-  // Initialize with default values first
   AnimationController? _fadeController;
   AnimationController? _slideController;
   AnimationController? _buttonController;
@@ -32,7 +32,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
   Animation<Offset>? _slideAnimation;
   Animation<double>? _buttonScaleAnimation;
 
-  // Individual animations for staggered effect
   Animation<double>? _emailFadeAnimation;
   Animation<double>? _passwordFadeAnimation;
   Animation<double>? _forgotPasswordFadeAnimation;
@@ -41,86 +40,77 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
 
   bool _animationsInitialized = false;
 
+  // Validation flags
+  bool _emailTouched = false;
+  bool _passwordTouched = false;
+
+  bool get _isEmailValid {
+    final email = _emailController.text.trim();
+    if (email.isEmpty) return false;
+    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+    return emailRegex.hasMatch(email);
+  }
+
+  bool get _isPasswordValid {
+    return _passwordController.text.length >= 6;
+  }
+
+  bool get _isFormValid {
+    return _isEmailValid && _isPasswordValid;
+  }
+
   @override
   void initState() {
     super.initState();
     _initializeAnimations();
+    
+    // Add listeners to update state when text changes
+    _emailController.addListener(() => setState(() {}));
+    _passwordController.addListener(() => setState(() {}));
   }
 
   void _initializeAnimations() {
-    // Initialize animation controllers
     _fadeController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1500),
     );
-
     _slideController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1200),
     );
-
     _buttonController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 200),
     );
 
-    // Main animations
-    _fadeAnimation = CurvedAnimation(
-      parent: _fadeController!,
-      curve: Curves.easeInOut,
-    );
-
+    _fadeAnimation =
+        CurvedAnimation(parent: _fadeController!, curve: Curves.easeInOut);
     _slideAnimation =
         Tween<Offset>(begin: const Offset(0, 0.3), end: Offset.zero).animate(
-          CurvedAnimation(
-            parent: _slideController!,
-            curve: Curves.easeOutCubic,
-          ),
-        );
-
+      CurvedAnimation(parent: _slideController!, curve: Curves.easeOutCubic),
+    );
     _buttonScaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
       CurvedAnimation(parent: _buttonController!, curve: Curves.easeInOut),
     );
 
-    // Staggered fade animations with more noticeable intervals
     _emailFadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _fadeController!,
-        curve: const Interval(0.0, 0.4, curve: Curves.easeOut),
-      ),
+      CurvedAnimation(parent: _fadeController!, curve: const Interval(0.0, 0.4, curve: Curves.easeOut)),
     );
-
     _passwordFadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _fadeController!,
-        curve: const Interval(0.3, 0.7, curve: Curves.easeOut),
-      ),
+      CurvedAnimation(parent: _fadeController!, curve: const Interval(0.3, 0.7, curve: Curves.easeOut)),
     );
-
     _forgotPasswordFadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _fadeController!,
-        curve: const Interval(0.5, 0.8, curve: Curves.easeOut),
-      ),
+      CurvedAnimation(parent: _fadeController!, curve: const Interval(0.5, 0.8, curve: Curves.easeOut)),
     );
-
     _buttonFadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _fadeController!,
-        curve: const Interval(0.6, 0.9, curve: Curves.easeOut),
-      ),
+      CurvedAnimation(parent: _fadeController!, curve: const Interval(0.6, 0.9, curve: Curves.easeOut)),
     );
-
     _signupFadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _fadeController!,
-        curve: const Interval(0.7, 1.0, curve: Curves.easeOut),
-      ),
+      CurvedAnimation(parent: _fadeController!, curve: const Interval(0.7, 1.0, curve: Curves.easeOut)),
     );
 
     _animationsInitialized = true;
 
-    // Start animations after a brief delay to ensure widgets are built
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _startAnimations();
     });
@@ -131,7 +121,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
     _slideController?.forward();
   }
 
-  // Helper method to get animation with fallback
   Animation<double> _getFadeAnimation(Animation<double>? animation) {
     return animation ?? AlwaysStoppedAnimation(1.0);
   }
@@ -150,10 +139,38 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
     super.dispose();
   }
 
+  String? _getEmailError() {
+    final loc = AppLocalizations.of(context);
+    if (!_emailTouched) return null;
+    if (_emailController.text.trim().isEmpty) {
+      return loc?.email_required ?? 'Email is required';
+    }
+    if (!_isEmailValid) {
+      return loc?.email_invalid ?? 'Invalid email format';
+    }
+    return null;
+  }
+
+  String? _getPasswordError() {
+    final loc = AppLocalizations.of(context);
+    if (!_passwordTouched) return null;
+    if (_passwordController.text.isEmpty) {
+      return loc?.password_required ?? 'Password is required';
+    }
+    if (_passwordController.text.length < 6) {
+      return loc?.password_length_error ?? 'Password must be at least 6 characters';
+    }
+    return null;
+  }
+
   Future<void> _login() async {
+    if (!_isFormValid) return;
+
     setState(() {
       _isLoading = true;
     });
+
+    final loc = AppLocalizations.of(context);
 
     try {
       await AuthService().signIn(
@@ -174,9 +191,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
         );
       }
     } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Error: ${e.toString()}')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(loc?.error_occurred(e.toString()) ?? 'Error: ${e.toString()}')),
+      );
     } finally {
       if (mounted) {
         setState(() {
@@ -194,7 +211,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
   }
 
   void _onLoginPressed() {
-    // Animate button press
+    if (!_isFormValid) return;
+    
     _buttonController?.forward().then((_) {
       _buttonController?.reverse();
     });
@@ -203,6 +221,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
+
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 239, 245, 247),
       body: SafeArea(
@@ -211,7 +231,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Back button
               FadeTransition(
                 opacity: _getFadeAnimation(_fadeAnimation),
                 child: IconButton(
@@ -228,76 +247,77 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
 
               const SizedBox(height: 20),
 
-              // Welcome back text
               AnimatedWelcomeBack(
-                text: 'Welcome Back',
+                text: loc?.welcome_back ?? 'Welcome Back',
                 baseColor: const Color.fromARGB(255, 71, 134, 145),
               ),
 
               const SizedBox(height: 8),
 
-              // Subtitle
               FadeTransition(
                 opacity: _getFadeAnimation(_fadeAnimation),
-                child: const Text(
-                  'Sign in to continue your journey',
-                  style: TextStyle(fontSize: 16, color: Colors.grey),
+                child: Text(
+                  loc?.sign_in_subtitle ?? 'Sign in to continue your journey',
+                  style: const TextStyle(fontSize: 16, color: Colors.grey),
                 ),
               ),
 
               const SizedBox(height: 40),
 
-              // Email field with animation
               FadeTransition(
                 opacity: _getFadeAnimation(_emailFadeAnimation),
                 child: SlideTransition(
                   position: _getSlideAnimation(_slideAnimation),
-                  child: TextField(
+                  child: _buildValidatedTextField(
                     controller: _emailController,
+                    label: loc?.email_label ?? 'Email',
+                    icon: Icons.email,
                     keyboardType: TextInputType.emailAddress,
-                    decoration: const InputDecoration(
-                      labelText: 'Email',
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.email),
-                    ),
+                    errorText: _getEmailError(),
+                    onChanged: (value) {
+                      setState(() {
+                        _emailTouched = true;
+                      });
+                    },
                   ),
                 ),
               ),
 
               const SizedBox(height: 16),
 
-              // Password field with animation
               FadeTransition(
                 opacity: _getFadeAnimation(_passwordFadeAnimation),
                 child: SlideTransition(
                   position: _getSlideAnimation(_slideAnimation),
-                  child: TextField(
+                  child: _buildValidatedTextField(
                     controller: _passwordController,
+                    label: loc?.password_label ?? 'Password',
+                    icon: Icons.lock,
                     obscureText: _obscurePassword,
-                    decoration: InputDecoration(
-                      labelText: 'Password',
-                      border: const OutlineInputBorder(),
-                      prefixIcon: const Icon(Icons.lock),
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          _obscurePassword
-                              ? Icons.visibility
-                              : Icons.visibility_off,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            _obscurePassword = !_obscurePassword;
-                          });
-                        },
+                    errorText: _getPasswordError(),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _obscurePassword
+                            ? Icons.visibility
+                            : Icons.visibility_off,
                       ),
+                      onPressed: () {
+                        setState(() {
+                          _obscurePassword = !_obscurePassword;
+                        });
+                      },
                     ),
+                    onChanged: (value) {
+                      setState(() {
+                        _passwordTouched = true;
+                      });
+                    },
                   ),
                 ),
               ),
 
               const SizedBox(height: 16),
 
-              // Forgot password with animation
               FadeTransition(
                 opacity: _getFadeAnimation(_forgotPasswordFadeAnimation),
                 child: Align(
@@ -310,9 +330,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                         ),
                       );
                     },
-                    child: const Text(
-                      'Forgot Password?',
-                      style: TextStyle(
+                    child: Text(
+                      loc?.forgot_password ?? 'Forgot Password?',
+                      style: const TextStyle(
                         color: Color.fromARGB(255, 71, 134, 145),
                       ),
                     ),
@@ -322,7 +342,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
 
               const SizedBox(height: 24),
 
-              // Login button with animation
               FadeTransition(
                 opacity: _getFadeAnimation(_buttonFadeAnimation),
                 child: _isLoading
@@ -332,23 +351,22 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                         child: SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(
-                            onPressed: _onLoginPressed,
+                            onPressed: _isFormValid ? _onLoginPressed : null,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color.fromARGB(
-                                255,
-                                71,
-                                134,
-                                145,
-                              ),
+                              backgroundColor: _isFormValid
+                                  ? const Color.fromARGB(255, 71, 134, 145)
+                                  : Colors.grey.shade400,
+                              disabledBackgroundColor: Colors.grey.shade400,
                               padding: const EdgeInsets.symmetric(vertical: 16),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),
+                              elevation: _isFormValid ? 4 : 1,
                             ),
-                            child: const Text(
-                              'Sign In',
+                            child: Text(
+                              loc?.sign_in_button ?? 'Sign In',
                               style: TextStyle(
-                                color: Colors.white,
+                                color: _isFormValid ? Colors.white : Colors.grey.shade600,
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -360,7 +378,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
 
               const SizedBox(height: 20),
 
-              // Sign up link with animation
               FadeTransition(
                 opacity: _getFadeAnimation(_signupFadeAnimation),
                 child: Center(
@@ -372,9 +389,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                         ),
                       );
                     },
-                    child: const Text(
-                      "Don't have an account? Sign up",
-                      style: TextStyle(
+                    child: Text(
+                      loc?.signup_prompt ?? "Don't have an account? Sign up",
+                      style: const TextStyle(
                         color: Color.fromARGB(255, 71, 134, 145),
                       ),
                     ),
@@ -385,6 +402,70 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildValidatedTextField({
+    required TextEditingController controller,
+    required String label,
+    required IconData icon,
+    TextInputType? keyboardType,
+    bool obscureText = false,
+    Widget? suffixIcon,
+    String? errorText,
+    Function(String)? onChanged,
+  }) {
+    final hasError = errorText != null;
+    
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TextField(
+          controller: controller,
+          keyboardType: keyboardType,
+          obscureText: obscureText,
+          onChanged: onChanged,
+          decoration: InputDecoration(
+            labelText: label,
+            border: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: hasError ? Colors.red : Colors.grey,
+                width: hasError ? 2 : 1,
+              ),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: hasError ? Colors.red : Colors.grey,
+                width: hasError ? 2 : 1,
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: hasError ? Colors.red : const Color.fromARGB(255, 71, 134, 145),
+                width: 2,
+              ),
+            ),
+            prefixIcon: Icon(
+              icon,
+              color: hasError ? Colors.red : null,
+            ),
+            suffixIcon: suffixIcon,
+          ),
+        ),
+        if (hasError) ...[
+          const SizedBox(height: 4),
+          Padding(
+            padding: const EdgeInsets.only(left: 12),
+            child: Text(
+              errorText,
+              style: const TextStyle(
+                color: Colors.red,
+                fontSize: 12,
+              ),
+            ),
+          ),
+        ],
+      ],
     );
   }
 }
