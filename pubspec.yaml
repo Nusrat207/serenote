@@ -73,23 +73,23 @@ dependencies:
 
 dev_dependencies:
   flutter_test:
-    sdk: flutter
+    sdk: flutter 
   flutter_lints: ^5.0.0
   flutter_launcher_icons: ^0.13.1
 
 flutter:
   uses-material-design: true
   generate: true 
-  assets:
-    - assets/.env
-    - assets/images/
+  assets:     
+    - assets/.env 
+    - assets/images/ 
     - assets/images/retro/
-    - assets/images/concentration/
-    - assets/icon/
+    - assets/images/concentration/ 
+    - assets/icon/   
     - assets/avatars/
-
-flutter_icons:
-  android: true 
+  
+flutter_icons:  
+  android: true  
   ios: true
   image_path: "assets/icon/app_icon.jpg"
   adaptive_icon_background: "#FFFFFF"

@@ -1,38 +1,38 @@
+// update_password_screen.dart
 import 'package:flutter/material.dart';
 import 'package:serenote/core/services/auth_service.dart';
-import 'login_screen.dart';
+import 'package:serenote/features/dashboard/presentation/screens/dashboard_screen.dart';
+import 'package:serenote/l10n/app_localizations.dart';
 
-class ResetPasswordScreen extends StatefulWidget {
-  const ResetPasswordScreen({super.key});
+class UpdatePasswordScreen extends StatefulWidget {
+  const UpdatePasswordScreen({super.key});
 
   @override
-  State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
+  State<UpdatePasswordScreen> createState() => _UpdatePasswordScreenState();
 }
 
-class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
-  final _newPasswordController = TextEditingController();
+class _UpdatePasswordScreenState extends State<UpdatePasswordScreen> {
+  final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   bool _isLoading = false;
-  bool _obscureNewPassword = true;
-  bool _obscureConfirmPassword = true;
   bool _passwordUpdated = false;
 
   @override
   void dispose() {
-    _newPasswordController.dispose();
+    _passwordController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
   }
 
   Future<void> _updatePassword() async {
-    if (_newPasswordController.text != _confirmPasswordController.text) {
+    if (_passwordController.text != _confirmPasswordController.text) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Passwords do not match')),
       );
       return;
     }
 
-    if (_newPasswordController.text.length < 6) {
+    if (_passwordController.text.length < 6) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Password must be at least 6 characters')),
       );
@@ -44,14 +44,14 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     });
 
     try {
-      await AuthService().updatePassword(_newPasswordController.text.trim());
+      await AuthService().updatePassword(_passwordController.text);
       setState(() {
         _passwordUpdated = true;
       });
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: ${e.toString()}')),
+          SnackBar(content: Text('Error updating password: ${e.toString()}')),
         );
       }
     } finally {
@@ -65,6 +65,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
+
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 239, 245, 247),
       resizeToAvoidBottomInset: true,
@@ -74,19 +76,19 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Color.fromARGB(255, 71, 134, 145)),
           onPressed: () {
-            Navigator.of(context).pop();
+            Navigator.push(context, MaterialPageRoute(builder: (_) => const DashboardScreen()),
+            );
           },
         ),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 20),
               const Text(
-                'Set New Password',
+                'Update Password',
                 style: TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
@@ -95,51 +97,32 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
               ),
               const SizedBox(height: 8),
               const Text(
-                'Create a new password for your account',
+                'Enter your new password',
                 style: TextStyle(
                   fontSize: 16,
                   color: Colors.grey,
                 ),
               ),
               const SizedBox(height: 40),
+
               if (!_passwordUpdated) ...[
                 TextField(
-                  controller: _newPasswordController,
-                  obscureText: _obscureNewPassword,
-                  decoration: InputDecoration(
+                  controller: _passwordController,
+                  obscureText: true,
+                  decoration: const InputDecoration(
                     labelText: 'New Password',
-                    border: const OutlineInputBorder(),
-                    prefixIcon: const Icon(Icons.lock),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _obscureNewPassword ? Icons.visibility : Icons.visibility_off,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _obscureNewPassword = !_obscureNewPassword;
-                        });
-                      },
-                    ),
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.lock),
                   ),
                 ),
                 const SizedBox(height: 16),
                 TextField(
                   controller: _confirmPasswordController,
-                  obscureText: _obscureConfirmPassword,
+                  obscureText: true,
                   decoration: InputDecoration(
-                    labelText: 'Confirm New Password',
+                    labelText: loc?.confirm_password_label ?? 'Confirm Password',
                     border: const OutlineInputBorder(),
                     prefixIcon: const Icon(Icons.lock),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _obscureConfirmPassword ? Icons.visibility : Icons.visibility_off,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _obscureConfirmPassword = !_obscureConfirmPassword;
-                        });
-                      },
-                    ),
                   ),
                 ),
                 const SizedBox(height: 24),
@@ -167,6 +150,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                         ),
                       ),
               ] else ...[
+                SizedBox(height: MediaQuery.of(context).size.height * 0.1),
                 Container(
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
@@ -174,11 +158,11 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(color: Colors.green),
                   ),
-                  child: const Column(
+                  child: Column(
                     children: [
-                      Icon(Icons.check_circle, color: Colors.green, size: 48),
-                      SizedBox(height: 16),
-                      Text(
+                      const Icon(Icons.check_circle, color: Colors.green, size: 48),
+                      const SizedBox(height: 16),
+                      const Text(
                         'Password Updated!',
                         style: TextStyle(
                           fontSize: 18,
@@ -186,9 +170,9 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                           color: Colors.green,
                         ),
                       ),
-                      SizedBox(height: 8),
-                      Text(
-                        'Your password has been successfully updated.',
+                      const SizedBox(height: 8),
+                      const Text(
+                        'Your password has been updated successfully.',
                         textAlign: TextAlign.center,
                         style: TextStyle(color: Colors.green),
                       ),
@@ -200,8 +184,9 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(builder: (context) => const LoginScreen()),
+                      Navigator.pushNamedAndRemoveUntil(
+                        context,
+                        '/login',
                         (route) => false,
                       );
                     },
@@ -212,9 +197,9 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    child: const Text(
-                      'Back to Login',
-                      style: TextStyle(
+                    child: Text(
+                      loc?.back_to_login ?? 'Back to Login',
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,

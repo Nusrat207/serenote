@@ -8,7 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:serenote/features/mood/presentation/providers/mood_provider.dart';
 import 'package:serenote/l10n/app_localizations.dart';
 
-
 class RoutineScreen extends ConsumerStatefulWidget {
   const RoutineScreen({super.key});
 
@@ -28,21 +27,20 @@ class _RoutineScreenState extends ConsumerState<RoutineScreen> {
   bool _isDragging = false;
   double _dragStartY = 0.0;
 
- @override
-void initState() {
-  super.initState();
-  _getCurrentUser();
-  if (_supabase.auth.currentUser != null) {
-    _loadTodosForDate(_selectedDate);
+  @override
+  void initState() {
+    super.initState();
+    _getCurrentUser();
+    if (_supabase.auth.currentUser != null) {
+      _loadTodosForDate(_selectedDate);
+    }
   }
-}
 
-void _getCurrentUser() {
-  setState(() {
-    _currentUser = _supabase.auth.currentUser;
-  });
-}
-
+  void _getCurrentUser() {
+    setState(() {
+      _currentUser = _supabase.auth.currentUser;
+    });
+  }
 
   void _redirectToLogin() {
     if (mounted) {
@@ -106,14 +104,20 @@ void _getCurrentUser() {
             onChanged: (value) {
               newTodo = value;
             },
-            decoration: InputDecoration(hintText: AppLocalizations.of(context)?.todo_add_hint ?? 'Enter your task...'),
+            decoration: InputDecoration(
+              hintText:
+                  AppLocalizations.of(context)?.todo_add_hint ??
+                  'Enter your task...',
+            ),
           ),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text(AppLocalizations.of(context)?.journal_cancel ?? 'Cancel'),
+              child: Text(
+                AppLocalizations.of(context)?.journal_cancel ?? 'Cancel',
+              ),
             ),
             ElevatedButton(
               onPressed: () {
@@ -225,43 +229,47 @@ void _getCurrentUser() {
     final today = DateTime.now();
     final tomorrow = today.add(const Duration(days: 1));
 
+    final loc = AppLocalizations.of(context);
+
     if (_isSameDay(date, today)) {
-      return "Today";
+      return loc?.today ?? "Today";
     } else if (_isSameDay(date, tomorrow)) {
-      return "Tomorrow";
+      return loc?.todo_add_hint ??
+          "Tomorrow"; // Optional: add separate key if needed
     } else {
       final months = [
-        'Jan',
-        'Feb',
-        'Mar',
-        'Apr',
-        'May',
-        'Jun',
-        'Jul',
-        'Aug',
-        'Sep',
-        'Oct',
-        'Nov',
-        'Dec',
+        loc?.month_january,
+        loc?.month_february,
+        loc?.month_march,
+        loc?.month_april,
+        loc?.month_may,
+        loc?.month_june,
+        loc?.month_july,
+        loc?.month_august,
+        loc?.month_september,
+        loc?.month_october,
+        loc?.month_november,
+        loc?.month_december,
       ];
       return '${months[date.month - 1]} ${date.day}';
     }
   }
 
   String _getMonthYear(DateTime date) {
+    final loc = AppLocalizations.of(context);
     final months = [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December',
+      loc?.month_january,
+      loc?.month_february,
+      loc?.month_march,
+      loc?.month_april,
+      loc?.month_may,
+      loc?.month_june,
+      loc?.month_july,
+      loc?.month_august,
+      loc?.month_september,
+      loc?.month_october,
+      loc?.month_november,
+      loc?.month_december,
     ];
     return '${months[date.month - 1]} ${date.year}';
   }
@@ -370,6 +378,17 @@ void _getCurrentUser() {
 
     final weekDates = _getWeekDates(_selectedDate);
     final monthDates = _getMonthDates(_selectedDate);
+
+    final loc = AppLocalizations.of(context);
+    final weekDays = [
+      loc?.calendar_sun,
+      loc?.calendar_mon,
+      loc?.calendar_tue,
+      loc?.calendar_wed,
+      loc?.calendar_thu,
+      loc?.calendar_fri,
+      loc?.calendar_sat,
+    ];
 
     return Container(
       decoration: BoxDecoration(
@@ -486,29 +505,20 @@ void _getCurrentUser() {
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children:
-                                [
-                                  'Sun',
-                                  'Mon',
-                                  'Tue',
-                                  'Wed',
-                                  'Thu',
-                                  'Fri',
-                                  'Sat',
-                                ].map((day) {
-                                  return SizedBox(
-                                    width: 36,
-                                    child: Text(
-                                      day,
-                                      textAlign: TextAlign.center,
-                                      style: const TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black54,
-                                      ),
-                                    ),
-                                  );
-                                }).toList(),
+                            children: weekDays.map((day) {
+                              return SizedBox(
+                                width: 36,
+                                child: Text(
+                                  day ?? '',
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black54,
+                                  ),
+                                ),
+                              );
+                            }).toList(),
                           ),
                         ),
                         Container(
@@ -695,49 +705,74 @@ void _getCurrentUser() {
                             child: Center(child: CircularProgressIndicator()),
                           )
                         : _currentUser == null
-  ? Padding(
-      padding: const EdgeInsets.all(32.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(Icons.lock_outline, size: 70, color: Colors.grey),
-          const SizedBox(height: 16),
-          Text(
-            AppLocalizations.of(context)?.todo_login_title ?? 'Login to manage your tasks',
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            AppLocalizations.of(context)?.todo_login_desc ?? 'Sign in to add, edit, and view your daily routines.',
-            textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 14, color: Colors.grey),
-          ),
-          const SizedBox(height: 20),
-          ElevatedButton.icon(
-            onPressed: _redirectToLogin,
-            icon: const Icon(Icons.login, color: Colors.black),
-            label: Text(AppLocalizations.of(context)?.journal_login_button ?? 'Login'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color.fromARGB(255, 216, 240, 245),
-              foregroundColor: Colors.black,
-              padding: const EdgeInsets.symmetric(
-                horizontal: 24,
-                vertical: 12,
-              ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-          ),
-        ],
-      ),
-    )
-
+                        ? Padding(
+                            padding: const EdgeInsets.all(32.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(
+                                  Icons.lock_outline,
+                                  size: 70,
+                                  color: Colors.grey,
+                                ),
+                                const SizedBox(height: 16),
+                                Text(
+                                  AppLocalizations.of(
+                                        context,
+                                      )?.todo_login_title ??
+                                      'Login to manage your tasks',
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  AppLocalizations.of(
+                                        context,
+                                      )?.todo_login_desc ??
+                                      'Sign in to add, edit, and view your daily routines.',
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                                const SizedBox(height: 20),
+                                ElevatedButton.icon(
+                                  onPressed: _redirectToLogin,
+                                  icon: const Icon(
+                                    Icons.login,
+                                    color: Colors.black,
+                                  ),
+                                  label: Text(
+                                    AppLocalizations.of(
+                                          context,
+                                        )?.journal_login_button ??
+                                        'Login',
+                                  ),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color.fromARGB(
+                                      255,
+                                      216,
+                                      240,
+                                      245,
+                                    ),
+                                    foregroundColor: Colors.black,
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 24,
+                                      vertical: 12,
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
                         : _todos.isEmpty
                         ? Padding(
                             padding: const EdgeInsets.all(40.0),
@@ -751,16 +786,20 @@ void _getCurrentUser() {
                                 ),
                                 const SizedBox(height: 16),
                                 Text(
-                                  AppLocalizations.of(context)?.todo_no_tasks ?? 'No tasks for today!',
+                                  AppLocalizations.of(context)?.todo_no_tasks ??
+                                      'No tasks for today!',
                                   style: TextStyle(
                                     fontSize: 16,
                                     color: Colors.grey,
                                   ),
                                 ),
                                 const SizedBox(height: 8),
-                                const Text(
-                                  'Add a new task to get started',
-                                  style: TextStyle(
+                                Text(
+                                  AppLocalizations.of(
+                                        context,
+                                      )?.todo_add_new_task_hint ??
+                                      'Add a new task to get started',
+                                  style: const TextStyle(
                                     fontSize: 14,
                                     color: Colors.grey,
                                   ),
