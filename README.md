@@ -77,13 +77,13 @@ Mind games aligned with focus and mental wellness:
 
 ## 📥 Installation
 
-# 1. Clone the repository:
+### 1. Clone the repository:
 git clone https://github.com/yourusername/serenote.git
 
 cd serenote
 
-# 2. Install dependencies:
+### 2. Install dependencies:
 flutter pub get
 
-# 3. Run the app:
+### 3. Run the app:
 flutter run
