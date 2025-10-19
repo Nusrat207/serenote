@@ -155,6 +155,24 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     }
   }
 
+  // Get localized mood label
+  String _getLocalizedMoodLabel(String mood) {
+    switch (mood.toLowerCase()) {
+      case 'anxious':
+        return AppLocalizations.of(context)?.mood_anxious ?? 'ANXIOUS';
+      case 'angry':
+        return AppLocalizations.of(context)?.mood_angry ?? 'ANGRY';
+      case 'sad':
+        return AppLocalizations.of(context)?.mood_sad ?? 'SAD';
+      case 'neutral':
+        return AppLocalizations.of(context)?.mood_neutral ?? 'NEUTRAL';
+      case 'joy':
+        return AppLocalizations.of(context)?.mood_joy ?? 'JOY';
+      default:
+        return mood.toUpperCase();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final user = Supabase.instance.client.auth.currentUser;
@@ -205,10 +223,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   )
                 : null,
             child: SafeArea(
-              
               child: CustomScrollView(
                 slivers: [
-                   AnimatedAppBar(),
+                  AnimatedAppBar(),
                   SliverPadding(
                     padding: const EdgeInsets.all(20),
                     sliver: SliverList(
@@ -218,10 +235,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                           _buildLoginMessage()
                         else
                           _buildTodaysMoodCard(todaysMood),
-                        if (userId != null) 
-                        const QuickMoodEntryCard(),
+                        if (userId != null) const QuickMoodEntryCard(),
                         const SizedBox(height: 20),
-                      
+
                         _buildStatsOverview(allMoods, recentMoods, todaysMood),
                         const SizedBox(height: 20),
                         if (userId != null) _buildWeeklyMoodGraph(weeklyMoods),
@@ -243,8 +259,10 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
   String _getGreeting() {
     final hour = DateTime.now().hour;
-    if (hour < 12) return AppLocalizations.of(context)?.good_morning ?? 'Good Morning';
-    if (hour < 17) return AppLocalizations.of(context)?.good_afternoon ?? 'Good Afternoon';
+    if (hour < 12)
+      return AppLocalizations.of(context)?.good_morning ?? 'Good Morning';
+    if (hour < 17)
+      return AppLocalizations.of(context)?.good_afternoon ?? 'Good Afternoon';
     return AppLocalizations.of(context)?.good_evening ?? 'Good Evening';
   }
 
@@ -265,12 +283,14 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             ),
             const SizedBox(height: 12),
             Text(
-              AppLocalizations.of(context)?.you_not_logged_in ?? "You're not logged in",
+              AppLocalizations.of(context)?.you_not_logged_in ??
+                  "You're not logged in",
               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 6),
             Text(
-              AppLocalizations.of(context)?.sign_in_to_track ?? "Sign in to start tracking your moods and progress.",
+              AppLocalizations.of(context)?.sign_in_to_track ??
+                  "Sign in to start tracking your moods and progress.",
               textAlign: TextAlign.center,
               style: const TextStyle(color: Colors.black54),
             ),
@@ -290,11 +310,12 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             children: [
               Icon(Icons.mood_outlined, size: 48, color: Colors.grey.shade400),
               const SizedBox(height: 12),
-            Text(
-              AppLocalizations.of(context)?.how_feeling_today ?? 'How are you feeling today?',
-              style: Theme.of(context).textTheme.titleMedium,
-              textAlign: TextAlign.center,
-            ),
+              Text(
+                AppLocalizations.of(context)?.how_feeling_today ??
+                    'How are you feeling today?',
+                style: Theme.of(context).textTheme.titleMedium,
+                textAlign: TextAlign.center,
+              ),
             ],
           ),
         ),
@@ -327,11 +348,15 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        AppLocalizations.of(context)?.current_mood ?? 'Current Mood',
-                        style: const TextStyle(color: Colors.white70, fontSize: 14),
+                        AppLocalizations.of(context)?.current_mood ??
+                            'Current Mood',
+                        style: const TextStyle(
+                          color: Colors.white70,
+                          fontSize: 14,
+                        ),
                       ),
                       Text(
-                        mood.detectedMood.toUpperCase(),
+                        _getLocalizedMoodLabel(mood.detectedMood),
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 28,
@@ -341,7 +366,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                     ],
                   ),
                 ),
-           
               ],
             ),
             const SizedBox(height: 16),
@@ -403,7 +427,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           child: _StatCard(
             icon: Icons.mood,
             value: moodTodayCount.toString(),
-            label: AppLocalizations.of(context)?.moods_tracked_today ?? 'Moods Tracked Today',
+            label:
+                AppLocalizations.of(context)?.moods_tracked_today ??
+                'Moods Tracked Today',
             color: const Color.fromARGB(255, 17, 38, 38),
           ),
         ),
@@ -443,8 +469,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
   // ---------------- WEEKLY MOOD GRAPH ----------------
   Widget _buildWeeklyMoodGraph(Map<DateTime, String> weeklyMoods) {
-    final days = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
-    final moodOrder = ['anxious', 'angry', 'sad', 'neutral', 'joy'];
     final now = DateTime.now();
     const labelStyle = TextStyle(fontSize: 10, fontWeight: FontWeight.w500);
 
@@ -456,6 +480,17 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         now.day,
       ).subtract(Duration(days: 6 - index)),
     );
+
+    // Get localized day labels
+    final days = [
+      AppLocalizations.of(context)?.monday_short ?? 'MON',
+      AppLocalizations.of(context)?.tuesday_short ?? 'TUE',
+      AppLocalizations.of(context)?.wednesday_short ?? 'WED',
+      AppLocalizations.of(context)?.thursday_short ?? 'THU',
+      AppLocalizations.of(context)?.friday_short ?? 'FRI',
+      AppLocalizations.of(context)?.saturday_short ?? 'SAT',
+      AppLocalizations.of(context)?.sunday_short ?? 'SUN',
+    ];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -482,7 +517,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             children: [
               // Fixed height container for the graph - increased height
               SizedBox(
-                height: 240, // Increased from 180 to create more gaps
+                height: 240,
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -492,15 +527,30 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                       height: 300,
                       child: Column(
                         children: [
-                          Text('JOY', style: labelStyle),
+                          Text(
+                            _getLocalizedMoodLabel('joy'),
+                            style: labelStyle,
+                          ),
                           Spacer(flex: 2),
-                          Text('NEUTRAL', style: labelStyle),
+                          Text(
+                            _getLocalizedMoodLabel('neutral'),
+                            style: labelStyle,
+                          ),
                           Spacer(flex: 2),
-                          Text('SAD', style: labelStyle),
+                          Text(
+                            _getLocalizedMoodLabel('sad'),
+                            style: labelStyle,
+                          ),
                           Spacer(flex: 2),
-                          Text('ANGRY', style: labelStyle),
+                          Text(
+                            _getLocalizedMoodLabel('angry'),
+                            style: labelStyle,
+                          ),
                           Spacer(flex: 2),
-                          Text('ANXIOUS', style: labelStyle),
+                          Text(
+                            _getLocalizedMoodLabel('anxious'),
+                            style: labelStyle,
+                          ),
                         ],
                       ),
                     ),
@@ -526,14 +576,11 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                             return Expanded(
                               child: LayoutBuilder(
                                 builder: (context, constraints) {
-                                  // Match the padding used in CustomPainter
                                   final verticalPadding = 12.0;
                                   final availableHeight =
                                       constraints.maxHeight -
                                       2 * verticalPadding;
 
-                                  // Calculate Y position to match the line
-                                  // level 4 (joy) should be at top, level 0 (anxious) at bottom
                                   final y =
                                       verticalPadding +
                                       availableHeight * (4 - level) / 4;
@@ -541,7 +588,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                   return Stack(
                                     children: [
                                       Positioned(
-                                        top: y - 12, // Center the 24px icon
+                                        top: y - 12,
                                         left: 0,
                                         right: 0,
                                         child: Center(
@@ -590,7 +637,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                           child: Column(
                             children: [
                               Text(
-                                days[date.weekday - 1],
+                                days[date.weekday - 1].toUpperCase(),
                                 style: TextStyle(
                                   fontSize: 9,
                                   fontWeight: date.day == now.day
@@ -630,7 +677,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   // ---------------- RECENT MOODS ----------------
   Widget _buildRecentMoods(List<MoodEntry> recentMoods) {
     if (recentMoods.isEmpty) {
-      return const SizedBox(); // Return empty since using the graph instead
+      return const SizedBox();
     }
 
     return Column(
@@ -652,10 +699,10 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               final mood = recentMoods[index];
               final date = DateFormat('EEE').format(mood.timestamp);
               return Container(
-                width: 74, // slightly reduced from 80
+                width: 74,
                 child: Card(
                   child: Padding(
-                    padding: const EdgeInsets.all(6), // slightly reduced
+                    padding: const EdgeInsets.all(6),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -718,7 +765,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             children: [
               _buildNavItem(
                 icon: Icons.mood,
-                label: 'Mood',
+                label: AppLocalizations.of(context)?.dashboard_mood ?? 'Mood',
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => const MoodScreen()),
@@ -727,18 +774,18 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               ),
               _buildNavItem(
                 icon: FontAwesomeIcons.book,
-                label: 'Journal',
+                label:
+                    AppLocalizations.of(context)?.dashboard_journal ??
+                    'Journal',
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => const JournalScreen()),
-                  
                 ),
-                
                 mood: mood,
               ),
               _buildNavItem(
                 icon: Icons.check_box,
-                label: 'Habit',
+                label: AppLocalizations.of(context)?.dashboard_habit ?? 'Habit',
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => const HabitsScreen()),
@@ -759,12 +806,12 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     MoodEntry? mood,
   }) {
     Color baseColor = MoodColors.getColorForMood(mood?.detectedMood ?? 'black');
-Color darkerColor = Color.fromARGB(
-  baseColor.alpha,
-  (baseColor.red * 0.7).round(),
-  (baseColor.green * 0.7).round(),
-  (baseColor.blue * 0.7).round(),
-);
+    Color darkerColor = Color.fromARGB(
+      baseColor.alpha,
+      (baseColor.red * 0.7).round(),
+      (baseColor.green * 0.7).round(),
+      (baseColor.blue * 0.7).round(),
+    );
 
     return InkWell(
       onTap: onTap,
@@ -866,7 +913,6 @@ class _MoodLinePainter extends CustomPainter {
       final level = getMoodLevel(mood);
       if (level >= 0) {
         final x = (i + 0.5) * (size.width / dates.length);
-        // Match the icon positioning: level 4 at top, level 0 at bottom
         final y = verticalPadding + availableHeight * (4 - level) / 4;
         points.add(Offset(x, y));
       }

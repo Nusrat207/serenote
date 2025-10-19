@@ -11,14 +11,14 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_localizations:
-    sdk: flutter
-
+    sdk: flutter 
+ 
   # UI
   cupertino_icons: ^1.0.8
   google_fonts: ^6.1.0
   flutter_animate: ^4.3.0
   fl_chart: ^0.65.0
-  rive: ^0.13.0
+  rive: ^0.13.0 
 
   # State Management
   flutter_riverpod: ^2.4.0
@@ -50,7 +50,7 @@ dependencies:
   # Utilities
   intl: 0.20.2
   uuid: ^4.2.1 
-  equatable: ^2.0.5
+  equatable: ^2.0.5 
   fpdart: ^1.1.0
   flutter_screenutil: ^5.9.3
   flame: ^1.14.0

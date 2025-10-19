@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:serenote/l10n/app_localizations.dart';
 import '../../domain/entities/habit_entity.dart';
 
 class HabitCardWidget extends StatefulWidget {
@@ -37,25 +38,33 @@ class _HabitCardWidgetState extends State<HabitCardWidget> {
     });
   }
 
-  String _getDayLabel(int index) {
-    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  String _getDayLabel(BuildContext context, int index) {
+    final days = [
+      AppLocalizations.of(context)?.monday_short ?? 'Mon',
+      AppLocalizations.of(context)?.tuesday_short ?? 'Tue',
+      AppLocalizations.of(context)?.wednesday_short ?? 'Wed',
+      AppLocalizations.of(context)?.thursday_short ?? 'Thu',
+      AppLocalizations.of(context)?.friday_short ?? 'Fri',
+      AppLocalizations.of(context)?.saturday_short ?? 'Sat',
+      AppLocalizations.of(context)?.sunday_short ?? 'Sun',
+    ];
     return days[index];
   }
 
-  String _getMonthName(int month) {
-    const months = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
+  String _getMonthName(BuildContext context, int month) {
+    final months = [
+      AppLocalizations.of(context)?.january_short ?? 'Jan',
+      AppLocalizations.of(context)?.february_short ?? 'Feb',
+      AppLocalizations.of(context)?.march_short ?? 'Mar',
+      AppLocalizations.of(context)?.april_short ?? 'Apr',
+      AppLocalizations.of(context)?.may_short ?? 'May',
+      AppLocalizations.of(context)?.june_short ?? 'Jun',
+      AppLocalizations.of(context)?.july_short ?? 'Jul',
+      AppLocalizations.of(context)?.august_short ?? 'Aug',
+      AppLocalizations.of(context)?.september_short ?? 'Sep',
+      AppLocalizations.of(context)?.october_short ?? 'Oct',
+      AppLocalizations.of(context)?.november_short ?? 'Nov',
+      AppLocalizations.of(context)?.december_short ?? 'Dec',
     ];
     return months[month - 1];
   }
@@ -176,7 +185,7 @@ class _HabitCardWidgetState extends State<HabitCardWidget> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'This Week',
+                    AppLocalizations.of(context)?.this_week ?? 'This Week',
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
@@ -184,7 +193,7 @@ class _HabitCardWidgetState extends State<HabitCardWidget> {
                     ),
                   ),
                   Text(
-                    '${_getMonthName(weekDates.first.month)} ${weekDates.first.year}',
+                    '${_getMonthName(context, weekDates.first.month)} ${weekDates.first.year}',
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
@@ -200,7 +209,7 @@ class _HabitCardWidgetState extends State<HabitCardWidget> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: List.generate(7, (index) {
                   final date = weekDates[index];
-                  final dayLabel = _getDayLabel(index);
+                  final dayLabel = _getDayLabel(context, index);
                   final isCompleted = _isDateCompleted(date);
                   final canToggle = _canToggleDate(date);
                   final isAssigned = _isAssignedDay(date);
@@ -309,15 +318,20 @@ class _HabitCardWidgetState extends State<HabitCardWidget> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   _buildStatItem(
-                    label: 'Current',
+                    context: context,
+                    label:
+                        AppLocalizations.of(context)?.stat_current ?? 'Current',
                     value: '${widget.habit.currentStreak}',
                   ),
                   _buildStatItem(
-                    label: 'Longest',
+                    context: context,
+                    label:
+                        AppLocalizations.of(context)?.stat_longest ?? 'Longest',
                     value: '${widget.habit.longestStreak}',
                   ),
                   _buildStatItem(
-                    label: 'Total',
+                    context: context,
+                    label: AppLocalizations.of(context)?.stat_total ?? 'Total',
                     value: '${widget.habit.totalCompletions}',
                   ),
                 ],
@@ -329,7 +343,11 @@ class _HabitCardWidgetState extends State<HabitCardWidget> {
     );
   }
 
-  Widget _buildStatItem({required String label, required String value}) {
+  Widget _buildStatItem({
+    required BuildContext context,
+    required String label,
+    required String value,
+  }) {
     return Column(
       children: [
         Text(

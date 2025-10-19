@@ -78,7 +78,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get journal_search_title => 'Search Journals';
 
   @override
-  String get journal_search_hint => 'Enter search term...';
+  String get journal_search_hint => 'Search journals...';
 
   @override
   String get journal_clear => 'Clear';
@@ -477,4 +477,509 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get confirm_password_required => 'Please confirm your password';
+
+  @override
+  String get this_week => 'This Week';
+
+  @override
+  String get monday_short => 'Mon';
+
+  @override
+  String get tuesday_short => 'Tue';
+
+  @override
+  String get wednesday_short => 'Wed';
+
+  @override
+  String get thursday_short => 'Thu';
+
+  @override
+  String get friday_short => 'Fri';
+
+  @override
+  String get saturday_short => 'Sat';
+
+  @override
+  String get sunday_short => 'Sun';
+
+  @override
+  String get january_short => 'Jan';
+
+  @override
+  String get february_short => 'Feb';
+
+  @override
+  String get march_short => 'Mar';
+
+  @override
+  String get april_short => 'Apr';
+
+  @override
+  String get may_short => 'May';
+
+  @override
+  String get june_short => 'Jun';
+
+  @override
+  String get july_short => 'Jul';
+
+  @override
+  String get august_short => 'Aug';
+
+  @override
+  String get september_short => 'Sep';
+
+  @override
+  String get october_short => 'Oct';
+
+  @override
+  String get november_short => 'Nov';
+
+  @override
+  String get december_short => 'Dec';
+
+  @override
+  String get stat_current => 'Current';
+
+  @override
+  String get stat_longest => 'Longest';
+
+  @override
+  String get stat_total => 'Total';
+
+  @override
+  String get mood_anxious => 'ANXIOUS';
+
+  @override
+  String get mood_angry => 'ANGRY';
+
+  @override
+  String get mood_sad => 'SAD';
+
+  @override
+  String get mood_neutral => 'NEUTRAL';
+
+  @override
+  String get mood_joy => 'JOY';
+
+  @override
+  String get quick_mood_title => 'How do you feel?';
+
+  @override
+  String get quick_mood_subtitle => 'Quick check-in • Takes 10 seconds';
+
+  @override
+  String get good_night => 'Good Night';
+
+  @override
+  String get how_are_you_feeling => 'How are you feeling?';
+
+  @override
+  String get select_your_mood => 'Select your mood';
+
+  @override
+  String get happy => 'Happy';
+
+  @override
+  String get neutral => 'Neutral';
+
+  @override
+  String get sad => 'Sad';
+
+  @override
+  String get anxious => 'Anxious';
+
+  @override
+  String get angry => 'Angry';
+
+  @override
+  String get save_mood => 'Save Mood';
+
+  @override
+  String get say_or_type_feeling => 'Say or type how you\'re feeling';
+
+  @override
+  String get please_select_mood => 'Please select a mood';
+
+  @override
+  String get mood_saved_successfully => 'Mood saved successfully!';
+
+  @override
+  String get error_saving_mood => 'Error saving mood: ';
+
+  @override
+  String get user_not_logged_in => 'User not logged in';
+
+  @override
+  String get mood_mirror => 'MoodMirror';
+
+  @override
+  String get welcome_mood_mirror => 'Welcome to MoodMirror';
+
+  @override
+  String get mood_mirror_description =>
+      'Login to track your mood, receive uplifting quotes, and enjoy music that matches how you feel.';
+
+  @override
+  String get login_to_continue => 'Login to Continue';
+
+  @override
+  String get please_enter_feeling => 'Please enter or speak how you feel';
+
+  @override
+  String get mood_detected => 'Mood detected';
+
+  @override
+  String get error_text => 'Error';
+
+  @override
+  String get todays_mood => 'Today\'s Mood';
+
+  @override
+  String get confidence => 'confidence';
+
+  @override
+  String get type_or_speak_hint => 'Type or speak how you feel...';
+
+  @override
+  String get stop => 'Stop';
+
+  @override
+  String get voice_input => 'Voice Input';
+
+  @override
+  String get analyzing => 'Analyzing...';
+
+  @override
+  String get analyze => 'Analyze';
+
+  @override
+  String get bubble_breather => 'Bubble Breather';
+
+  @override
+  String get bubble_breather_desc =>
+      'Close your eyes, take a slow breath in… imagine a bubble floating higher with every exhale. Let your tension drift away with it.';
+
+  @override
+  String get for_you => 'For You';
+
+  @override
+  String get inspirational_quote => 'Inspirational Quote';
+
+  @override
+  String get recommended_music => 'Recommended Music';
+
+  @override
+  String get help_center_title => 'Help Center';
+
+  @override
+  String get getting_started => 'Getting Started';
+
+  @override
+  String get getting_started_desc => 'Learn how to use Serenote features';
+
+  @override
+  String get faq => 'FAQ';
+
+  @override
+  String get faq_desc => 'Frequently asked questions';
+
+  @override
+  String get contact_support => 'Contact Support';
+
+  @override
+  String get contact_support_desc => 'Get in touch with our team';
+
+  @override
+  String get privacy_policy => 'Privacy Policy';
+
+  @override
+  String get privacy_policy_desc => 'Learn about our privacy practices';
+
+  @override
+  String get guide_step_1 => 'Create Your Account';
+
+  @override
+  String get guide_step_1_desc =>
+      'Sign up or log in to start using Serenote. Your data will be synced across all your devices.';
+
+  @override
+  String get guide_step_2 => 'Set Up Your Profile';
+
+  @override
+  String get guide_step_2_desc =>
+      'Add a display name and avatar to personalize your experience.';
+
+  @override
+  String get guide_step_3 => 'Explore Features';
+
+  @override
+  String get guide_step_3_desc =>
+      'Try out Todo, Journal, Timer, and Games to discover what works best for you.';
+
+  @override
+  String get guide_step_4 => 'Create Your First Todo';
+
+  @override
+  String get guide_step_4_desc =>
+      'Start by adding tasks to your todo list to stay organized.';
+
+  @override
+  String get guide_step_5 => 'Write Your First Journal';
+
+  @override
+  String get guide_step_5_desc =>
+      'Express your thoughts and reflections in your personal journal.';
+
+  @override
+  String get faq_question_1 => 'How do I reset my password?';
+
+  @override
+  String get faq_answer_1 =>
+      'Go to Login screen, click \"Forgot Password\" and follow the instructions sent to your email.';
+
+  @override
+  String get faq_question_2 => 'Is my data secure?';
+
+  @override
+  String get faq_answer_2 =>
+      'Yes, all your data is encrypted and stored securely. We use industry-standard security practices.';
+
+  @override
+  String get faq_question_3 => 'Can I use Serenote offline?';
+
+  @override
+  String get faq_answer_3 =>
+      'Yes, most features work offline. Your data will sync when you reconnect to the internet.';
+
+  @override
+  String get faq_question_4 => 'How do I delete my account?';
+
+  @override
+  String get faq_answer_4 =>
+      'Contact support from the Help Center to request account deletion.';
+
+  @override
+  String get faq_question_5 => 'Are there any subscription fees?';
+
+  @override
+  String get faq_answer_5 =>
+      'Serenote is currently free to use. We may introduce premium features in the future.';
+
+  @override
+  String get contact_get_in_touch => 'Get in Touch';
+
+  @override
+  String get contact_help_desc =>
+      'We\'re here to help you with any issues or questions.';
+
+  @override
+  String get contact_email_support => 'Email Support';
+
+  @override
+  String get contact_email => 'support@serenote.com';
+
+  @override
+  String get contact_live_chat => 'Live Chat';
+
+  @override
+  String get contact_chat_hours => 'Available 9AM-6PM Mon-Fri';
+
+  @override
+  String get contact_send_message => 'Send us a Message';
+
+  @override
+  String get contact_your_email => 'Your Email';
+
+  @override
+  String get contact_message => 'Message';
+
+  @override
+  String get contact_send_button => 'Send Message';
+
+  @override
+  String get contact_message_sent => 'Message sent to support team!';
+
+  @override
+  String get privacy_info_collected => 'Information We Collect';
+
+  @override
+  String get privacy_info_collected_desc =>
+      'We collect information you provide directly to us, such as when you create an account, use our features, or contact us for support.';
+
+  @override
+  String get privacy_info_usage => 'How We Use Your Information';
+
+  @override
+  String get privacy_info_usage_desc =>
+      'We use the information we collect to provide, maintain, and improve our services, to develop new ones, and to protect Serenote and our users.';
+
+  @override
+  String get privacy_info_sharing => 'Information Sharing';
+
+  @override
+  String get privacy_info_sharing_desc =>
+      'We do not share your personal information with companies, organizations, or individuals outside of Serenote except in the following cases: with your consent, for legal reasons, or with domain administrators.';
+
+  @override
+  String get privacy_data_security => 'Data Security';
+
+  @override
+  String get privacy_data_security_desc =>
+      'We work hard to protect our users from unauthorized access to or unauthorized alteration, disclosure, or destruction of information we hold.';
+
+  @override
+  String get privacy_your_rights => 'Your Rights';
+
+  @override
+  String get privacy_your_rights_desc =>
+      'You have the right to access, correct, or delete your personal information. You can also object to our processing of your personal information.';
+
+  @override
+  String get about_title => 'About Serenote';
+
+  @override
+  String get about_description =>
+      'SereNote A mindful companion. SereNote is designed to help users cultivate emotional awareness, track their moods and habits, and find calm through reflection and focus-enhancing mini-games. It blends journaling, micro-habit tracking, motivational quotes, and soft gamification — creating a space for gentle growth, balance, and insight.';
+
+  @override
+  String get sidebar_signup_login => 'Sign up or log in';
+
+  @override
+  String get sidebar_guest_mode => 'You are currently on guest mode';
+
+  @override
+  String get sidebar_login_button => 'Login';
+
+  @override
+  String get sidebar_signup_button => 'Sign Up';
+
+  @override
+  String get sidebar_logout => 'Logout';
+
+  @override
+  String get settings_title => 'Settings';
+
+  @override
+  String get settings_language => 'Language';
+
+  @override
+  String get settings_language_desc => 'Change app language';
+
+  @override
+  String get settings_about => 'About';
+
+  @override
+  String get settings_about_desc => 'Learn about Serenote';
+
+  @override
+  String get settings_help => 'Help Center';
+
+  @override
+  String get settings_help_desc => 'Get help and support';
+
+  @override
+  String get journal_delete_cancel => 'Cancel';
+
+  @override
+  String get journal_delete_delete => 'Delete';
+
+  @override
+  String get journal_delete_error => 'Error: Journal has no ID';
+
+  @override
+  String get journal_delete_success => 'Journal entry deleted';
+
+  @override
+  String get journal_error_loading => 'Error loading journals: ';
+
+  @override
+  String get journal_retry => 'Retry';
+
+  @override
+  String get journal_login_description =>
+      'You need to log in to create, view, or manage journal entries.';
+
+  @override
+  String get journal_start_journey => 'Start Your Journey';
+
+  @override
+  String get journal_start_description =>
+      'Capture your thoughts, feelings, and reflections.\nStart your first journal entry today.';
+
+  @override
+  String get journal_no_matching => 'No matching entries';
+
+  @override
+  String get journal_try_different => 'Try a different search term';
+
+  @override
+  String get journal_editor_new_title => 'New Journal Entry';
+
+  @override
+  String get journal_editor_edit_title => 'Edit Journal Entry';
+
+  @override
+  String get journal_editor_title_hint => 'Title';
+
+  @override
+  String get journal_editor_content_hint => 'Write your thoughts...';
+
+  @override
+  String get journal_editor_record_audio => 'Record Audio';
+
+  @override
+  String get journal_editor_stop_recording => 'Stop Recording';
+
+  @override
+  String get journal_editor_recording_started => 'Audio recording started';
+
+  @override
+  String get journal_editor_recording_stopped => 'Audio recording stopped';
+
+  @override
+  String get journal_editor_link_mood => 'Link to Mood';
+
+  @override
+  String get journal_editor_tags => 'Tags';
+
+  @override
+  String get journal_editor_add_tag => 'Add Tag';
+
+  @override
+  String get journal_editor_add_image => 'Add Image';
+
+  @override
+  String get journal_editor_image_added => 'Image added successfully!';
+
+  @override
+  String get journal_editor_invalid_image => 'Invalid image format';
+
+  @override
+  String get journal_editor_image_error => 'Error picking image: ';
+
+  @override
+  String get journal_editor_save_error => 'Error saving journal: ';
+
+  @override
+  String get journal_editor_validation_error =>
+      'Please fill in both title and content';
+
+  @override
+  String get journal_editor_created => 'Journal entry created!';
+
+  @override
+  String get journal_editor_updated => 'Journal entry updated!';
+
+  @override
+  String get journal_editor_add_tag_dialog => 'Add Tag';
+
+  @override
+  String get journal_editor_tag_hint => 'Enter tag name';
+
+  @override
+  String get journal_editor_cancel => 'Cancel';
+
+  @override
+  String get journal_editor_add => 'Add';
 }

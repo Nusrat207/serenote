@@ -233,7 +233,7 @@ abstract class AppLocalizations {
   /// No description provided for @journal_search_hint.
   ///
   /// In en, this message translates to:
-  /// **'Enter search term...'**
+  /// **'Search journals...'**
   String get journal_search_hint;
 
   /// No description provided for @journal_clear.
@@ -1003,6 +1003,972 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Please confirm your password'**
   String get confirm_password_required;
+
+  /// No description provided for @this_week.
+  ///
+  /// In en, this message translates to:
+  /// **'This Week'**
+  String get this_week;
+
+  /// No description provided for @monday_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Mon'**
+  String get monday_short;
+
+  /// No description provided for @tuesday_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Tue'**
+  String get tuesday_short;
+
+  /// No description provided for @wednesday_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Wed'**
+  String get wednesday_short;
+
+  /// No description provided for @thursday_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Thu'**
+  String get thursday_short;
+
+  /// No description provided for @friday_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Fri'**
+  String get friday_short;
+
+  /// No description provided for @saturday_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Sat'**
+  String get saturday_short;
+
+  /// No description provided for @sunday_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Sun'**
+  String get sunday_short;
+
+  /// No description provided for @january_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Jan'**
+  String get january_short;
+
+  /// No description provided for @february_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Feb'**
+  String get february_short;
+
+  /// No description provided for @march_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Mar'**
+  String get march_short;
+
+  /// No description provided for @april_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Apr'**
+  String get april_short;
+
+  /// No description provided for @may_short.
+  ///
+  /// In en, this message translates to:
+  /// **'May'**
+  String get may_short;
+
+  /// No description provided for @june_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Jun'**
+  String get june_short;
+
+  /// No description provided for @july_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Jul'**
+  String get july_short;
+
+  /// No description provided for @august_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Aug'**
+  String get august_short;
+
+  /// No description provided for @september_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Sep'**
+  String get september_short;
+
+  /// No description provided for @october_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Oct'**
+  String get october_short;
+
+  /// No description provided for @november_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Nov'**
+  String get november_short;
+
+  /// No description provided for @december_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Dec'**
+  String get december_short;
+
+  /// No description provided for @stat_current.
+  ///
+  /// In en, this message translates to:
+  /// **'Current'**
+  String get stat_current;
+
+  /// No description provided for @stat_longest.
+  ///
+  /// In en, this message translates to:
+  /// **'Longest'**
+  String get stat_longest;
+
+  /// No description provided for @stat_total.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get stat_total;
+
+  /// No description provided for @mood_anxious.
+  ///
+  /// In en, this message translates to:
+  /// **'ANXIOUS'**
+  String get mood_anxious;
+
+  /// No description provided for @mood_angry.
+  ///
+  /// In en, this message translates to:
+  /// **'ANGRY'**
+  String get mood_angry;
+
+  /// No description provided for @mood_sad.
+  ///
+  /// In en, this message translates to:
+  /// **'SAD'**
+  String get mood_sad;
+
+  /// No description provided for @mood_neutral.
+  ///
+  /// In en, this message translates to:
+  /// **'NEUTRAL'**
+  String get mood_neutral;
+
+  /// No description provided for @mood_joy.
+  ///
+  /// In en, this message translates to:
+  /// **'JOY'**
+  String get mood_joy;
+
+  /// No description provided for @quick_mood_title.
+  ///
+  /// In en, this message translates to:
+  /// **'How do you feel?'**
+  String get quick_mood_title;
+
+  /// No description provided for @quick_mood_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick check-in • Takes 10 seconds'**
+  String get quick_mood_subtitle;
+
+  /// No description provided for @good_night.
+  ///
+  /// In en, this message translates to:
+  /// **'Good Night'**
+  String get good_night;
+
+  /// No description provided for @how_are_you_feeling.
+  ///
+  /// In en, this message translates to:
+  /// **'How are you feeling?'**
+  String get how_are_you_feeling;
+
+  /// No description provided for @select_your_mood.
+  ///
+  /// In en, this message translates to:
+  /// **'Select your mood'**
+  String get select_your_mood;
+
+  /// No description provided for @happy.
+  ///
+  /// In en, this message translates to:
+  /// **'Happy'**
+  String get happy;
+
+  /// No description provided for @neutral.
+  ///
+  /// In en, this message translates to:
+  /// **'Neutral'**
+  String get neutral;
+
+  /// No description provided for @sad.
+  ///
+  /// In en, this message translates to:
+  /// **'Sad'**
+  String get sad;
+
+  /// No description provided for @anxious.
+  ///
+  /// In en, this message translates to:
+  /// **'Anxious'**
+  String get anxious;
+
+  /// No description provided for @angry.
+  ///
+  /// In en, this message translates to:
+  /// **'Angry'**
+  String get angry;
+
+  /// No description provided for @save_mood.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Mood'**
+  String get save_mood;
+
+  /// No description provided for @say_or_type_feeling.
+  ///
+  /// In en, this message translates to:
+  /// **'Say or type how you\'re feeling'**
+  String get say_or_type_feeling;
+
+  /// No description provided for @please_select_mood.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a mood'**
+  String get please_select_mood;
+
+  /// No description provided for @mood_saved_successfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Mood saved successfully!'**
+  String get mood_saved_successfully;
+
+  /// No description provided for @error_saving_mood.
+  ///
+  /// In en, this message translates to:
+  /// **'Error saving mood: '**
+  String get error_saving_mood;
+
+  /// No description provided for @user_not_logged_in.
+  ///
+  /// In en, this message translates to:
+  /// **'User not logged in'**
+  String get user_not_logged_in;
+
+  /// No description provided for @mood_mirror.
+  ///
+  /// In en, this message translates to:
+  /// **'MoodMirror'**
+  String get mood_mirror;
+
+  /// No description provided for @welcome_mood_mirror.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to MoodMirror'**
+  String get welcome_mood_mirror;
+
+  /// No description provided for @mood_mirror_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Login to track your mood, receive uplifting quotes, and enjoy music that matches how you feel.'**
+  String get mood_mirror_description;
+
+  /// No description provided for @login_to_continue.
+  ///
+  /// In en, this message translates to:
+  /// **'Login to Continue'**
+  String get login_to_continue;
+
+  /// No description provided for @please_enter_feeling.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter or speak how you feel'**
+  String get please_enter_feeling;
+
+  /// No description provided for @mood_detected.
+  ///
+  /// In en, this message translates to:
+  /// **'Mood detected'**
+  String get mood_detected;
+
+  /// No description provided for @error_text.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get error_text;
+
+  /// No description provided for @todays_mood.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s Mood'**
+  String get todays_mood;
+
+  /// No description provided for @confidence.
+  ///
+  /// In en, this message translates to:
+  /// **'confidence'**
+  String get confidence;
+
+  /// No description provided for @type_or_speak_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Type or speak how you feel...'**
+  String get type_or_speak_hint;
+
+  /// No description provided for @stop.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop'**
+  String get stop;
+
+  /// No description provided for @voice_input.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice Input'**
+  String get voice_input;
+
+  /// No description provided for @analyzing.
+  ///
+  /// In en, this message translates to:
+  /// **'Analyzing...'**
+  String get analyzing;
+
+  /// No description provided for @analyze.
+  ///
+  /// In en, this message translates to:
+  /// **'Analyze'**
+  String get analyze;
+
+  /// No description provided for @bubble_breather.
+  ///
+  /// In en, this message translates to:
+  /// **'Bubble Breather'**
+  String get bubble_breather;
+
+  /// No description provided for @bubble_breather_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Close your eyes, take a slow breath in… imagine a bubble floating higher with every exhale. Let your tension drift away with it.'**
+  String get bubble_breather_desc;
+
+  /// No description provided for @for_you.
+  ///
+  /// In en, this message translates to:
+  /// **'For You'**
+  String get for_you;
+
+  /// No description provided for @inspirational_quote.
+  ///
+  /// In en, this message translates to:
+  /// **'Inspirational Quote'**
+  String get inspirational_quote;
+
+  /// No description provided for @recommended_music.
+  ///
+  /// In en, this message translates to:
+  /// **'Recommended Music'**
+  String get recommended_music;
+
+  /// No description provided for @help_center_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Help Center'**
+  String get help_center_title;
+
+  /// No description provided for @getting_started.
+  ///
+  /// In en, this message translates to:
+  /// **'Getting Started'**
+  String get getting_started;
+
+  /// No description provided for @getting_started_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Learn how to use Serenote features'**
+  String get getting_started_desc;
+
+  /// No description provided for @faq.
+  ///
+  /// In en, this message translates to:
+  /// **'FAQ'**
+  String get faq;
+
+  /// No description provided for @faq_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Frequently asked questions'**
+  String get faq_desc;
+
+  /// No description provided for @contact_support.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Support'**
+  String get contact_support;
+
+  /// No description provided for @contact_support_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Get in touch with our team'**
+  String get contact_support_desc;
+
+  /// No description provided for @privacy_policy.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy'**
+  String get privacy_policy;
+
+  /// No description provided for @privacy_policy_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Learn about our privacy practices'**
+  String get privacy_policy_desc;
+
+  /// No description provided for @guide_step_1.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Your Account'**
+  String get guide_step_1;
+
+  /// No description provided for @guide_step_1_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign up or log in to start using Serenote. Your data will be synced across all your devices.'**
+  String get guide_step_1_desc;
+
+  /// No description provided for @guide_step_2.
+  ///
+  /// In en, this message translates to:
+  /// **'Set Up Your Profile'**
+  String get guide_step_2;
+
+  /// No description provided for @guide_step_2_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a display name and avatar to personalize your experience.'**
+  String get guide_step_2_desc;
+
+  /// No description provided for @guide_step_3.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore Features'**
+  String get guide_step_3;
+
+  /// No description provided for @guide_step_3_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Try out Todo, Journal, Timer, and Games to discover what works best for you.'**
+  String get guide_step_3_desc;
+
+  /// No description provided for @guide_step_4.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Your First Todo'**
+  String get guide_step_4;
+
+  /// No description provided for @guide_step_4_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Start by adding tasks to your todo list to stay organized.'**
+  String get guide_step_4_desc;
+
+  /// No description provided for @guide_step_5.
+  ///
+  /// In en, this message translates to:
+  /// **'Write Your First Journal'**
+  String get guide_step_5;
+
+  /// No description provided for @guide_step_5_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Express your thoughts and reflections in your personal journal.'**
+  String get guide_step_5_desc;
+
+  /// No description provided for @faq_question_1.
+  ///
+  /// In en, this message translates to:
+  /// **'How do I reset my password?'**
+  String get faq_question_1;
+
+  /// No description provided for @faq_answer_1.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to Login screen, click \"Forgot Password\" and follow the instructions sent to your email.'**
+  String get faq_answer_1;
+
+  /// No description provided for @faq_question_2.
+  ///
+  /// In en, this message translates to:
+  /// **'Is my data secure?'**
+  String get faq_question_2;
+
+  /// No description provided for @faq_answer_2.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes, all your data is encrypted and stored securely. We use industry-standard security practices.'**
+  String get faq_answer_2;
+
+  /// No description provided for @faq_question_3.
+  ///
+  /// In en, this message translates to:
+  /// **'Can I use Serenote offline?'**
+  String get faq_question_3;
+
+  /// No description provided for @faq_answer_3.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes, most features work offline. Your data will sync when you reconnect to the internet.'**
+  String get faq_answer_3;
+
+  /// No description provided for @faq_question_4.
+  ///
+  /// In en, this message translates to:
+  /// **'How do I delete my account?'**
+  String get faq_question_4;
+
+  /// No description provided for @faq_answer_4.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact support from the Help Center to request account deletion.'**
+  String get faq_answer_4;
+
+  /// No description provided for @faq_question_5.
+  ///
+  /// In en, this message translates to:
+  /// **'Are there any subscription fees?'**
+  String get faq_question_5;
+
+  /// No description provided for @faq_answer_5.
+  ///
+  /// In en, this message translates to:
+  /// **'Serenote is currently free to use. We may introduce premium features in the future.'**
+  String get faq_answer_5;
+
+  /// No description provided for @contact_get_in_touch.
+  ///
+  /// In en, this message translates to:
+  /// **'Get in Touch'**
+  String get contact_get_in_touch;
+
+  /// No description provided for @contact_help_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'We\'re here to help you with any issues or questions.'**
+  String get contact_help_desc;
+
+  /// No description provided for @contact_email_support.
+  ///
+  /// In en, this message translates to:
+  /// **'Email Support'**
+  String get contact_email_support;
+
+  /// No description provided for @contact_email.
+  ///
+  /// In en, this message translates to:
+  /// **'support@serenote.com'**
+  String get contact_email;
+
+  /// No description provided for @contact_live_chat.
+  ///
+  /// In en, this message translates to:
+  /// **'Live Chat'**
+  String get contact_live_chat;
+
+  /// No description provided for @contact_chat_hours.
+  ///
+  /// In en, this message translates to:
+  /// **'Available 9AM-6PM Mon-Fri'**
+  String get contact_chat_hours;
+
+  /// No description provided for @contact_send_message.
+  ///
+  /// In en, this message translates to:
+  /// **'Send us a Message'**
+  String get contact_send_message;
+
+  /// No description provided for @contact_your_email.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Email'**
+  String get contact_your_email;
+
+  /// No description provided for @contact_message.
+  ///
+  /// In en, this message translates to:
+  /// **'Message'**
+  String get contact_message;
+
+  /// No description provided for @contact_send_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Send Message'**
+  String get contact_send_button;
+
+  /// No description provided for @contact_message_sent.
+  ///
+  /// In en, this message translates to:
+  /// **'Message sent to support team!'**
+  String get contact_message_sent;
+
+  /// No description provided for @privacy_info_collected.
+  ///
+  /// In en, this message translates to:
+  /// **'Information We Collect'**
+  String get privacy_info_collected;
+
+  /// No description provided for @privacy_info_collected_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'We collect information you provide directly to us, such as when you create an account, use our features, or contact us for support.'**
+  String get privacy_info_collected_desc;
+
+  /// No description provided for @privacy_info_usage.
+  ///
+  /// In en, this message translates to:
+  /// **'How We Use Your Information'**
+  String get privacy_info_usage;
+
+  /// No description provided for @privacy_info_usage_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'We use the information we collect to provide, maintain, and improve our services, to develop new ones, and to protect Serenote and our users.'**
+  String get privacy_info_usage_desc;
+
+  /// No description provided for @privacy_info_sharing.
+  ///
+  /// In en, this message translates to:
+  /// **'Information Sharing'**
+  String get privacy_info_sharing;
+
+  /// No description provided for @privacy_info_sharing_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'We do not share your personal information with companies, organizations, or individuals outside of Serenote except in the following cases: with your consent, for legal reasons, or with domain administrators.'**
+  String get privacy_info_sharing_desc;
+
+  /// No description provided for @privacy_data_security.
+  ///
+  /// In en, this message translates to:
+  /// **'Data Security'**
+  String get privacy_data_security;
+
+  /// No description provided for @privacy_data_security_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'We work hard to protect our users from unauthorized access to or unauthorized alteration, disclosure, or destruction of information we hold.'**
+  String get privacy_data_security_desc;
+
+  /// No description provided for @privacy_your_rights.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Rights'**
+  String get privacy_your_rights;
+
+  /// No description provided for @privacy_your_rights_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'You have the right to access, correct, or delete your personal information. You can also object to our processing of your personal information.'**
+  String get privacy_your_rights_desc;
+
+  /// No description provided for @about_title.
+  ///
+  /// In en, this message translates to:
+  /// **'About Serenote'**
+  String get about_title;
+
+  /// No description provided for @about_description.
+  ///
+  /// In en, this message translates to:
+  /// **'SereNote A mindful companion. SereNote is designed to help users cultivate emotional awareness, track their moods and habits, and find calm through reflection and focus-enhancing mini-games. It blends journaling, micro-habit tracking, motivational quotes, and soft gamification — creating a space for gentle growth, balance, and insight.'**
+  String get about_description;
+
+  /// No description provided for @sidebar_signup_login.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign up or log in'**
+  String get sidebar_signup_login;
+
+  /// No description provided for @sidebar_guest_mode.
+  ///
+  /// In en, this message translates to:
+  /// **'You are currently on guest mode'**
+  String get sidebar_guest_mode;
+
+  /// No description provided for @sidebar_login_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Login'**
+  String get sidebar_login_button;
+
+  /// No description provided for @sidebar_signup_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign Up'**
+  String get sidebar_signup_button;
+
+  /// No description provided for @sidebar_logout.
+  ///
+  /// In en, this message translates to:
+  /// **'Logout'**
+  String get sidebar_logout;
+
+  /// No description provided for @settings_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settings_title;
+
+  /// No description provided for @settings_language.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get settings_language;
+
+  /// No description provided for @settings_language_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Change app language'**
+  String get settings_language_desc;
+
+  /// No description provided for @settings_about.
+  ///
+  /// In en, this message translates to:
+  /// **'About'**
+  String get settings_about;
+
+  /// No description provided for @settings_about_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Learn about Serenote'**
+  String get settings_about_desc;
+
+  /// No description provided for @settings_help.
+  ///
+  /// In en, this message translates to:
+  /// **'Help Center'**
+  String get settings_help;
+
+  /// No description provided for @settings_help_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Get help and support'**
+  String get settings_help_desc;
+
+  /// No description provided for @journal_delete_cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get journal_delete_cancel;
+
+  /// No description provided for @journal_delete_delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get journal_delete_delete;
+
+  /// No description provided for @journal_delete_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Error: Journal has no ID'**
+  String get journal_delete_error;
+
+  /// No description provided for @journal_delete_success.
+  ///
+  /// In en, this message translates to:
+  /// **'Journal entry deleted'**
+  String get journal_delete_success;
+
+  /// No description provided for @journal_error_loading.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading journals: '**
+  String get journal_error_loading;
+
+  /// No description provided for @journal_retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get journal_retry;
+
+  /// No description provided for @journal_login_description.
+  ///
+  /// In en, this message translates to:
+  /// **'You need to log in to create, view, or manage journal entries.'**
+  String get journal_login_description;
+
+  /// No description provided for @journal_start_journey.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Your Journey'**
+  String get journal_start_journey;
+
+  /// No description provided for @journal_start_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Capture your thoughts, feelings, and reflections.\nStart your first journal entry today.'**
+  String get journal_start_description;
+
+  /// No description provided for @journal_no_matching.
+  ///
+  /// In en, this message translates to:
+  /// **'No matching entries'**
+  String get journal_no_matching;
+
+  /// No description provided for @journal_try_different.
+  ///
+  /// In en, this message translates to:
+  /// **'Try a different search term'**
+  String get journal_try_different;
+
+  /// No description provided for @journal_editor_new_title.
+  ///
+  /// In en, this message translates to:
+  /// **'New Journal Entry'**
+  String get journal_editor_new_title;
+
+  /// No description provided for @journal_editor_edit_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Journal Entry'**
+  String get journal_editor_edit_title;
+
+  /// No description provided for @journal_editor_title_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get journal_editor_title_hint;
+
+  /// No description provided for @journal_editor_content_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Write your thoughts...'**
+  String get journal_editor_content_hint;
+
+  /// No description provided for @journal_editor_record_audio.
+  ///
+  /// In en, this message translates to:
+  /// **'Record Audio'**
+  String get journal_editor_record_audio;
+
+  /// No description provided for @journal_editor_stop_recording.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop Recording'**
+  String get journal_editor_stop_recording;
+
+  /// No description provided for @journal_editor_recording_started.
+  ///
+  /// In en, this message translates to:
+  /// **'Audio recording started'**
+  String get journal_editor_recording_started;
+
+  /// No description provided for @journal_editor_recording_stopped.
+  ///
+  /// In en, this message translates to:
+  /// **'Audio recording stopped'**
+  String get journal_editor_recording_stopped;
+
+  /// No description provided for @journal_editor_link_mood.
+  ///
+  /// In en, this message translates to:
+  /// **'Link to Mood'**
+  String get journal_editor_link_mood;
+
+  /// No description provided for @journal_editor_tags.
+  ///
+  /// In en, this message translates to:
+  /// **'Tags'**
+  String get journal_editor_tags;
+
+  /// No description provided for @journal_editor_add_tag.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Tag'**
+  String get journal_editor_add_tag;
+
+  /// No description provided for @journal_editor_add_image.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Image'**
+  String get journal_editor_add_image;
+
+  /// No description provided for @journal_editor_image_added.
+  ///
+  /// In en, this message translates to:
+  /// **'Image added successfully!'**
+  String get journal_editor_image_added;
+
+  /// No description provided for @journal_editor_invalid_image.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid image format'**
+  String get journal_editor_invalid_image;
+
+  /// No description provided for @journal_editor_image_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Error picking image: '**
+  String get journal_editor_image_error;
+
+  /// No description provided for @journal_editor_save_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Error saving journal: '**
+  String get journal_editor_save_error;
+
+  /// No description provided for @journal_editor_validation_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Please fill in both title and content'**
+  String get journal_editor_validation_error;
+
+  /// No description provided for @journal_editor_created.
+  ///
+  /// In en, this message translates to:
+  /// **'Journal entry created!'**
+  String get journal_editor_created;
+
+  /// No description provided for @journal_editor_updated.
+  ///
+  /// In en, this message translates to:
+  /// **'Journal entry updated!'**
+  String get journal_editor_updated;
+
+  /// No description provided for @journal_editor_add_tag_dialog.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Tag'**
+  String get journal_editor_add_tag_dialog;
+
+  /// No description provided for @journal_editor_tag_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter tag name'**
+  String get journal_editor_tag_hint;
+
+  /// No description provided for @journal_editor_cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get journal_editor_cancel;
+
+  /// No description provided for @journal_editor_add.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get journal_editor_add;
 }
 
 class _AppLocalizationsDelegate
