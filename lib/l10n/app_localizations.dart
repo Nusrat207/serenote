@@ -1003,6 +1003,384 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Please confirm your password'**
   String get confirm_password_required;
+
+  /// No description provided for @this_week.
+  ///
+  /// In en, this message translates to:
+  /// **'This Week'**
+  String get this_week;
+
+  /// No description provided for @monday_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Mon'**
+  String get monday_short;
+
+  /// No description provided for @tuesday_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Tue'**
+  String get tuesday_short;
+
+  /// No description provided for @wednesday_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Wed'**
+  String get wednesday_short;
+
+  /// No description provided for @thursday_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Thu'**
+  String get thursday_short;
+
+  /// No description provided for @friday_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Fri'**
+  String get friday_short;
+
+  /// No description provided for @saturday_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Sat'**
+  String get saturday_short;
+
+  /// No description provided for @sunday_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Sun'**
+  String get sunday_short;
+
+  /// No description provided for @january_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Jan'**
+  String get january_short;
+
+  /// No description provided for @february_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Feb'**
+  String get february_short;
+
+  /// No description provided for @march_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Mar'**
+  String get march_short;
+
+  /// No description provided for @april_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Apr'**
+  String get april_short;
+
+  /// No description provided for @may_short.
+  ///
+  /// In en, this message translates to:
+  /// **'May'**
+  String get may_short;
+
+  /// No description provided for @june_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Jun'**
+  String get june_short;
+
+  /// No description provided for @july_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Jul'**
+  String get july_short;
+
+  /// No description provided for @august_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Aug'**
+  String get august_short;
+
+  /// No description provided for @september_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Sep'**
+  String get september_short;
+
+  /// No description provided for @october_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Oct'**
+  String get october_short;
+
+  /// No description provided for @november_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Nov'**
+  String get november_short;
+
+  /// No description provided for @december_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Dec'**
+  String get december_short;
+
+  /// No description provided for @stat_current.
+  ///
+  /// In en, this message translates to:
+  /// **'Current'**
+  String get stat_current;
+
+  /// No description provided for @stat_longest.
+  ///
+  /// In en, this message translates to:
+  /// **'Longest'**
+  String get stat_longest;
+
+  /// No description provided for @stat_total.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get stat_total;
+
+  /// No description provided for @mood_anxious.
+  ///
+  /// In en, this message translates to:
+  /// **'ANXIOUS'**
+  String get mood_anxious;
+
+  /// No description provided for @mood_angry.
+  ///
+  /// In en, this message translates to:
+  /// **'ANGRY'**
+  String get mood_angry;
+
+  /// No description provided for @mood_sad.
+  ///
+  /// In en, this message translates to:
+  /// **'SAD'**
+  String get mood_sad;
+
+  /// No description provided for @mood_neutral.
+  ///
+  /// In en, this message translates to:
+  /// **'NEUTRAL'**
+  String get mood_neutral;
+
+  /// No description provided for @mood_joy.
+  ///
+  /// In en, this message translates to:
+  /// **'JOY'**
+  String get mood_joy;
+
+  /// No description provided for @quick_mood_title.
+  ///
+  /// In en, this message translates to:
+  /// **'How do you feel?'**
+  String get quick_mood_title;
+
+  /// No description provided for @quick_mood_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick check-in • Takes 10 seconds'**
+  String get quick_mood_subtitle;
+
+  /// No description provided for @good_night.
+  ///
+  /// In en, this message translates to:
+  /// **'Good Night'**
+  String get good_night;
+
+  /// No description provided for @how_are_you_feeling.
+  ///
+  /// In en, this message translates to:
+  /// **'How are you feeling?'**
+  String get how_are_you_feeling;
+
+  /// No description provided for @select_your_mood.
+  ///
+  /// In en, this message translates to:
+  /// **'Select your mood'**
+  String get select_your_mood;
+
+  /// No description provided for @happy.
+  ///
+  /// In en, this message translates to:
+  /// **'Happy'**
+  String get happy;
+
+  /// No description provided for @neutral.
+  ///
+  /// In en, this message translates to:
+  /// **'Neutral'**
+  String get neutral;
+
+  /// No description provided for @sad.
+  ///
+  /// In en, this message translates to:
+  /// **'Sad'**
+  String get sad;
+
+  /// No description provided for @anxious.
+  ///
+  /// In en, this message translates to:
+  /// **'Anxious'**
+  String get anxious;
+
+  /// No description provided for @angry.
+  ///
+  /// In en, this message translates to:
+  /// **'Angry'**
+  String get angry;
+
+  /// No description provided for @save_mood.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Mood'**
+  String get save_mood;
+
+  /// No description provided for @say_or_type_feeling.
+  ///
+  /// In en, this message translates to:
+  /// **'Say or type how you\'re feeling'**
+  String get say_or_type_feeling;
+
+  /// No description provided for @please_select_mood.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a mood'**
+  String get please_select_mood;
+
+  /// No description provided for @mood_saved_successfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Mood saved successfully!'**
+  String get mood_saved_successfully;
+
+  /// No description provided for @error_saving_mood.
+  ///
+  /// In en, this message translates to:
+  /// **'Error saving mood: '**
+  String get error_saving_mood;
+
+  /// No description provided for @user_not_logged_in.
+  ///
+  /// In en, this message translates to:
+  /// **'User not logged in'**
+  String get user_not_logged_in;
+
+  /// No description provided for @mood_mirror.
+  ///
+  /// In en, this message translates to:
+  /// **'MoodMirror'**
+  String get mood_mirror;
+
+  /// No description provided for @welcome_mood_mirror.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to MoodMirror'**
+  String get welcome_mood_mirror;
+
+  /// No description provided for @mood_mirror_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Login to track your mood, receive uplifting quotes, and enjoy music that matches how you feel.'**
+  String get mood_mirror_description;
+
+  /// No description provided for @login_to_continue.
+  ///
+  /// In en, this message translates to:
+  /// **'Login to Continue'**
+  String get login_to_continue;
+
+  /// No description provided for @please_enter_feeling.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter or speak how you feel'**
+  String get please_enter_feeling;
+
+  /// No description provided for @mood_detected.
+  ///
+  /// In en, this message translates to:
+  /// **'Mood detected'**
+  String get mood_detected;
+
+  /// No description provided for @error_text.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get error_text;
+
+  /// No description provided for @todays_mood.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s Mood'**
+  String get todays_mood;
+
+  /// No description provided for @confidence.
+  ///
+  /// In en, this message translates to:
+  /// **'confidence'**
+  String get confidence;
+
+  /// No description provided for @type_or_speak_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Type or speak how you feel...'**
+  String get type_or_speak_hint;
+
+  /// No description provided for @stop.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop'**
+  String get stop;
+
+  /// No description provided for @voice_input.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice Input'**
+  String get voice_input;
+
+  /// No description provided for @analyzing.
+  ///
+  /// In en, this message translates to:
+  /// **'Analyzing...'**
+  String get analyzing;
+
+  /// No description provided for @analyze.
+  ///
+  /// In en, this message translates to:
+  /// **'Analyze'**
+  String get analyze;
+
+  /// No description provided for @bubble_breather.
+  ///
+  /// In en, this message translates to:
+  /// **'Bubble Breather'**
+  String get bubble_breather;
+
+  /// No description provided for @bubble_breather_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Close your eyes, take a slow breath in… imagine a bubble floating higher with every exhale. Let your tension drift away with it.'**
+  String get bubble_breather_desc;
+
+  /// No description provided for @for_you.
+  ///
+  /// In en, this message translates to:
+  /// **'For You'**
+  String get for_you;
+
+  /// No description provided for @inspirational_quote.
+  ///
+  /// In en, this message translates to:
+  /// **'Inspirational Quote'**
+  String get inspirational_quote;
+
+  /// No description provided for @recommended_music.
+  ///
+  /// In en, this message translates to:
+  /// **'Recommended Music'**
+  String get recommended_music;
 }
 
 class _AppLocalizationsDelegate

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:serenote/l10n/app_localizations.dart';
 import '../../../mood/presentation/screens/quick_mood_entry_screen.dart';
 
 class QuickMoodEntryCard extends StatefulWidget {
@@ -21,9 +22,10 @@ class _QuickMoodEntryCardState extends State<QuickMoodEntryCard>
       vsync: this,
       duration: const Duration(milliseconds: 150),
     );
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+    _scaleAnimation = Tween<double>(
+      begin: 1.0,
+      end: 0.95,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override
@@ -78,19 +80,21 @@ class _QuickMoodEntryCardState extends State<QuickMoodEntryCard>
                       const QuickMoodEntryScreen(),
                   transitionsBuilder:
                       (context, animation, secondaryAnimation, child) {
-                    const begin = Offset(1.0, 0.0);
-                    const end = Offset.zero;
-                    const curve = Curves.easeInOut;
+                        const begin = Offset(1.0, 0.0);
+                        const end = Offset.zero;
+                        const curve = Curves.easeInOut;
 
-                    var tween = Tween(begin: begin, end: end)
-                        .chain(CurveTween(curve: curve));
-                    var offsetAnimation = animation.drive(tween);
+                        var tween = Tween(
+                          begin: begin,
+                          end: end,
+                        ).chain(CurveTween(curve: curve));
+                        var offsetAnimation = animation.drive(tween);
 
-                    return SlideTransition(
-                      position: offsetAnimation,
-                      child: child,
-                    );
-                  },
+                        return SlideTransition(
+                          position: offsetAnimation,
+                          child: child,
+                        );
+                      },
                   transitionDuration: const Duration(milliseconds: 300),
                 ),
               );
@@ -106,13 +110,11 @@ class _QuickMoodEntryCardState extends State<QuickMoodEntryCard>
                       children: [
                         Row(
                           children: [
-                            
                             const SizedBox(width: 8),
                             Text(
-                              'How do you feel?',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleMedium
+                              AppLocalizations.of(context)?.quick_mood_title ??
+                                  'How do you feel?',
+                              style: Theme.of(context).textTheme.titleMedium
                                   ?.copyWith(
                                     fontWeight: FontWeight.bold,
                                     color: Colors.black87,
@@ -124,12 +126,13 @@ class _QuickMoodEntryCardState extends State<QuickMoodEntryCard>
                         Padding(
                           padding: const EdgeInsets.only(left: 8),
                           child: Text(
-                            'Quick check-in • Takes 10 seconds',
-                            style:
-                                Theme.of(context).textTheme.bodySmall?.copyWith(
-                                      color: Colors.grey.shade600,
-                                      fontSize: 12,
-                                    ),
+                            AppLocalizations.of(context)?.quick_mood_subtitle ??
+                                'Quick check-in • Takes 10 seconds',
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(
+                                  color: Colors.grey.shade600,
+                                  fontSize: 12,
+                                ),
                           ),
                         ),
                       ],
@@ -151,7 +154,12 @@ class _QuickMoodEntryCardState extends State<QuickMoodEntryCard>
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: const Color.fromARGB(255, 224, 255, 240).withOpacity(0.3),
+                          color: const Color.fromARGB(
+                            255,
+                            224,
+                            255,
+                            240,
+                          ).withOpacity(0.3),
                           blurRadius: 12,
                           offset: const Offset(0, 4),
                         ),

@@ -477,4 +477,195 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get confirm_password_required => 'Please confirm your password';
+
+  @override
+  String get this_week => 'This Week';
+
+  @override
+  String get monday_short => 'Mon';
+
+  @override
+  String get tuesday_short => 'Tue';
+
+  @override
+  String get wednesday_short => 'Wed';
+
+  @override
+  String get thursday_short => 'Thu';
+
+  @override
+  String get friday_short => 'Fri';
+
+  @override
+  String get saturday_short => 'Sat';
+
+  @override
+  String get sunday_short => 'Sun';
+
+  @override
+  String get january_short => 'Jan';
+
+  @override
+  String get february_short => 'Feb';
+
+  @override
+  String get march_short => 'Mar';
+
+  @override
+  String get april_short => 'Apr';
+
+  @override
+  String get may_short => 'May';
+
+  @override
+  String get june_short => 'Jun';
+
+  @override
+  String get july_short => 'Jul';
+
+  @override
+  String get august_short => 'Aug';
+
+  @override
+  String get september_short => 'Sep';
+
+  @override
+  String get october_short => 'Oct';
+
+  @override
+  String get november_short => 'Nov';
+
+  @override
+  String get december_short => 'Dec';
+
+  @override
+  String get stat_current => 'Current';
+
+  @override
+  String get stat_longest => 'Longest';
+
+  @override
+  String get stat_total => 'Total';
+
+  @override
+  String get mood_anxious => 'ANXIOUS';
+
+  @override
+  String get mood_angry => 'ANGRY';
+
+  @override
+  String get mood_sad => 'SAD';
+
+  @override
+  String get mood_neutral => 'NEUTRAL';
+
+  @override
+  String get mood_joy => 'JOY';
+
+  @override
+  String get quick_mood_title => 'How do you feel?';
+
+  @override
+  String get quick_mood_subtitle => 'Quick check-in • Takes 10 seconds';
+
+  @override
+  String get good_night => 'Good Night';
+
+  @override
+  String get how_are_you_feeling => 'How are you feeling?';
+
+  @override
+  String get select_your_mood => 'Select your mood';
+
+  @override
+  String get happy => 'Happy';
+
+  @override
+  String get neutral => 'Neutral';
+
+  @override
+  String get sad => 'Sad';
+
+  @override
+  String get anxious => 'Anxious';
+
+  @override
+  String get angry => 'Angry';
+
+  @override
+  String get save_mood => 'Save Mood';
+
+  @override
+  String get say_or_type_feeling => 'Say or type how you\'re feeling';
+
+  @override
+  String get please_select_mood => 'Please select a mood';
+
+  @override
+  String get mood_saved_successfully => 'Mood saved successfully!';
+
+  @override
+  String get error_saving_mood => 'Error saving mood: ';
+
+  @override
+  String get user_not_logged_in => 'User not logged in';
+
+  @override
+  String get mood_mirror => 'MoodMirror';
+
+  @override
+  String get welcome_mood_mirror => 'Welcome to MoodMirror';
+
+  @override
+  String get mood_mirror_description =>
+      'Login to track your mood, receive uplifting quotes, and enjoy music that matches how you feel.';
+
+  @override
+  String get login_to_continue => 'Login to Continue';
+
+  @override
+  String get please_enter_feeling => 'Please enter or speak how you feel';
+
+  @override
+  String get mood_detected => 'Mood detected';
+
+  @override
+  String get error_text => 'Error';
+
+  @override
+  String get todays_mood => 'Today\'s Mood';
+
+  @override
+  String get confidence => 'confidence';
+
+  @override
+  String get type_or_speak_hint => 'Type or speak how you feel...';
+
+  @override
+  String get stop => 'Stop';
+
+  @override
+  String get voice_input => 'Voice Input';
+
+  @override
+  String get analyzing => 'Analyzing...';
+
+  @override
+  String get analyze => 'Analyze';
+
+  @override
+  String get bubble_breather => 'Bubble Breather';
+
+  @override
+  String get bubble_breather_desc =>
+      'Close your eyes, take a slow breath in… imagine a bubble floating higher with every exhale. Let your tension drift away with it.';
+
+  @override
+  String get for_you => 'For You';
+
+  @override
+  String get inspirational_quote => 'Inspirational Quote';
+
+  @override
+  String get recommended_music => 'Recommended Music';
 }
