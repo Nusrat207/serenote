@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:serenote/features/settings/presentation/screens/language_screen.dart';
 import 'package:serenote/features/settings/presentation/screens/about_screen.dart';
 import 'package:serenote/features/settings/presentation/screens/help_center_screen.dart';
+import 'package:serenote/l10n/app_localizations.dart'; // Add this import
 
 class SettingsPanel extends StatelessWidget {
   final VoidCallback onClose;
@@ -10,6 +11,8 @@ class SettingsPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context); // Add this line
+
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -44,9 +47,9 @@ class SettingsPanel extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
             child: Row(
               children: [
-                const Text(
-                  'Settings',
-                  style: TextStyle(
+                Text(
+                  l10n.settings_title, // Updated
+                  style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                     color: Colors.black87,
@@ -65,9 +68,10 @@ class SettingsPanel extends StatelessWidget {
           
           // Settings Options
           _buildSettingsOption(
+            context, // Add context parameter
             icon: Icons.language,
-            title: 'Language',
-            subtitle: 'Change app language',
+            title: l10n.settings_language, // Updated
+            subtitle: l10n.settings_language_desc, // Updated
             onTap: () {
               onClose();
               Navigator.push(
@@ -78,9 +82,10 @@ class SettingsPanel extends StatelessWidget {
           ),
           
           _buildSettingsOption(
+            context, // Add context parameter
             icon: Icons.info_outline,
-            title: 'About',
-            subtitle: 'Learn about Serenote',
+            title: l10n.settings_about, // Updated
+            subtitle: l10n.settings_about_desc, // Updated
             onTap: () {
               onClose();
               Navigator.push(
@@ -91,9 +96,10 @@ class SettingsPanel extends StatelessWidget {
           ),
           
           _buildSettingsOption(
+            context, // Add context parameter
             icon: Icons.help_outline,
-            title: 'Help Center',
-            subtitle: 'Get help and support',
+            title: l10n.settings_help, // Updated
+            subtitle: l10n.settings_help_desc, // Updated
             onTap: () {
               onClose();
               Navigator.push(
@@ -109,7 +115,9 @@ class SettingsPanel extends StatelessWidget {
     );
   }
 
-  Widget _buildSettingsOption({
+  Widget _buildSettingsOption(
+    BuildContext context, // Add context parameter
+    {
     required IconData icon,
     required String title,
     required String subtitle,

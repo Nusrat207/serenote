@@ -14,9 +14,11 @@ class LanguageScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFF5EFFF),
       appBar: AppBar(
-        title: Text(loc?.languageSettings ?? 'Language Settings'),
+        title: Text(loc?.languageSettings ?? 'Language Settings',
+        style: const TextStyle(
+      color: Color.fromARGB(255, 255, 255, 255), ),),
         backgroundColor: const Color.fromARGB(255, 71, 134, 145),
-        foregroundColor: Colors.white,
+        foregroundColor: const Color.fromARGB(255, 255, 255, 255),
       ),
       body: Container(
         decoration: const BoxDecoration(

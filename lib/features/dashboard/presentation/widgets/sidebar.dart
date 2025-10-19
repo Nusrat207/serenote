@@ -16,6 +16,7 @@ import 'package:serenote/features/settings/presentation/widgets/settings_panel.d
 import 'package:serenote/features/settings/presentation/screens/language_screen.dart';
 import 'package:serenote/features/settings/presentation/screens/about_screen.dart';
 import 'package:serenote/features/settings/presentation/screens/help_center_screen.dart';
+import 'package:serenote/l10n/app_localizations.dart';
 
 class Sidebar extends ConsumerWidget {
   const Sidebar({super.key});
@@ -39,6 +40,7 @@ class Sidebar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final currentUser = AuthService().currentUser;
     final isLoggedIn = currentUser != null;
+    final l10n = AppLocalizations.of(context);
 
     // Watch the profile provider to get real-time updates
     final profile = isLoggedIn ? ref.watch(profileProvider) : null;
@@ -57,7 +59,7 @@ class Sidebar extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Login Card Section (Shows when not logged in)
-              if (!isLoggedIn) _buildLoginCard(context),
+              if (!isLoggedIn) _buildLoginCard(context, l10n),
 
               // Enhanced User Info Section (Shows when logged in)
               if (isLoggedIn)
@@ -67,7 +69,7 @@ class Sidebar extends ConsumerWidget {
               _buildFeaturesSectionWithImages(context),
 
               // Common Tools Section with circle buttons
-              _buildCommonToolsSection(context, isLoggedIn),
+              _buildCommonToolsSection(context, isLoggedIn, l10n),
 
               const Spacer(),
             ],
@@ -265,25 +267,25 @@ class Sidebar extends ConsumerWidget {
     );
   }
 
-  Widget _buildLoginCard(BuildContext context) {
+  Widget _buildLoginCard(BuildContext context, AppLocalizations l10n) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Sign up or log in',
-            style: TextStyle(
+          Text(
+            l10n.sidebar_signup_login,
+            style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
               color: Colors.black87,
             ),
           ),
           const SizedBox(height: 8),
-          const Text(
-            'You are currently on guest mode',
-            style: TextStyle(fontSize: 14, color: Colors.grey),
+          Text(
+            l10n.sidebar_guest_mode,
+            style: const TextStyle(fontSize: 14, color: Colors.grey),
           ),
           const SizedBox(height: 16),
           Row(
@@ -305,9 +307,9 @@ class Sidebar extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  child: const Text(
-                    'Login',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                  child: Text(
+                    l10n.sidebar_login_button,
+                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                   ),
                 ),
               ),
@@ -324,16 +326,16 @@ class Sidebar extends ConsumerWidget {
                   style: OutlinedButton.styleFrom(
                     foregroundColor: const Color.fromARGB(255, 71, 134, 145),
                     side: const BorderSide(
-                      color: const Color.fromARGB(255, 71, 134, 145),
+                      color: Color.fromARGB(255, 71, 134, 145),
                     ),
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  child: const Text(
-                    'Sign Up',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                  child: Text(
+                    l10n.sidebar_signup_button,
+                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                   ),
                 ),
               ),
@@ -344,7 +346,7 @@ class Sidebar extends ConsumerWidget {
     );
   }
 
-  Widget _buildCommonToolsSection(BuildContext context, bool isLoggedIn) {
+  Widget _buildCommonToolsSection(BuildContext context, bool isLoggedIn, AppLocalizations l10n) {
     return Padding(
       padding: const EdgeInsets.all(20),
       child: Column(
