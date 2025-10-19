@@ -7,8 +7,10 @@ import 'package:serenote/features/mood/presentation/providers/inspiration_provid
 import 'package:serenote/core/theme/mood_colors.dart';
 import 'package:serenote/features/mood/data/models/mood_entry.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:serenote/l10n/app_localizations.dart';
 import '../../../auth/presentation/screens/login_screen.dart';
 import '../../../games/bubble_breather/bubble_breather_screen.dart';
+
 final todaysMoodProvider = FutureProvider<MoodEntry?>(
   (ref) => ref.read(moodEntriesProvider.notifier).getTodaysMood(),
 );
@@ -63,10 +65,15 @@ class _MoodScreenState extends ConsumerState<MoodScreen> {
   }
 
   Future<void> _analyzeMood() async {
+    final loc = AppLocalizations.of(context);
     final text = _textController.text.trim();
     if (text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter or speak how you feel')),
+        SnackBar(
+          content: Text(
+            loc?.please_enter_feeling ?? 'Please enter or speak how you feel',
+          ),
+        ),
       );
       return;
     }
@@ -86,16 +93,19 @@ class _MoodScreenState extends ConsumerState<MoodScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            'Mood detected: ${result['entry'].detectedMood.toUpperCase()}',
+            '${loc?.mood_detected ?? "Mood detected"}: ${result['entry'].detectedMood.toUpperCase()}',
           ),
-          backgroundColor:
-              MoodColors.getColorForMood(result['entry'].detectedMood),
+          backgroundColor: MoodColors.getColorForMood(
+            result['entry'].detectedMood,
+          ),
         ),
       );
     } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Error: ${result['error']}')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('${loc?.error_text ?? "Error"}: ${result['error']}'),
+        ),
+      );
     }
     ref.refresh(todaysMoodProvider);
     await ref.read(moodEntriesProvider.notifier).refreshEntries();
@@ -121,6 +131,7 @@ class _MoodScreenState extends ConsumerState<MoodScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
     final recentMoods = ref.watch(moodEntriesProvider);
     final userId = Supabase.instance.client.auth.currentUser;
 
@@ -131,7 +142,7 @@ class _MoodScreenState extends ConsumerState<MoodScreen> {
     if (userId == null) {
       return Scaffold(
         appBar: AppBar(
-          title: const Text('MoodMirror'),
+          title: Text(loc?.mood_mirror ?? 'MoodMirror'),
           backgroundColor: Colors.transparent,
           elevation: 0,
           leading: IconButton(
@@ -152,9 +163,7 @@ class _MoodScreenState extends ConsumerState<MoodScreen> {
         ),
         body: Container(
           decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Colors.white70, Colors.white70],
-            ),
+            gradient: LinearGradient(colors: [Colors.white70, Colors.white70]),
           ),
           child: Center(
             child: Padding(
@@ -169,20 +178,21 @@ class _MoodScreenState extends ConsumerState<MoodScreen> {
                   ),
                   const SizedBox(height: 30),
                   Text(
-                    'Welcome to MoodMirror',
+                    loc?.welcome_mood_mirror ?? 'Welcome to MoodMirror',
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'Login to track your mood, receive uplifting quotes, and enjoy music that matches how you feel.',
+                    loc?.mood_mirror_description ??
+                        'Login to track your mood, receive uplifting quotes, and enjoy music that matches how you feel.',
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: const Color.fromARGB(179, 0, 0, 0),
-                          height: 1.4,
-                        ),
+                      color: const Color.fromARGB(179, 0, 0, 0),
+                      height: 1.4,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 40),
@@ -199,9 +209,12 @@ class _MoodScreenState extends ConsumerState<MoodScreen> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    child: const Text(
-                      'Login to Continue',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                    child: Text(
+                      loc?.login_to_continue ?? 'Login to Continue',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ],
@@ -227,7 +240,7 @@ class _MoodScreenState extends ConsumerState<MoodScreen> {
               child: Scaffold(
                 backgroundColor: Colors.transparent,
                 appBar: AppBar(
-                  title: const Text('MoodMirror'),
+                  title: Text(loc?.mood_mirror ?? 'MoodMirror'),
                   backgroundColor: Colors.transparent,
                   elevation: 0,
                   leading: IconButton(
@@ -256,7 +269,6 @@ class _MoodScreenState extends ConsumerState<MoodScreen> {
                           _buildTodaysMoodCard(todaysMood),
                         const SizedBox(height: 20),
                         _buildInputSection(),
-                        // 🔹 Bubble Breather if mood is angry or anxious
                         if (todaysMood != null &&
                             (todaysMood.detectedMood.toLowerCase() == 'angry' ||
                                 todaysMood.detectedMood.toLowerCase() ==
@@ -278,15 +290,20 @@ class _MoodScreenState extends ConsumerState<MoodScreen> {
               ),
             );
           },
-          loading: () => const Center(
-              child: CircularProgressIndicator(strokeWidth: 2)),
-          error: (err, _) => Center(child: Text('Error: $err')),
+          loading: () =>
+              const Center(child: CircularProgressIndicator(strokeWidth: 2)),
+          error: (err, _) => Center(
+            child: Text(
+              '${AppLocalizations.of(context)?.error_text ?? "Error"}: $err',
+            ),
+          ),
         );
       },
     );
   }
 
   Widget _buildTodaysMoodCard(MoodEntry mood) {
+    final loc = AppLocalizations.of(context);
     return Card(
       color: Colors.white.withOpacity(0.95),
       child: Padding(
@@ -294,29 +311,31 @@ class _MoodScreenState extends ConsumerState<MoodScreen> {
         child: Column(
           children: [
             Text(
-              'Today\'s Mood',
-              style:
-                  Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.grey.shade600),
+              loc?.todays_mood ?? "Today's Mood",
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(color: Colors.grey.shade600),
             ),
             const SizedBox(height: 8),
             Text(
               mood.detectedMood.toUpperCase(),
               style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: MoodColors.getColorForMood(mood.detectedMood),
-                  ),
+                fontWeight: FontWeight.bold,
+                color: MoodColors.getColorForMood(mood.detectedMood),
+              ),
             ),
             const SizedBox(height: 4),
             if (mood.confidence != null && mood.confidence! > 0)
-              Text('${(mood.confidence! * 100).toStringAsFixed(0)}% confidence'),
+              Text(
+                '${(mood.confidence! * 100).toStringAsFixed(0)}% ${loc?.confidence ?? "confidence"}',
+              ),
             const SizedBox(height: 12),
             if (mood.text.isNotEmpty)
               Text(
                 '"${mood.text}"',
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyMedium
-                    ?.copyWith(fontStyle: FontStyle.italic),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyMedium?.copyWith(fontStyle: FontStyle.italic),
                 textAlign: TextAlign.center,
               ),
           ],
@@ -326,20 +345,24 @@ class _MoodScreenState extends ConsumerState<MoodScreen> {
   }
 
   Widget _buildInputSection() {
+    final loc = AppLocalizations.of(context);
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text('How are you feeling?',
-                style: Theme.of(context).textTheme.titleLarge),
+            Text(
+              loc?.how_are_you_feeling ?? 'How are you feeling?',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
             const SizedBox(height: 16),
             TextField(
               controller: _textController,
               maxLines: 4,
               decoration: InputDecoration(
-                hintText: 'Type or speak how you feel...',
+                hintText:
+                    loc?.type_or_speak_hint ?? 'Type or speak how you feel...',
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -351,13 +374,20 @@ class _MoodScreenState extends ConsumerState<MoodScreen> {
               children: [
                 Expanded(
                   child: ElevatedButton.icon(
-                    onPressed:
-                        _isAnalyzing ? null : (_isListening ? _stopListening : _startListening),
+                    onPressed: _isAnalyzing
+                        ? null
+                        : (_isListening ? _stopListening : _startListening),
                     icon: Icon(_isListening ? Icons.stop : Icons.mic),
-                    label: Text(_isListening ? 'Stop' : 'Voice Input',
-                        style: const TextStyle(fontSize: 11)),
+                    label: Text(
+                      _isListening
+                          ? (loc?.stop ?? 'Stop')
+                          : (loc?.voice_input ?? 'Voice Input'),
+                      style: const TextStyle(fontSize: 11),
+                    ),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: _isListening ? Colors.red.shade300 : null,
+                      backgroundColor: _isListening
+                          ? Colors.red.shade300
+                          : null,
                     ),
                   ),
                 ),
@@ -372,7 +402,11 @@ class _MoodScreenState extends ConsumerState<MoodScreen> {
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
                         : const Icon(Icons.psychology),
-                    label: Text(_isAnalyzing ? 'Analyzing...' : 'Analyze'),
+                    label: Text(
+                      _isAnalyzing
+                          ? (loc?.analyzing ?? 'Analyzing...')
+                          : (loc?.analyze ?? 'Analyze'),
+                    ),
                   ),
                 ),
               ],
@@ -383,73 +417,78 @@ class _MoodScreenState extends ConsumerState<MoodScreen> {
     );
   }
 
-  // 🌸 Bubble Breather Card
- Widget _buildBubbleBreatherCard() {
-  return InkWell(
-    borderRadius: BorderRadius.circular(16),
-    onTap: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const BubbleBreatherScreen()),
-      );
-    },
-    child: Card(
-      elevation: 4,
-      color: const Color(0xFFe7f6f2),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Row(
-          children: [
-            Container(
-              decoration: const BoxDecoration(
-                color: Color(0xFF9adbc7),
-                shape: BoxShape.circle,
+  Widget _buildBubbleBreatherCard() {
+    final loc = AppLocalizations.of(context);
+    return InkWell(
+      borderRadius: BorderRadius.circular(16),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const BubbleBreatherScreen()),
+        );
+      },
+      child: Card(
+        elevation: 4,
+        color: const Color(0xFFe7f6f2),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Row(
+            children: [
+              Container(
+                decoration: const BoxDecoration(
+                  color: Color(0xFF9adbc7),
+                  shape: BoxShape.circle,
+                ),
+                padding: const EdgeInsets.all(12),
+                child: const Icon(
+                  Icons.bubble_chart,
+                  color: Colors.white,
+                  size: 28,
+                ),
               ),
-              padding: const EdgeInsets.all(12),
-              child: const Icon(Icons.bubble_chart, color: Colors.white, size: 28),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Bubble Breather',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          color: const Color(0xFF2b6b5d),
-                          fontWeight: FontWeight.w600,
-                        ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    'Close your eyes, take a slow breath in… imagine a bubble floating higher with every exhale. Let your tension drift away with it.',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Colors.grey.shade700,
-                          height: 1.4,
-                        ),
-                  ),
-                ],
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      loc?.bubble_breather ?? 'Bubble Breather',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: const Color(0xFF2b6b5d),
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      loc?.bubble_breather_desc ??
+                          'Close your eyes, take a slow breath in… imagine a bubble floating higher with every exhale. Let your tension drift away with it.',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Colors.grey.shade700,
+                        height: 1.4,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
-    ),
-  );
-}
-
+    );
+  }
 
   Widget _buildInspirationSection(String mood) {
+    final loc = AppLocalizations.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          'For You',
+          loc?.for_you ?? 'For You',
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
         ),
         const SizedBox(height: 12),
         _buildQuoteSection(mood),
@@ -460,10 +499,14 @@ class _MoodScreenState extends ConsumerState<MoodScreen> {
   }
 
   Widget _buildRecentMoods(List<MoodEntry> moods) {
+    final loc = AppLocalizations.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Recent Moods', style: Theme.of(context).textTheme.titleLarge),
+        Text(
+          loc?.recent_moods ?? 'Recent Moods',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
         const SizedBox(height: 12),
         ...moods.map(_buildMoodCard),
       ],
@@ -478,16 +521,24 @@ class _MoodScreenState extends ConsumerState<MoodScreen> {
           backgroundColor: MoodColors.getColorForMood(entry.detectedMood),
           child: Text(
             entry.detectedMood[0].toUpperCase(),
-            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
         title: Text(entry.detectedMood),
-        subtitle: Text(entry.text, maxLines: 2, overflow: TextOverflow.ellipsis),
+        subtitle: Text(
+          entry.text,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+        ),
         trailing: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-                '${entry.timestamp.hour}:${entry.timestamp.minute.toString().padLeft(2, '0')}'),
+              '${entry.timestamp.hour}:${entry.timestamp.minute.toString().padLeft(2, '0')}',
+            ),
             if (entry.isVoiceInput)
               const Icon(Icons.mic, size: 16, color: Colors.grey),
           ],
@@ -497,6 +548,7 @@ class _MoodScreenState extends ConsumerState<MoodScreen> {
   }
 
   Widget _buildQuoteSection(String mood) {
+    final loc = AppLocalizations.of(context);
     final quoteAsync = ref.watch(fetchQuoteForMoodProvider(mood));
 
     return quoteAsync.when(
@@ -509,44 +561,50 @@ class _MoodScreenState extends ConsumerState<MoodScreen> {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.format_quote,
-                        color: MoodColors.getColorForMood(mood)),
+                    Icon(
+                      Icons.format_quote,
+                      color: MoodColors.getColorForMood(mood),
+                    ),
                     const SizedBox(width: 8),
-                    Text('Inspirational Quote',
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleSmall
-                            ?.copyWith(fontWeight: FontWeight.bold)),
+                    Text(
+                      loc?.inspirational_quote ?? 'Inspirational Quote',
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 12),
                 Text(
                   '"${quote['content']}"',
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.copyWith(fontStyle: FontStyle.italic),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(fontStyle: FontStyle.italic),
                 ),
                 const SizedBox(height: 8),
-                Text('— ${quote['author']}',
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodySmall
-                        ?.copyWith(color: Colors.grey.shade600)),
+                Text(
+                  '— ${quote['author']}',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodySmall?.copyWith(color: Colors.grey.shade600),
+                ),
               ],
             ),
           ),
         );
       },
       loading: () => const Card(
-        child:
-            Padding(padding: EdgeInsets.all(16), child: Center(child: CircularProgressIndicator())),
+        child: Padding(
+          padding: EdgeInsets.all(16),
+          child: Center(child: CircularProgressIndicator()),
+        ),
       ),
       error: (_, __) => const SizedBox(),
     );
   }
 
   Widget _buildMusicSection(String mood) {
+    final loc = AppLocalizations.of(context);
     final musicAsync = ref.watch(fetchMusicForMoodProvider(mood));
 
     return musicAsync.when(
@@ -561,14 +619,17 @@ class _MoodScreenState extends ConsumerState<MoodScreen> {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.music_note,
-                        color: MoodColors.getColorForMood(mood)),
+                    Icon(
+                      Icons.music_note,
+                      color: MoodColors.getColorForMood(mood),
+                    ),
                     const SizedBox(width: 8),
-                    Text('Recommended Music',
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleSmall
-                            ?.copyWith(fontWeight: FontWeight.bold)),
+                    Text(
+                      loc?.recommended_music ?? 'Recommended Music',
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 12),
@@ -624,21 +685,24 @@ class _MoodScreenState extends ConsumerState<MoodScreen> {
                               ],
                             ),
                             const SizedBox(height: 4),
-                            Text(track['title'],
-                                style: Theme.of(context).textTheme.bodySmall,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                textAlign: TextAlign.center),
-                            Text(track['artist'],
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodySmall
-                                    ?.copyWith(
-                                        color: Colors.grey.shade600,
-                                        fontSize: 10),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                textAlign: TextAlign.center),
+                            Text(
+                              track['title'],
+                              style: Theme.of(context).textTheme.bodySmall,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
+                            ),
+                            Text(
+                              track['artist'],
+                              style: Theme.of(context).textTheme.bodySmall
+                                  ?.copyWith(
+                                    color: Colors.grey.shade600,
+                                    fontSize: 10,
+                                  ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
+                            ),
                           ],
                         ),
                       );
@@ -651,8 +715,10 @@ class _MoodScreenState extends ConsumerState<MoodScreen> {
         );
       },
       loading: () => const Card(
-        child:
-            Padding(padding: EdgeInsets.all(16), child: Center(child: CircularProgressIndicator())),
+        child: Padding(
+          padding: EdgeInsets.all(16),
+          child: Center(child: CircularProgressIndicator()),
+        ),
       ),
       error: (_, __) => const SizedBox(),
     );

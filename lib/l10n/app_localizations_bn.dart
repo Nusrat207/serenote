@@ -112,7 +112,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get tomorrow => 'আগামীকাল';
 
   @override
-  String get good_morning => 'সুপ্রভাত';
+  String get good_morning => 'শুভ সকাল';
 
   @override
   String get good_afternoon => 'শুভ অপরাহ্ন';
@@ -478,4 +478,195 @@ class AppLocalizationsBn extends AppLocalizations {
   @override
   String get confirm_password_required =>
       'দয়া করে আপনার পাসওয়ার্ড নিশ্চিত করুন';
+
+  @override
+  String get this_week => 'এই সপ্তাহ';
+
+  @override
+  String get monday_short => 'সোম';
+
+  @override
+  String get tuesday_short => 'মঙ্গল';
+
+  @override
+  String get wednesday_short => 'বুধ';
+
+  @override
+  String get thursday_short => 'বৃহঃ';
+
+  @override
+  String get friday_short => 'শুক্র';
+
+  @override
+  String get saturday_short => 'শনি';
+
+  @override
+  String get sunday_short => 'রবি';
+
+  @override
+  String get january_short => 'জানু';
+
+  @override
+  String get february_short => 'ফেব্রু';
+
+  @override
+  String get march_short => 'মার্চ';
+
+  @override
+  String get april_short => 'এপ্রিল';
+
+  @override
+  String get may_short => 'মে';
+
+  @override
+  String get june_short => 'জুন';
+
+  @override
+  String get july_short => 'জুলাই';
+
+  @override
+  String get august_short => 'আগস্ট';
+
+  @override
+  String get september_short => 'সেপ্টে';
+
+  @override
+  String get october_short => 'অক্টো';
+
+  @override
+  String get november_short => 'নভে';
+
+  @override
+  String get december_short => 'ডিসে';
+
+  @override
+  String get stat_current => 'বর্তমান';
+
+  @override
+  String get stat_longest => 'সর্বোচ্চ';
+
+  @override
+  String get stat_total => 'মোট';
+
+  @override
+  String get mood_anxious => 'উদ্বিগ্ন';
+
+  @override
+  String get mood_angry => 'রাগান্বিত';
+
+  @override
+  String get mood_sad => 'দুঃখিত';
+
+  @override
+  String get mood_neutral => 'নিরপেক্ষ';
+
+  @override
+  String get mood_joy => 'আনন্দিত';
+
+  @override
+  String get quick_mood_title => 'আপনি কেমন অনুভব করছেন?';
+
+  @override
+  String get quick_mood_subtitle => 'দ্রুত চেক-ইন •  ১০ সেকেন্ড লাগবে ';
+
+  @override
+  String get good_night => 'শুভ রাত্রি';
+
+  @override
+  String get how_are_you_feeling => 'আপনি কেমন অনুভব করছেন?';
+
+  @override
+  String get select_your_mood => 'আপনার মূড নির্বাচন করুন';
+
+  @override
+  String get happy => 'খুশি';
+
+  @override
+  String get neutral => 'নিরপেক্ষ';
+
+  @override
+  String get sad => 'দুঃখিত';
+
+  @override
+  String get anxious => 'উদ্বিগ্ন';
+
+  @override
+  String get angry => 'রাগান্বিত';
+
+  @override
+  String get save_mood => 'মূড সংরক্ষণ করুন';
+
+  @override
+  String get say_or_type_feeling => 'বলুন বা লিখুন আপনি কেমন অনুভব করছেন';
+
+  @override
+  String get please_select_mood => 'দয়া করে একটি মূড নির্বাচন করুন';
+
+  @override
+  String get mood_saved_successfully => 'মূড সফলভাবে সংরক্ষণ করা হয়েছে!';
+
+  @override
+  String get error_saving_mood => 'মূড সংরক্ষণ করতে ত্রুটি: ';
+
+  @override
+  String get user_not_logged_in => 'ব্যবহারকারী লগইন করেননি';
+
+  @override
+  String get mood_mirror => 'মুড মিরর';
+
+  @override
+  String get welcome_mood_mirror => 'মুড মিররে স্বাগতম';
+
+  @override
+  String get mood_mirror_description =>
+      'আপনার মুড ট্র্যাক করতে, অনুপ্রেরণামূলক উক্তি পেতে এবং আপনার অনুভূতির সাথে মানানসই সঙ্গীত উপভোগ করতে লগইন করুন।';
+
+  @override
+  String get login_to_continue => 'চালিয়ে যেতে লগইন করুন';
+
+  @override
+  String get please_enter_feeling => 'আপনি কেমন অনুভব করছেন তা লিখুন বা বলুন';
+
+  @override
+  String get mood_detected => 'মুড সনাক্ত করা হয়েছে';
+
+  @override
+  String get error_text => 'ত্রুটি';
+
+  @override
+  String get todays_mood => 'আজকের মুড';
+
+  @override
+  String get confidence => 'আত্মবিশ্বাস';
+
+  @override
+  String get type_or_speak_hint => 'লিখুন বা বলুন আপনি কেমন অনুভব করছেন...';
+
+  @override
+  String get stop => 'থামুন';
+
+  @override
+  String get voice_input => 'ভয়েস ইনপুট';
+
+  @override
+  String get analyzing => 'বিশ্লেষণ করা হচ্ছে...';
+
+  @override
+  String get analyze => 'বিশ্লেষণ করুন';
+
+  @override
+  String get bubble_breather => 'বাবল ব্রিদার';
+
+  @override
+  String get bubble_breather_desc =>
+      'চোখ বন্ধ করুন, ধীরে শ্বাস নিন... প্রতিটি নিঃশ্বাসের সাথে একটি বুদবুদ উপরে ভাসতে কল্পনা করুন। এর সাথে আপনার উত্তেজনা দূরে সরে যেতে দিন।';
+
+  @override
+  String get for_you => 'আপনার জন্য';
+
+  @override
+  String get inspirational_quote => 'অনুপ্রেরণামূলক উক্তি';
+
+  @override
+  String get recommended_music => 'প্রস্তাবিত সঙ্গীত';
 }

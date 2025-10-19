@@ -100,25 +100,23 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen>
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)?.habits_title ?? 'Habits'),
-        backgroundColor: Colors.transparent, // CHANGED: Use mood color instead of white
+        backgroundColor:
+            Colors.transparent, // CHANGED: Use mood color instead of white
         elevation: 0,
         foregroundColor:
             Colors.white, // CHANGED: Text/icons in white for contrast
-             leading: IconButton(
-            icon: Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: moodColor,
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Icons.arrow_back_ios_new_rounded,
-                size: 20,
-                color: Colors.white,
-              ),
+        leading: IconButton(
+          icon: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(color: moodColor, shape: BoxShape.circle),
+            child: const Icon(
+              Icons.arrow_back_ios_new_rounded,
+              size: 20,
+              color: Colors.white,
             ),
-            onPressed: () => Navigator.pop(context),
           ),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
       body: Stack(
         children: [
@@ -155,17 +153,23 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen>
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.login, size: 64, color: const Color.fromARGB(255, 11, 107, 102)),
+                      Icon(
+                        Icons.login,
+                        size: 64,
+                        color: const Color.fromARGB(255, 11, 107, 102),
+                      ),
                       const SizedBox(height: 16),
                       Text(
-                        AppLocalizations.of(context)?.please_log_in ?? 'Please log in',
+                        AppLocalizations.of(context)?.please_log_in ??
+                            'Please log in',
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
                       const SizedBox(height: 8),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 32),
                         child: Text(
-                          AppLocalizations.of(context)?.need_login_habits ?? 'You need to be logged in to view and manage your habits',
+                          AppLocalizations.of(context)?.need_login_habits ??
+                              'You need to be logged in to view and manage your habits',
                           style: Theme.of(context).textTheme.bodyMedium,
                           textAlign: TextAlign.center,
                         ),
@@ -192,7 +196,8 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen>
                       const SizedBox(height: 16),
                       Text(
                         _isAuthError(habitState.error)
-                            ? (AppLocalizations.of(context)?.please_log_in ?? 'Please log in')
+                            ? (AppLocalizations.of(context)?.please_log_in ??
+                                  'Please log in')
                             : 'Error',
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
@@ -201,7 +206,10 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen>
                         padding: const EdgeInsets.symmetric(horizontal: 32),
                         child: Text(
                           _isAuthError(habitState.error)
-                              ? (AppLocalizations.of(context)?.need_login_habits ?? 'You need to be logged in to view and manage your habits')
+                              ? (AppLocalizations.of(
+                                      context,
+                                    )?.need_login_habits ??
+                                    'You need to be logged in to view and manage your habits')
                               : 'Error: ${habitState.error}',
                           style: Theme.of(context).textTheme.bodyMedium,
                           textAlign: TextAlign.center,
@@ -215,7 +223,9 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen>
                           ref.read(habitNotifierProvider.notifier).loadHabits();
                         },
                         icon: const Icon(Icons.refresh),
-                        label: Text(AppLocalizations.of(context)?.retry ?? 'Retry'),
+                        label: Text(
+                          AppLocalizations.of(context)?.retry ?? 'Retry',
+                        ),
                       ),
                     ],
                   ),
@@ -232,19 +242,24 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen>
                       ),
                       const SizedBox(height: 16),
                       Text(
-                        AppLocalizations.of(context)?.no_habits_yet ?? 'No habits yet',
+                        AppLocalizations.of(context)?.no_habits_yet ??
+                            'No habits yet',
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        AppLocalizations.of(context)?.create_first_habit ?? 'Create your first habit to get started',
+                        AppLocalizations.of(context)?.create_first_habit ??
+                            'Create your first habit to get started',
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                       const SizedBox(height: 24),
                       ElevatedButton.icon(
                         onPressed: () => _showAddHabitDialog(context),
                         icon: const Icon(Icons.add),
-                        label: Text(AppLocalizations.of(context)?.add_habit ?? 'Add Habit'),
+                        label: Text(
+                          AppLocalizations.of(context)?.add_habit ??
+                              'Add Habit',
+                        ),
                       ),
                     ],
                   ),
@@ -272,18 +287,17 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen>
                 ),
         ],
       ),
-      floatingActionButton: isAuthenticated &&
-        !habitState.isLoading &&
-        habitState.error == null &&
-        !_isAuthError(habitState.error)
-    ? FloatingActionButton(
-        onPressed: () => _showAddHabitDialog(context),
-        backgroundColor: moodColor, // use mood color
-        child: const Icon(Icons.add, color: Colors.white),
-      )
-    : null,
-
-        
+      floatingActionButton:
+          isAuthenticated &&
+              !habitState.isLoading &&
+              habitState.error == null &&
+              !_isAuthError(habitState.error)
+          ? FloatingActionButton(
+              onPressed: () => _showAddHabitDialog(context),
+              backgroundColor: moodColor, // use mood color
+              child: const Icon(Icons.add, color: Colors.white),
+            )
+          : null,
     );
   }
 
@@ -315,13 +329,23 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen>
       ('🚴', Colors.teal),
     ];
 
-    final dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-
+    // Get localized day names
+    final dayNames = [
+      AppLocalizations.of(context)?.monday_short ?? 'Mon',
+      AppLocalizations.of(context)?.tuesday_short ?? 'Tue',
+      AppLocalizations.of(context)?.wednesday_short ?? 'Wed',
+      AppLocalizations.of(context)?.thursday_short ?? 'Thu',
+      AppLocalizations.of(context)?.friday_short ?? 'Fri',
+      AppLocalizations.of(context)?.saturday_short ?? 'Sat',
+      AppLocalizations.of(context)?.sunday_short ?? 'Sun',
+    ];
     showDialog(
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setState) => AlertDialog(
-          title: Text(AppLocalizations.of(context)?.add_new_habit ?? 'Add New Habit'),
+          title: Text(
+            AppLocalizations.of(context)?.add_new_habit ?? 'Add New Habit',
+          ),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -372,16 +396,23 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen>
                 TextField(
                   controller: nameController,
                   decoration: InputDecoration(
-                    hintText: AppLocalizations.of(context)?.habit_name_hint ?? 'Habit name (e.g., Drink water)',
-                    labelText: AppLocalizations.of(context)?.name_label ?? 'Name',
+                    hintText:
+                        AppLocalizations.of(context)?.habit_name_hint ??
+                        'Habit name (e.g., Drink water)',
+                    labelText:
+                        AppLocalizations.of(context)?.name_label ?? 'Name',
                   ),
                 ),
                 const SizedBox(height: 12),
                 TextField(
                   controller: descriptionController,
                   decoration: InputDecoration(
-                    hintText: AppLocalizations.of(context)?.description_hint ?? 'Description (optional)',
-                    labelText: AppLocalizations.of(context)?.description_label ?? 'Description',
+                    hintText:
+                        AppLocalizations.of(context)?.description_hint ??
+                        'Description (optional)',
+                    labelText:
+                        AppLocalizations.of(context)?.description_label ??
+                        'Description',
                   ),
                   maxLines: 2,
                 ),
@@ -390,7 +421,10 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen>
                   alignment: Alignment.centerLeft,
                   child: Text(
                     AppLocalizations.of(context)?.select_days ?? 'Select Days:',
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -447,7 +481,10 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen>
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  (AppLocalizations.of(context)?.days_selected(selectedDays.length) ?? '${selectedDays.length} days selected'),
+                  (AppLocalizations.of(
+                        context,
+                      )?.days_selected(selectedDays.length) ??
+                      '${selectedDays.length} days selected'),
                   style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
                 ),
               ],
@@ -456,7 +493,9 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen>
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text(AppLocalizations.of(context)?.journal_cancel ?? 'Cancel'),
+              child: Text(
+                AppLocalizations.of(context)?.journal_cancel ?? 'Cancel',
+              ),
             ),
             ElevatedButton(
               onPressed: () {
@@ -475,13 +514,20 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen>
                   if (mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text(AppLocalizations.of(context)?.create ?? 'Create'),
+                        content: Text(
+                          AppLocalizations.of(context)?.create ?? 'Create',
+                        ),
                       ),
                     );
                   }
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(AppLocalizations.of(context)?.habit_name_hint ?? 'Please enter a habit name')),
+                    SnackBar(
+                      content: Text(
+                        AppLocalizations.of(context)?.habit_name_hint ??
+                            'Please enter a habit name',
+                      ),
+                    ),
                   );
                 }
               },

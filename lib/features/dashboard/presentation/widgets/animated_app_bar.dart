@@ -1,6 +1,7 @@
 // animated_app_bar.dart
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:serenote/l10n/app_localizations.dart';
 import 'dart:math';
 import 'dart:async';
 
@@ -11,7 +12,7 @@ class AnimatedAppBar extends StatefulWidget {
   State<AnimatedAppBar> createState() => _AnimatedAppBarState();
 }
 
-class _AnimatedAppBarState extends State<AnimatedAppBar> 
+class _AnimatedAppBarState extends State<AnimatedAppBar>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _opacityAnimation;
@@ -23,11 +24,12 @@ class _AnimatedAppBarState extends State<AnimatedAppBar>
       vsync: this,
       duration: Duration(milliseconds: 1000),
     );
-    
-    _opacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeIn),
-    );
-    
+
+    _opacityAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeIn));
+
     _controller.forward();
 
     // Update every 2 minutes
@@ -51,10 +53,16 @@ class _AnimatedAppBarState extends State<AnimatedAppBar>
 
   String _getGreeting() {
     final hour = DateTime.now().hour;
-    if (hour >= 5 && hour < 12) return 'Good Morning';
-    if (hour >= 12 && hour < 17) return 'Good Afternoon';
-    if (hour >= 17 && hour < 21) return 'Good Evening';
-    return 'Good Night';
+    if (hour >= 5 && hour < 12) {
+      return AppLocalizations.of(context)?.good_morning ?? 'Good Morning';
+    }
+    if (hour >= 12 && hour < 17) {
+      return AppLocalizations.of(context)?.good_afternoon ?? 'Good Afternoon';
+    }
+    if (hour >= 17 && hour < 21) {
+      return AppLocalizations.of(context)?.good_evening ?? 'Good Evening';
+    }
+    return AppLocalizations.of(context)?.good_night ?? 'Good Night';
   }
 
   @override
@@ -124,10 +132,7 @@ class _AnimatedAppBarState extends State<AnimatedAppBar>
   }
 
   Widget _buildAnimatedBackground() {
-    return Container(
-     
-      child: _buildFloatingParticles(),
-    );
+    return Container(child: _buildFloatingParticles());
   }
 
   Widget _buildFloatingParticles() {
@@ -153,11 +158,8 @@ class _FloatingParticle extends StatefulWidget {
   final int delay;
   final double size;
 
-  const _FloatingParticle({
-    Key? key,
-    required this.delay,
-    required this.size,
-  }) : super(key: key);
+  const _FloatingParticle({Key? key, required this.delay, required this.size})
+    : super(key: key);
 
   @override
   State<_FloatingParticle> createState() => _FloatingParticleState();
@@ -176,7 +178,7 @@ class _FloatingParticleState extends State<_FloatingParticle>
   @override
   void initState() {
     super.initState();
-    
+
     _controller = AnimationController(
       vsync: this,
       duration: Duration(seconds: 4 + Random().nextInt(3)),
@@ -187,18 +189,12 @@ class _FloatingParticleState extends State<_FloatingParticle>
     _topAnimation = Tween<double>(
       begin: _startTop,
       end: _endTop,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
     _leftAnimation = Tween<double>(
       begin: _startLeft,
       end: _endLeft,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
     Future.delayed(Duration(milliseconds: widget.delay), () {
       if (mounted) {
@@ -213,10 +209,11 @@ class _FloatingParticleState extends State<_FloatingParticle>
     _endTop = Random().nextDouble() * 100;
     _endLeft = Random().nextDouble() * 100;
   }
-@override
+
+  @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    
+
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
